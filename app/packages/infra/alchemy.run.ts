@@ -1,11 +1,14 @@
 import alchemy from "alchemy";
 import { Nextjs } from "alchemy/cloudflare";
+import { CloudflareStateStore } from "alchemy/state";
 import { config } from "dotenv";
 
 config({ path: "./.env" });
 config({ path: "../../apps/web/.env" });
 
-const app = await alchemy("convoexpo-and-nextjs-web-bun-better-auth");
+const app = await alchemy("convoexpo-and-nextjs-web-bun-better-auth", {
+  stateStore: (scope) => new CloudflareStateStore(scope),
+});
 
 export const web = await Nextjs("web", {
   cwd: "../../apps/web",
