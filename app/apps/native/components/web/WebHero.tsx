@@ -3,14 +3,14 @@ import { useResponsive } from "@/hooks/useResponsive";
 import { CategoryTag } from "./CategoryTag";
 import { type CategoryOption, SearchBar } from "./SearchBar";
 
-// Fiverr-style theme colors
+// Theme colors for video hero (light text on dark video)
 const THEME_COLORS = {
   primary: "#1DBF73",
   primaryForeground: "#FFFFFF",
-  foreground: "#222325",
-  muted: "#62646a",
+  foreground: "#FFFFFF",
+  muted: "rgba(255, 255, 255, 0.8)",
   background: "#FFFFFF",
-  heroBackground: "#fafafa",
+  heroBackground: "#1a1a1a",
 };
 
 interface PopularTag {
@@ -59,108 +59,159 @@ export function WebHero({
   return (
     <View
       style={{
+        position: "relative",
+        overflow: "hidden",
         backgroundColor: THEME_COLORS.heroBackground,
-        paddingTop: isMobile ? 100 : 120,
-        paddingBottom: isMobile ? 48 : 80,
-        paddingHorizontal: 24,
+        minHeight: isMobile ? 500 : 600,
       }}
     >
-      <View
+      {/* Background Video - Web only */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
         style={{
-          maxWidth: 900,
-          marginHorizontal: "auto",
-          alignItems: "center",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 0,
         }}
       >
-        {/* Headline */}
-        <Text
-          style={{
-            fontSize: isMobile ? 32 : isTablet ? 42 : 52,
-            fontWeight: "700",
-            color: THEME_COLORS.foreground,
-            textAlign: "center",
-            marginBottom: 16,
-            lineHeight: isMobile ? 40 : isTablet ? 50 : 62,
-          }}
-        >
-          {headline}
-        </Text>
+        <source src="/videos/hero-background.mp4" type="video/mp4" />
+      </video>
 
-        {/* Subheadline */}
-        <Text
-          style={{
-            fontSize: isMobile ? 16 : 18,
-            color: THEME_COLORS.muted,
-            textAlign: "center",
-            lineHeight: isMobile ? 24 : 28,
-            maxWidth: 600,
-            marginBottom: 32,
-          }}
-        >
-          {subheadline}
-        </Text>
+      {/* Dark Overlay for text readability */}
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 1,
+        }}
+      />
 
-        {/* Search Bar */}
+      {/* Content */}
+      <View
+        style={{
+          position: "relative",
+          zIndex: 2,
+          paddingTop: isMobile ? 100 : 140,
+          paddingBottom: isMobile ? 48 : 80,
+          paddingHorizontal: 24,
+        }}
+      >
         <View
           style={{
-            width: "100%",
+            maxWidth: 900,
+            marginHorizontal: "auto",
             alignItems: "center",
-            marginBottom: 24,
           }}
         >
-          <SearchBar
-            categories={categories}
-            onSearch={onSearch}
-            placeholder="Search for creators or briefs..."
-          />
-        </View>
-
-        {/* Popular Tags */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 8,
-            flexWrap: isMobile ? "nowrap" : "wrap",
-            justifyContent: "center",
-          }}
-        >
+          {/* Headline */}
           <Text
             style={{
-              fontSize: 14,
-              color: THEME_COLORS.muted,
-              marginRight: 4,
+              fontSize: isMobile ? 32 : isTablet ? 42 : 56,
+              fontWeight: "700",
+              color: THEME_COLORS.foreground,
+              textAlign: "center",
+              marginBottom: 16,
+              lineHeight: isMobile ? 40 : isTablet ? 50 : 66,
+              textShadowColor: "rgba(0, 0, 0, 0.3)",
+              textShadowOffset: { width: 0, height: 2 },
+              textShadowRadius: 4,
             }}
           >
-            Popular:
+            {headline}
           </Text>
-          {isMobile ? (
-            <ScrollView
-              contentContainerStyle={{ gap: 8, paddingRight: 24 }}
-              horizontal
-              showsHorizontalScrollIndicator={false}
+
+          {/* Subheadline */}
+          <Text
+            style={{
+              fontSize: isMobile ? 16 : 18,
+              color: THEME_COLORS.muted,
+              textAlign: "center",
+              lineHeight: isMobile ? 24 : 28,
+              maxWidth: 600,
+              marginBottom: 32,
+              textShadowColor: "rgba(0, 0, 0, 0.3)",
+              textShadowOffset: { width: 0, height: 1 },
+              textShadowRadius: 2,
+            }}
+          >
+            {subheadline}
+          </Text>
+
+          {/* Search Bar */}
+          <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+              marginBottom: 24,
+            }}
+          >
+            <SearchBar
+              categories={categories}
+              onSearch={onSearch}
+              placeholder="Search for creators or briefs..."
+            />
+          </View>
+
+          {/* Popular Tags */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+              flexWrap: isMobile ? "nowrap" : "wrap",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                color: THEME_COLORS.muted,
+                marginRight: 4,
+              }}
             >
-              {popularTags.map((tag) => (
-                <CategoryTag
-                  href={tag.href}
-                  key={tag.label}
-                  label={tag.label}
-                  size="small"
-                />
-              ))}
-            </ScrollView>
-          ) : (
-            <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
-              {popularTags.map((tag) => (
-                <CategoryTag
-                  href={tag.href}
-                  key={tag.label}
-                  label={tag.label}
-                  size="small"
-                />
-              ))}
-            </View>
-          )}
+              Popular:
+            </Text>
+            {isMobile ? (
+              <ScrollView
+                contentContainerStyle={{ gap: 8, paddingRight: 24 }}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              >
+                {popularTags.map((tag) => (
+                  <CategoryTag
+                    href={tag.href}
+                    key={tag.label}
+                    label={tag.label}
+                    size="small"
+                    variant="light"
+                  />
+                ))}
+              </ScrollView>
+            ) : (
+              <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
+                {popularTags.map((tag) => (
+                  <CategoryTag
+                    href={tag.href}
+                    key={tag.label}
+                    label={tag.label}
+                    size="small"
+                    variant="light"
+                  />
+                ))}
+              </View>
+            )}
+          </View>
         </View>
       </View>
     </View>

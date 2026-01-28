@@ -13,6 +13,7 @@ export const web = await Nextjs("web", {
     NEXT_PUBLIC_CONVEX_URL: alchemy.env.NEXT_PUBLIC_CONVEX_URL!,
     NEXT_PUBLIC_CONVEX_SITE_URL: alchemy.env.NEXT_PUBLIC_CONVEX_SITE_URL!,
   },
+  domains: ["ugp.gruckion.com"],
 });
 
 console.log(`Web    -> ${web.url}`);

@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { UGCLogo } from "@/components/UGCLogo";
+import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
 
 // Fiverr-style theme colors
@@ -42,6 +43,7 @@ interface WebHeaderProps {
 export function WebHeader({ onSearch }: WebHeaderProps) {
   const { isMobile, isTablet } = useResponsive();
   const { isAuthenticated } = useConvexAuth();
+  const { open: openAuthModal } = useAuthModal();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
@@ -206,46 +208,43 @@ export function WebHeader({ onSearch }: WebHeaderProps) {
               </Link>
             ) : (
               <>
-                <Link asChild href="/(auth)/landing">
-                  <Pressable>
-                    {({ hovered }) => (
-                      <Text
-                        style={{
-                          fontSize: 15,
-                          fontWeight: "500",
-                          color: hovered
-                            ? THEME_COLORS.primary
-                            : THEME_COLORS.foreground,
-                        }}
-                      >
-                        Sign In
-                      </Text>
-                    )}
-                  </Pressable>
-                </Link>
-                <Link asChild href="/(auth)/landing">
-                  <Pressable
-                    style={{
-                      backgroundColor: THEME_COLORS.primary,
-                      paddingHorizontal: 20,
-                      paddingVertical: 10,
-                      borderRadius: 8,
-                    }}
-                  >
-                    {({ pressed }) => (
-                      <Text
-                        style={{
-                          fontSize: 15,
-                          fontWeight: "600",
-                          color: THEME_COLORS.primaryForeground,
-                          opacity: pressed ? 0.8 : 1,
-                        }}
-                      >
-                        Join
-                      </Text>
-                    )}
-                  </Pressable>
-                </Link>
+                <Pressable onPress={() => openAuthModal("signin")}>
+                  {({ hovered }) => (
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "500",
+                        color: hovered
+                          ? THEME_COLORS.primary
+                          : THEME_COLORS.foreground,
+                      }}
+                    >
+                      Sign In
+                    </Text>
+                  )}
+                </Pressable>
+                <Pressable
+                  onPress={() => openAuthModal("signup")}
+                  style={{
+                    backgroundColor: THEME_COLORS.primary,
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    borderRadius: 8,
+                  }}
+                >
+                  {({ pressed }) => (
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "600",
+                        color: THEME_COLORS.primaryForeground,
+                        opacity: pressed ? 0.8 : 1,
+                      }}
+                    >
+                      Join
+                    </Text>
+                  )}
+                </Pressable>
               </>
             )}
           </View>
@@ -409,49 +408,51 @@ export function WebHeader({ onSearch }: WebHeaderProps) {
                   </Link>
                 ) : (
                   <>
-                    <Link asChild href="/(auth)/landing">
-                      <Pressable
-                        onPress={() => setIsMobileMenuOpen(false)}
+                    <Pressable
+                      onPress={() => {
+                        setIsMobileMenuOpen(false);
+                        openAuthModal("signin");
+                      }}
+                      style={{
+                        borderWidth: 1,
+                        borderColor: THEME_COLORS.primary,
+                        paddingVertical: 14,
+                        borderRadius: 8,
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text
                         style={{
-                          borderWidth: 1,
-                          borderColor: THEME_COLORS.primary,
-                          paddingVertical: 14,
-                          borderRadius: 8,
-                          alignItems: "center",
+                          fontSize: 16,
+                          fontWeight: "600",
+                          color: THEME_COLORS.primary,
                         }}
                       >
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            fontWeight: "600",
-                            color: THEME_COLORS.primary,
-                          }}
-                        >
-                          Sign In
-                        </Text>
-                      </Pressable>
-                    </Link>
-                    <Link asChild href="/(auth)/landing">
-                      <Pressable
-                        onPress={() => setIsMobileMenuOpen(false)}
+                        Sign In
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        setIsMobileMenuOpen(false);
+                        openAuthModal("signup");
+                      }}
+                      style={{
+                        backgroundColor: THEME_COLORS.primary,
+                        paddingVertical: 14,
+                        borderRadius: 8,
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text
                         style={{
-                          backgroundColor: THEME_COLORS.primary,
-                          paddingVertical: 14,
-                          borderRadius: 8,
-                          alignItems: "center",
+                          fontSize: 16,
+                          fontWeight: "600",
+                          color: THEME_COLORS.primaryForeground,
                         }}
                       >
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            fontWeight: "600",
-                            color: THEME_COLORS.primaryForeground,
-                          }}
-                        >
-                          Join
-                        </Text>
-                      </Pressable>
-                    </Link>
+                        Join
+                      </Text>
+                    </Pressable>
                   </>
                 )}
               </View>

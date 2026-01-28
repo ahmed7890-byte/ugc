@@ -51,18 +51,18 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: "Support",
     links: [
-      { label: "Help Center", href: "/contact" },
-      { label: "Creator FAQ", href: "/contact" },
-      { label: "Brand FAQ", href: "/contact" },
+      { label: "Help Center", href: "/help-center" },
+      { label: "Creator FAQ", href: "/creator-faq" },
+      { label: "Brand FAQ", href: "/brand-faq" },
       { label: "Contact Us", href: "/contact" },
     ],
   },
   {
     title: "Community",
     links: [
-      { label: "Blog", href: "/about" },
-      { label: "Success Stories", href: "/about" },
-      { label: "Events", href: "/about" },
+      { label: "Blog", href: "/blog" },
+      { label: "Success Stories", href: "/success-stories" },
+      { label: "Events", href: "/community-events" },
     ],
   },
 ];

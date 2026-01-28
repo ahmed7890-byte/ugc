@@ -25,6 +25,8 @@ export interface CategoryTagProps {
   onPress?: () => void;
   /** Size variant */
   size?: "small" | "medium" | "large";
+  /** Color variant - light for dark backgrounds */
+  variant?: "default" | "light";
 }
 
 export function CategoryTag({
@@ -34,6 +36,7 @@ export function CategoryTag({
   isActive = false,
   onPress,
   size = "medium",
+  variant = "default",
 }: CategoryTagProps) {
   const sizeStyles = {
     small: {
@@ -61,6 +64,32 @@ export function CategoryTag({
 
   const currentSize = sizeStyles[size];
 
+  const isLight = variant === "light";
+
+  const getBackgroundColor = (hovered: boolean) => {
+    if (isActive || hovered) return THEME_COLORS.primary;
+    if (isLight) return "rgba(255, 255, 255, 0.15)";
+    return THEME_COLORS.background;
+  };
+
+  const getBorderColor = (hovered: boolean) => {
+    if (isActive || hovered) return THEME_COLORS.primary;
+    if (isLight) return "rgba(255, 255, 255, 0.3)";
+    return THEME_COLORS.border;
+  };
+
+  const getTextColor = (hovered: boolean) => {
+    if (isActive || hovered) return THEME_COLORS.primaryForeground;
+    if (isLight) return "#FFFFFF";
+    return THEME_COLORS.foreground;
+  };
+
+  const getIconColor = (hovered: boolean) => {
+    if (isActive || hovered) return THEME_COLORS.primaryForeground;
+    if (isLight) return "rgba(255, 255, 255, 0.8)";
+    return THEME_COLORS.muted;
+  };
+
   const TagContent = ({ hovered = false }: { hovered?: boolean }) => (
     <View
       style={{
@@ -71,19 +100,13 @@ export function CategoryTag({
         paddingVertical: currentSize.paddingVertical,
         borderRadius: 20,
         borderWidth: 1,
-        borderColor:
-          isActive || hovered ? THEME_COLORS.primary : THEME_COLORS.border,
-        backgroundColor:
-          isActive || hovered ? THEME_COLORS.primary : THEME_COLORS.background,
+        borderColor: getBorderColor(hovered),
+        backgroundColor: getBackgroundColor(hovered),
       }}
     >
       {icon && (
         <Ionicons
-          color={
-            isActive || hovered
-              ? THEME_COLORS.primaryForeground
-              : THEME_COLORS.muted
-          }
+          color={getIconColor(hovered)}
           name={icon}
           size={currentSize.iconSize}
         />
@@ -92,10 +115,7 @@ export function CategoryTag({
         style={{
           fontSize: currentSize.fontSize,
           fontWeight: "500",
-          color:
-            isActive || hovered
-              ? THEME_COLORS.primaryForeground
-              : THEME_COLORS.foreground,
+          color: getTextColor(hovered),
         }}
       >
         {label}

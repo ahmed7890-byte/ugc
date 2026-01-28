@@ -11,8 +11,10 @@ import * as SplashScreen from "expo-splash-screen";
 import { HeroUINativeProvider } from "heroui-native";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
+import { AuthModal } from "@/components/web/AuthModal";
 import { WebNavigationShell } from "@/components/web/WebNavigationShell";
 import { AppThemeProvider } from "@/contexts/app-theme-context";
+import { AuthModalProvider } from "@/contexts/auth-modal-context";
 import { authClient } from "@/lib/auth-client";
 
 // Prevent splash screen from auto-hiding until fonts are loaded
@@ -103,19 +105,22 @@ export default function Layout() {
 
   return (
     <ConvexBetterAuthProvider authClient={authClient} client={convex}>
-      <HeroUINativeProvider
-        config={{
-          textProps: {
-            allowFontScaling: false,
-          },
-        }}
-      >
-        <AppThemeProvider>
-          <AuthGate>
-            <WebLayout />
-          </AuthGate>
-        </AppThemeProvider>
-      </HeroUINativeProvider>
+      <AuthModalProvider>
+        <HeroUINativeProvider
+          config={{
+            textProps: {
+              allowFontScaling: false,
+            },
+          }}
+        >
+          <AppThemeProvider>
+            <AuthGate>
+              <WebLayout />
+            </AuthGate>
+          </AppThemeProvider>
+        </HeroUINativeProvider>
+        <AuthModal />
+      </AuthModalProvider>
     </ConvexBetterAuthProvider>
   );
 }
