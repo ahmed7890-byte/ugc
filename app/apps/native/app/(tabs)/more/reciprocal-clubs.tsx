@@ -7,7 +7,7 @@ import { Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 
-// Globe image from CUC website (larger size for better display)
+// Globe image from UGC website (larger size for better display)
 const GLOBE_IMAGE_URL =
   "https://static.wixstatic.com/media/5e0aaa_e35eca3738ef43d99b99e1e26df0bf16~mv2.png/v1/fill/w_640,h_536,fp_0.50_0.50,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/5e0aaa_e35eca3738ef43d99b99e1e26df0bf16~mv2.png";
 
@@ -152,7 +152,7 @@ export default function ReciprocalClubs() {
                 lineHeight: 22,
               }}
             >
-              The City University Club has a unique list of over 450 reciprocal
+              UGC has a unique list of over 450 reciprocal
               clubs throughout the world where members will be welcomed.
             </Text>
           </View>
@@ -190,7 +190,7 @@ export default function ReciprocalClubs() {
             >
               Many of our reciprocal clubs are renowned as being amongst the
               very finest private members' clubs in the world. As a City
-              University Club member, you have access to an exclusive global
+              UGC member, you have access to an exclusive global
               network.
             </Text>
           </View>
@@ -307,7 +307,7 @@ export default function ReciprocalClubs() {
               <View style={{ marginTop: 16 }}>
                 <ExternalLinkButton
                   label="View Members' Area"
-                  url="https://www.cityuniversityclub.co.uk/copy-of-reciprocal-clubs"
+                  url="https://ugc.com/copy-of-reciprocal-clubs"
                   variant="primary"
                 />
               </View>

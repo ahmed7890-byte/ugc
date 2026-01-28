@@ -15,8 +15,9 @@ The recent refactoring successfully centralized brand colors into `apps/native/t
 ### What Was Done
 
 1. **Created centralized color constants** (`apps/native/theme/colors.ts`):
+
    ```typescript
-   export const CUC_COLORS = {
+   export const UGC_COLORS = {
      navy: "#06273a",
      sage: "#85b09a",
      cream: "#fffef8",
@@ -43,6 +44,7 @@ HeroUI Native uses a CSS variable-based theming system with semantic color names
 ```
 
 Accessed via:
+
 ```typescript
 import { useThemeColor } from "heroui-native";
 
@@ -59,6 +61,7 @@ function MyComponent() {
 ### 1. Provider Configuration ✅ COMPLIANT
 
 **Current Implementation** (`apps/native/app/_layout.tsx`):
+
 ```typescript
 <HeroUINativeProvider
   config={{
@@ -78,46 +81,50 @@ function MyComponent() {
 ### 2. Color/Theming System ⚠️ PARTIALLY COMPLIANT
 
 **Current Approach**:
-- Hardcoded `CUC_COLORS` object with brand-specific hex values
-- Direct usage: `backgroundColor: CUC_COLORS.navy`
+
+- Hardcoded `UGC_COLORS` object with brand-specific hex values
+- Direct usage: `backgroundColor: UGC_COLORS.navy`
 - No integration with HeroUI's CSS variable system
 
 **HeroUI Approach**:
+
 - Semantic CSS variables defined in `global.css`
 - `useThemeColor` hook for runtime access
 - Built-in dark/light mode support
 
 **Risk Assessment**: LOW RISK
+
 - Current approach works correctly
 - Does not break any HeroUI functionality
 - Runs in parallel to HeroUI's theming system
 
 **Recommendations**:
 
-| Priority | Action | Impact | Risk |
-|----------|--------|--------|------|
-| Low | Map CUC_COLORS to custom CSS variables | Enables theme switching | Low |
-| Low | Consider `useThemeColor` hook adoption | Better HeroUI integration | Medium |
-| None | No immediate changes required | System works as-is | None |
+| Priority | Action                                 | Impact                    | Risk   |
+| -------- | -------------------------------------- | ------------------------- | ------ |
+| Low      | Map UGC_COLORS to custom CSS variables | Enables theme switching   | Low    |
+| Low      | Consider `useThemeColor` hook adoption | Better HeroUI integration | Medium |
+| None     | No immediate changes required          | System works as-is        | None   |
 
 **If Migration Desired** (optional):
 
 Add to `apps/native/global.css`:
+
 ```css
 :root {
-  /* CUC Brand Colors as CSS variables */
-  --cuc-navy: #06273a;
-  --cuc-sage: #85b09a;
-  --cuc-cream: #fffef8;
-  --cuc-white: #ffffff;
+  /* UGC Brand Colors as CSS variables */
+  --ugc-navy: #06273a;
+  --ugc-sage: #85b09a;
+  --ugc-cream: #fffef8;
+  --ugc-white: #ffffff;
 
   /* Mapping to HeroUI semantic tokens */
-  --accent: var(--cuc-sage);
-  --accent-foreground: var(--cuc-navy);
-  --background: var(--cuc-cream);
-  --foreground: var(--cuc-navy);
-  --surface: var(--cuc-white);
-  --surface-foreground: var(--cuc-navy);
+  --accent: var(--ugc-sage);
+  --accent-foreground: var(--ugc-navy);
+  --background: var(--ugc-cream);
+  --foreground: var(--ugc-navy);
+  --surface: var(--ugc-white);
+  --surface-foreground: var(--ugc-navy);
 }
 ```
 
@@ -126,17 +133,19 @@ Add to `apps/native/global.css`:
 ### 3. Styling Approach ⚠️ PARTIALLY COMPLIANT
 
 **Current Approach**:
+
 - Heavy use of inline `style` objects with React Native StyleSheet patterns
 - Example from `signin.tsx`:
   ```typescript
   <Text style={{
-    color: CUC_COLORS.sage,
+    color: UGC_COLORS.sage,
     fontSize: 14,
     fontWeight: "500",
   }}>
   ```
 
 **HeroUI Approach**:
+
 - Prefers `className` with Tailwind/Uniwind utilities
 - `cn()` utility for conditional classes
 - Example:
@@ -145,21 +154,23 @@ Add to `apps/native/global.css`:
   ```
 
 **Risk Assessment**: MEDIUM RISK
+
 - Changing styling approach requires touching many files
 - Could introduce visual regressions
 - Benefits are maintainability, not functionality
 
 **Recommendations**:
 
-| Priority | Action | Impact | Risk |
-|----------|--------|--------|------|
-| None | Keep current inline styles | Working system | None |
-| Future | Gradually adopt className on new components | Better consistency | Low |
-| Future | Create Tailwind color utilities for CUC colors | Unified approach | Low |
+| Priority | Action                                         | Impact             | Risk |
+| -------- | ---------------------------------------------- | ------------------ | ---- |
+| None     | Keep current inline styles                     | Working system     | None |
+| Future   | Gradually adopt className on new components    | Better consistency | Low  |
+| Future   | Create Tailwind color utilities for UGC colors | Unified approach   | Low  |
 
 **If Tailwind Integration Desired** (optional):
 
 Add to `apps/native/tailwind.config.js`:
+
 ```javascript
 module.exports = {
   theme: {
@@ -183,11 +194,13 @@ Then use as: `className="bg-cuc-navy text-cuc-cream"`
 ### 4. Component Composition ✅ COMPLIANT
 
 **Current Usage**:
+
 - `StyledTextInput` and `StyledButton` are custom components wrapping HeroUI primitives
 - Proper prop forwarding with refs
 - Clean interface extraction
 
 **HeroUI Pattern**:
+
 - Compound components with dot notation (e.g., `Button.Label`)
 - `asChild` prop for composition
 
@@ -200,6 +213,7 @@ Then use as: `className="bg-cuc-navy text-cuc-cream"`
 ### 5. Animation Configuration ✅ COMPLIANT
 
 **Current Implementation**:
+
 - Uses `react-native-reanimated` directly for custom animations
 - Example from `events/index.tsx`:
   ```typescript
@@ -210,6 +224,7 @@ Then use as: `className="bg-cuc-navy text-cuc-cream"`
   ```
 
 **HeroUI Approach**:
+
 - Built-in `animation` prop on components
 - Global animation control via provider
 
@@ -222,6 +237,7 @@ Then use as: `className="bg-cuc-navy text-cuc-cream"`
 ### 6. Form Components ✅ COMPLIANT
 
 **Current Implementation** (`components/form.tsx`):
+
 - Custom `StyledTextInput` wrapping base TextInput
 - Proper ref forwarding with `forwardRef`
 - Clean props interface
@@ -234,13 +250,13 @@ Then use as: `className="bg-cuc-navy text-cuc-cream"`
 
 ## Risk Matrix for Potential Changes
 
-| Change | Benefit | Risk | Effort | Recommendation |
-|--------|---------|------|--------|----------------|
-| Keep current CUC_COLORS | None (already done) | None | None | ✅ Keep |
-| Add CSS variables | Theme switching | Low | Low | 🔄 Optional |
-| Use `useThemeColor` | HeroUI alignment | Medium | Medium | ⏸️ Defer |
-| Convert to className | Consistency | Medium | High | ⏸️ Defer |
-| Add Tailwind colors | Better DX | Low | Low | 🔄 Optional |
+| Change                  | Benefit             | Risk   | Effort | Recommendation |
+| ----------------------- | ------------------- | ------ | ------ | -------------- |
+| Keep current UGC_COLORS | None (already done) | None   | None   | ✅ Keep        |
+| Add CSS variables       | Theme switching     | Low    | Low    | 🔄 Optional    |
+| Use `useThemeColor`     | HeroUI alignment    | Medium | Medium | ⏸️ Defer       |
+| Convert to className    | Consistency         | Medium | High   | ⏸️ Defer       |
+| Add Tailwind colors     | Better DX           | Low    | Low    | 🔄 Optional    |
 
 ---
 
@@ -257,6 +273,7 @@ Then use as: `className="bg-cuc-navy text-cuc-cream"`
 ### No Breaking Changes Required
 
 The current implementation does not conflict with HeroUI Native. It runs a parallel theming system that:
+
 - Works correctly
 - Is maintainable
 - Is type-safe
@@ -266,8 +283,8 @@ The current implementation does not conflict with HeroUI Native. It runs a paral
 
 If the team wants deeper HeroUI integration in the future:
 
-1. **Phase 1** (Low effort): Add CUC colors to `global.css` as CSS variables
-2. **Phase 2** (Medium effort): Create a custom hook `useCUCColor()` that mirrors `useThemeColor`
+1. **Phase 1** (Low effort): Add UGC colors to `global.css` as CSS variables
+2. **Phase 2** (Medium effort): Create a custom hook `useUGCColor()` that mirrors `useThemeColor`
 3. **Phase 3** (High effort): Gradually migrate inline styles to className-based styling
 
 These phases are optional and should be driven by specific needs (e.g., dark mode support, design system consistency).

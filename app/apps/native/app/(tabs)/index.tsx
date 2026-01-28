@@ -7,7 +7,7 @@ import { MembershipCard } from "@/components/MembershipCard";
 
 // Local assets for instant loading
 const HERO_IMAGE = require("@/assets/images/hero-background.jpg");
-const CUC_LOGO = require("@/assets/images/city_uni_club_gold.png");
+const UGC_LOGO = require("@/assets/images/city_uni_club_gold.png");
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -54,7 +54,7 @@ export default function Home() {
               <View className="h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-transparent">
                 <Image
                   resizeMode="contain"
-                  source={CUC_LOGO}
+                  source={UGC_LOGO}
                   style={{ width: 56, height: 56 }}
                 />
               </View>
@@ -64,7 +64,7 @@ export default function Home() {
                   className="font-light text-2xl text-primary-foreground"
                   style={{ fontFamily: "serif" }}
                 >
-                  City University Club
+                  User Generated Content
                 </Text>
               </View>
             </View>
@@ -122,7 +122,7 @@ export default function Home() {
             <View className="h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-surface">
               <Image
                 resizeMode="contain"
-                source={CUC_LOGO}
+                source={UGC_LOGO}
                 style={{ width: 56, height: 56 }}
               />
             </View>

@@ -248,7 +248,7 @@ export default function MenuIndex() {
           A La Carte Menu
         </Text>
         <Text className="mt-1 text-accent text-sm">
-          Exquisite dining at City University Club
+          Exquisite dining at UGC
         </Text>
       </View>
 

@@ -8,7 +8,7 @@ import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 
 // Local assets for instant loading
 const HERO_IMAGE = require("@/assets/images/hero-background.jpg");
-const CUC_LOGO = require("@/assets/images/city_uni_club_gold.png");
+const UGC_LOGO = require("@/assets/images/city_uni_club_gold.png");
 
 export default function About() {
   const router = useRouter();
@@ -93,7 +93,7 @@ export default function About() {
             >
               <Image
                 contentFit="contain"
-                source={CUC_LOGO}
+                source={UGC_LOGO}
                 style={{ width: 70, height: 70 }}
               />
             </View>
@@ -119,7 +119,7 @@ export default function About() {
               fontFamily: "serif",
             }}
           >
-            City University Club
+            User Generated Content
           </Text>
           <Text
             className="text-center text-accent"
@@ -255,9 +255,9 @@ export default function About() {
               lineHeight: 24,
             }}
           >
-            The City University Club is a lunch club in the heart of London's
+            User Generated Content (UGC) provides a platform in the heart of London's
             financial district. It is the ideal place for lunch or simply a
-            drink at the bar. The Club offers a first-class meal in discreet
+            drink at the bar. UGC offers a first-class meal in discreet
             circumstances for a modest price.
           </Text>
           <Text
@@ -486,7 +486,7 @@ export default function About() {
 
             <Pressable
               onPress={() =>
-                Linking.openURL("mailto:secretary@cityuniversityclub.co.uk")
+                Linking.openURL("mailto:contact@ugc.com")
               }
               style={{
                 flex: 1,
@@ -662,7 +662,7 @@ export default function About() {
         <View style={{ marginHorizontal: 16 }}>
           <ExternalLinkButton
             label="Visit Our Website"
-            url="https://www.cityuniversityclub.co.uk/"
+            url="https://ugc.com/"
             variant="primary"
           />
         </View>

@@ -171,10 +171,10 @@ export default function EventDetail() {
       );
 
       const success = await addToCalendar({
-        title: `${event.title} - City University Club`,
+        title: `${event.title} - UGC`,
         startDate,
         endDate,
-        location: `${event.location}, City University Club`,
+        location: `${event.location}, UGC`,
         notes: event.fullDescription,
         alarmMinutesBefore: 60, // 1 hour reminder
       });

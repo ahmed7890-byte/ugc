@@ -105,7 +105,7 @@ export default function SignUpRoute() {
   return (
     <KeyboardAwareForm>
       <FormHeader
-        description="Join City University Club and enjoy exclusive member benefits"
+        description="Join UGC and enjoy exclusive member benefits"
         title="Create Account"
       />
 
@@ -182,7 +182,7 @@ export default function SignUpRoute() {
         }}
       >
         By signing up, you agree to our{" "}
-        <Link asChild href="https://cityuniversityclub.co.uk/terms">
+        <Link asChild href="https://ugc.com/terms">
           <Text
             className="text-foreground"
             style={{ textDecorationLine: "underline" }}
@@ -191,7 +191,7 @@ export default function SignUpRoute() {
           </Text>
         </Link>{" "}
         and{" "}
-        <Link asChild href="https://cityuniversityclub.co.uk/privacy">
+        <Link asChild href="https://ugc.com/privacy">
           <Text
             className="text-foreground"
             style={{ textDecorationLine: "underline" }}

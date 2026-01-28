@@ -16,7 +16,7 @@ import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 import { authClient } from "@/lib/auth-client";
 
 // Local asset for logo
-const CUC_LOGO = require("@/assets/images/city_uni_club_white.png");
+const UGC_LOGO = require("@/assets/images/city_uni_club_white.png");
 
 // Type-safe menu routing
 const MENU_ROUTES = {
@@ -122,7 +122,7 @@ export default function More() {
           >
             <Image
               resizeMode="contain"
-              source={CUC_LOGO}
+              source={UGC_LOGO}
               style={{ width: 52, height: 52 }}
             />
           </View>
@@ -135,7 +135,7 @@ export default function More() {
                 fontFamily: "serif",
               }}
             >
-              City University Club
+              User Generated Content
             </Text>
             {isAuthenticated && user?.name && (
               <Text
@@ -314,7 +314,7 @@ export default function More() {
         <View style={{ marginTop: 16 }}>
           <ExternalLinkButton
             label="Visit Our Website"
-            url="https://www.cityuniversityclub.co.uk/"
+            url="https://ugc.com/"
             variant="subtle"
           />
         </View>

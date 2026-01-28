@@ -8,7 +8,7 @@ import { ExternalLinkButton } from "@/components/ExternalLinkButton";
 
 // The Bugle PDF URL
 const BUGLE_PDF_URL =
-  "https://www.cityuniversityclub.co.uk/_files/ugd/da00a6_ff60a29890864b51be0e5aa177ba1d6a.pdf";
+  "https://ugc.com/_files/newsletter.pdf";
 
 // Past issues (for display purposes)
 const PAST_ISSUES = [
@@ -134,8 +134,8 @@ export default function Bugle() {
               paddingHorizontal: 8,
             }}
           >
-            Stay informed with the latest news, events, and updates from the
-            City University Club. Published quarterly for our members.
+            Stay informed with the latest news, events, and updates from
+            UGC. Published quarterly for our members.
           </Text>
 
           {/* Current Issue Badge */}
@@ -378,7 +378,7 @@ export default function Bugle() {
         <View style={{ marginTop: 20 }}>
           <ExternalLinkButton
             label="View on Website"
-            url="https://www.cityuniversityclub.co.uk/about-3"
+            url="https://ugc.com/about-3"
             variant="subtle"
           />
         </View>

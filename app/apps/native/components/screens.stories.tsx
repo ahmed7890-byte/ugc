@@ -124,7 +124,7 @@ export const SignUpScreen: StoryObj = {
     return (
       <FormContainer>
         <FormHeader
-          description="Join City University Club and enjoy exclusive member benefits"
+          description="Join UGC and enjoy exclusive member benefits"
           title="Create Account"
         />
 
@@ -399,7 +399,7 @@ export const EventsListScreen: StoryObj = {
               marginTop: 4,
             }}
           >
-            Upcoming events at City University Club
+            Upcoming events at UGC
           </Text>
         </View>
 
@@ -465,7 +465,7 @@ export const EventsListScreen: StoryObj = {
           {/* View Website Link */}
           <ExternalLinkButton
             label="View All Events"
-            url="https://www.cityuniversityclub.co.uk/events"
+            url="https://ugc.com/events"
             variant="subtle"
           />
         </ScrollView>
@@ -636,7 +636,7 @@ export const EventsEmptyState: StoryObj = {
             marginTop: 4,
           }}
         >
-          Upcoming events at City University Club
+          Upcoming events at UGC
         </Text>
       </View>
 

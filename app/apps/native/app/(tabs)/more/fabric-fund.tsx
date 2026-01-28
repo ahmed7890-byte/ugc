@@ -21,7 +21,7 @@ export default function FabricFund() {
 
   const handleDonate = () => {
     Linking.openURL(
-      "mailto:secretary@cityuniversityclub.co.uk?subject=Fabric%20Fund%20Donation"
+      "mailto:contact@ugc.com?subject=Fabric%20Fund%20Donation"
     );
   };
 
@@ -106,7 +106,7 @@ export default function FabricFund() {
                 marginBottom: 8,
               }}
             >
-              The City University Club Fabric Fund
+              The UGC Fabric Fund
             </Text>
             <Text
               className="text-accent"
@@ -151,7 +151,7 @@ export default function FabricFund() {
                 marginBottom: 12,
               }}
             >
-              In January 2018, the City University Club moved into our new home
+              In January 2018, UGC moved into our new home
               at 42 Crutched Friars, leaving behind our base of over 120 years
               at 50 Cornhill.
             </Text>
@@ -370,7 +370,7 @@ export default function FabricFund() {
                 className="text-foreground"
                 style={{ fontSize: 14, marginLeft: 10 }}
               >
-                secretary@cityuniversityclub.co.uk
+                contact@ugc.com
               </Text>
             </Pressable>
           </View>
@@ -404,7 +404,7 @@ export default function FabricFund() {
 
             <ExternalLinkButton
               label="Learn More"
-              url="https://www.cityuniversityclub.co.uk/about-2"
+              url="https://ugc.com/about-2"
               variant="primary"
             />
           </View>

@@ -9,23 +9,27 @@ Authentication is failing across all development environments with "Invalid orig
 ## Observed Errors
 
 ### 1. iOS Simulator (localhost)
+
 ```
 14/01/2026, 11:49:07 [CONVEX H(POST /api/auth/sign-up/email)] [ERROR]
 '2026-01-14T11:49:07.611Z ERROR [Better Auth]: Invalid origin: exp://127.0.0.1:8081'
 ```
 
 ### 2. Expo Go on Physical Device (local network)
+
 ```
 14/01/2026, 11:56:29 [CONVEX H(POST /api/auth/sign-up/email)] [ERROR]
 '2026-01-14T11:56:29.956Z ERROR [Better Auth]: Invalid origin: exp://192.168.1.163:8081'
 ```
 
 ### 3. Web Browser (press W in Metro)
+
 - `GET /api/auth/get-session` - Status 200 but **CORS error**
 - `POST /api/auth/sign-in/email` - **CORS error**
 - `POST /api/auth/sign-up/email` - **CORS error**
 
 ### 4. Development Build Mode
+
 - QR code opens Safari on phone
 - Safari shows "can't connect to server" (localhost unreachable from phone)
 
@@ -34,9 +38,11 @@ Authentication is failing across all development environments with "Invalid orig
 ## User-Facing Error
 
 The error shown to users is:
+
 > "Unable to create account. Please try again."
 
 This is unhelpful because:
+
 - It doesn't indicate the actual problem (server-side origin validation)
 - "Try again" will produce the same result
 - User cannot fix this - it's a configuration issue
@@ -46,15 +52,18 @@ This is unhelpful because:
 ## Environment Details
 
 ### Metro Bundler Output
+
 - Metro waiting on: `exp://192.168.1.163:8081`
 - Web waiting on: `http://localhost:8081`
 - Mode: "Using Expo Go" (Press S to switch to development build)
 
 ### Convex Deployment
+
 - Deployment: `artful-cod-78`
 - Site URL: `https://artful-cod-78.convex.site`
 
 ### Convex Environment Variables (Current)
+
 ```
 BETTER_AUTH_SECRET=wdh0RLepFOAuSkdlRpWDwnT3dLOINPgTJC8xV9N1+d0
 NATIVE_APP_URL=convoexpo-and-nextjs-web-bun-better-auth://
@@ -62,22 +71,23 @@ SITE_URL=http://localhost:3001
 ```
 
 ### App Scheme (from app.config.ts)
+
 ```
-scheme: "cityuniversityclub"
+scheme: "ugc"
 ```
 
-**ISSUE FOUND**: The `NATIVE_APP_URL` env var is `convoexpo-and-nextjs-web-bun-better-auth://` but the actual app scheme is `cityuniversityclub://`
+**ISSUE FOUND**: The `NATIVE_APP_URL` env var is `convoexpo-and-nextjs-web-bun-better-auth://` but the actual app scheme is `ugc://`
 
 ---
 
 ## Origins Being Rejected
 
-| Environment | Origin Sent | Current Status |
-|------------|-------------|----------------|
-| iOS Simulator | `exp://127.0.0.1:8081` | Rejected |
-| Expo Go (phone) | `exp://192.168.1.163:8081` | Rejected |
-| Web (localhost) | `http://localhost:8081` | CORS Error |
-| Production App | `cityuniversityclub://` | Unknown |
+| Environment     | Origin Sent                | Current Status |
+| --------------- | -------------------------- | -------------- |
+| iOS Simulator   | `exp://127.0.0.1:8081`     | Rejected       |
+| Expo Go (phone) | `exp://192.168.1.163:8081` | Rejected       |
+| Web (localhost) | `http://localhost:8081`    | CORS Error     |
+| Production App  | `ugc://`                   | Unknown        |
 
 ---
 
@@ -88,7 +98,7 @@ scheme: "cityuniversityclub"
 ```typescript
 trustedOrigins: [
   siteUrl,  // http://localhost:3001
-  nativeAppUrl,  // convoexpo-and-nextjs-web-bun-better-auth:// (WRONG - should be cityuniversityclub://)
+  nativeAppUrl,  // convoexpo-and-nextjs-web-bun-better-auth:// (WRONG - should be ugc://)
   // Expo Go development URLs
   ...(process.env.NODE_ENV === "development"
     ? ["exp://"]
@@ -97,6 +107,7 @@ trustedOrigins: [
 ```
 
 **Issues Found:**
+
 1. `nativeAppUrl` doesn't match actual app scheme
 2. `"exp://"` alone may not be working - need to verify pattern syntax
 
@@ -140,19 +151,19 @@ plugins: [convexClient()],
 
 From official documentation:
 
-| Pattern | Description |
-|---------|-------------|
-| `?` | Matches exactly one character (except `/`) |
-| `*` | Matches zero or more characters that don't cross `/` |
-| `**` | Matches zero or more characters including `/` |
+| Pattern | Description                                          |
+| ------- | ---------------------------------------------------- |
+| `?`     | Matches exactly one character (except `/`)           |
+| `*`     | Matches zero or more characters that don't cross `/` |
+| `**`    | Matches zero or more characters including `/`        |
 
 #### Pattern Examples from Documentation
 
-| Pattern | Matches | Does Not Match |
-|---------|---------|----------------|
-| `exp://192.168.*.*:*/**` | `exp://192.168.1.100:8081/path` | `exp://10.0.0.29:8081/path` |
-| `myapp://` | All URLs starting with `myapp://` | - |
-| `exp://` | All URLs starting with `exp://` (prefix matching) | - |
+| Pattern                  | Matches                                           | Does Not Match              |
+| ------------------------ | ------------------------------------------------- | --------------------------- |
+| `exp://192.168.*.*:*/**` | `exp://192.168.1.100:8081/path`                   | `exp://10.0.0.29:8081/path` |
+| `myapp://`               | All URLs starting with `myapp://`                 | -                           |
+| `exp://`                 | All URLs starting with `exp://` (prefix matching) | -                           |
 
 **Key Insight**: For custom schemes like `exp://` or `myapp://`, patterns match against the full URL including paths when wildcards are present, or use **prefix matching** when no wildcards exist.
 
@@ -164,13 +175,15 @@ export const auth = betterAuth({
     "myapp://",
 
     // Development mode - Expo's exp:// scheme with local IP ranges
-    ...(process.env.NODE_ENV === "development" ? [
-      "exp://",                      // Trust all Expo URLs (prefix matching)
-      "exp://**",                    // Trust all Expo URLs (wildcard matching)
-      "exp://192.168.*.*:*/**",      // Trust 192.168.x.x IP range with any port and path
-    ] : [])
-  ]
-})
+    ...(process.env.NODE_ENV === "development"
+      ? [
+          "exp://", // Trust all Expo URLs (prefix matching)
+          "exp://**", // Trust all Expo URLs (wildcard matching)
+          "exp://192.168.*.*:*/**", // Trust 192.168.x.x IP range with any port and path
+        ]
+      : []),
+  ],
+});
 ```
 
 ### Convex + Better Auth Expo Web Support (CRITICAL)
@@ -184,21 +197,22 @@ import { crossDomain } from "@convex-dev/better-auth/plugins";
 
 const siteUrl = process.env.SITE_URL!;
 
-export const createAuth = (ctx) => betterAuth({
-  trustedOrigins: [siteUrl, "your-scheme://"],
-  plugins: [
-    expo(),
-    convex({ authConfig }),
-    crossDomain({ siteUrl }),  // REQUIRED for web
-  ],
-});
+export const createAuth = (ctx) =>
+  betterAuth({
+    trustedOrigins: [siteUrl, "your-scheme://"],
+    plugins: [
+      expo(),
+      convex({ authConfig }),
+      crossDomain({ siteUrl }), // REQUIRED for web
+    ],
+  });
 ```
 
 #### HTTP routes change required:
 
 ```typescript
 // CORS handling is required for client side frameworks
-authComponent.registerRoutes(http, createAuth, { cors: true });  // MUST be true for web
+authComponent.registerRoutes(http, createAuth, { cors: true }); // MUST be true for web
 ```
 
 #### Client-side changes required:
@@ -229,6 +243,7 @@ export const authClient = createAuthClient({
 ### Reference Repo Analysis (`~/gruckion-workdir/convexpo/`)
 
 The reference repo uses a different approach:
+
 - Sets `EXPO_MOBILE_URL` env var to the specific development IP (e.g., `exp://192.168.1.163:8081`)
 - Uses `cors: false`
 - Has `trustedOrigins: ["https://appleid.apple.com", requireEnv("EXPO_MOBILE_URL")]`
@@ -240,22 +255,27 @@ The reference repo uses a different approach:
 ## Root Causes Identified
 
 ### Issue 1: NATIVE_APP_URL Mismatch
+
 - **Current**: `NATIVE_APP_URL=convoexpo-and-nextjs-web-bun-better-auth://`
-- **Required**: `NATIVE_APP_URL=cityuniversityclub://` (matches app.config.ts scheme)
+- **Required**: `NATIVE_APP_URL=ugc://` (matches app.config.ts scheme)
 
 ### Issue 2: CORS Disabled
+
 - **Current**: `cors: false` in http.ts
 - **Required**: `cors: true` for web browser support
 
 ### Issue 3: Missing crossDomain Plugin
+
 - Server needs `crossDomain({ siteUrl })` plugin for web support
 - Client needs conditional `crossDomainClient()` vs `expoClient()` based on platform
 
 ### Issue 4: Expo Development Origins
+
 - Current config uses `"exp://"` which should work for prefix matching
 - However, may need more explicit patterns like `"exp://127.0.0.1:*/**"` and `"exp://192.168.*.*:*/**"`
 
 ### Issue 5: Environment Detection
+
 - `process.env.NODE_ENV` may not be `"development"` in Convex environment
 - Need to verify how Convex sets this
 
@@ -266,7 +286,7 @@ The reference repo uses a different approach:
 ### 1. Fix Environment Variables (Convex)
 
 ```bash
-npx convex env set NATIVE_APP_URL="cityuniversityclub://"
+npx convex env set NATIVE_APP_URL="ugc://"
 npx convex env set SITE_URL="http://localhost:8081"  # For Expo web
 ```
 
@@ -276,7 +296,7 @@ npx convex env set SITE_URL="http://localhost:8081"  # For Expo web
 import { crossDomain } from "@convex-dev/better-auth/plugins";
 
 const siteUrl = process.env.SITE_URL!;
-const nativeAppUrl = process.env.NATIVE_APP_URL || "cityuniversityclub://";
+const nativeAppUrl = process.env.NATIVE_APP_URL || "ugc://";
 
 function createAuth(ctx: GenericCtx<DataModel>) {
   return betterAuth({
@@ -285,10 +305,10 @@ function createAuth(ctx: GenericCtx<DataModel>) {
       siteUrl,
       nativeAppUrl,
       // Expo development URLs - explicit patterns
-      "exp://127.0.0.1:*/**",      // iOS Simulator
-      "exp://192.168.*.*:*/**",    // Local network devices
-      "exp://10.*.*.*:*/**",       // Alternative local network range
-      "exp://localhost:*/**",      // Localhost
+      "exp://127.0.0.1:*/**", // iOS Simulator
+      "exp://192.168.*.*:*/**", // Local network devices
+      "exp://10.*.*.*:*/**", // Alternative local network range
+      "exp://localhost:*/**", // Localhost
     ],
     database: authComponent.adapter(ctx),
     emailAndPassword: {
@@ -298,7 +318,7 @@ function createAuth(ctx: GenericCtx<DataModel>) {
     plugins: [
       expo(),
       convex({ authConfig }),
-      crossDomain({ siteUrl }),  // ADD THIS
+      crossDomain({ siteUrl }), // ADD THIS
     ],
   });
 }
@@ -307,7 +327,7 @@ function createAuth(ctx: GenericCtx<DataModel>) {
 ### 3. Update HTTP Routes (`packages/backend/convex/http.ts`)
 
 ```typescript
-authComponent.registerRoutes(http, createAuth, { cors: true });  // CHANGE to true
+authComponent.registerRoutes(http, createAuth, { cors: true }); // CHANGE to true
 ```
 
 ### 4. Update Native Auth Client (`apps/native/lib/auth-client.ts`)
@@ -315,7 +335,10 @@ authComponent.registerRoutes(http, createAuth, { cors: true });  // CHANGE to tr
 ```typescript
 import { Platform } from "react-native";
 import { expoClient } from "@better-auth/expo/client";
-import { crossDomainClient, convexClient } from "@convex-dev/better-auth/client/plugins";
+import {
+  crossDomainClient,
+  convexClient,
+} from "@convex-dev/better-auth/client/plugins";
 import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
 
@@ -339,6 +362,7 @@ export const authClient = createAuthClient({
 ### 5. Verify Metro Config
 
 Ensure `metro.config.js` has:
+
 ```javascript
 config.resolver.unstable_enablePackageExports = true;
 ```
@@ -352,7 +376,7 @@ After implementing changes:
 - [ ] iOS Simulator: `exp://127.0.0.1:8081` should work
 - [ ] Expo Go on phone: `exp://192.168.x.x:8081` should work
 - [ ] Web browser: `http://localhost:8081` should work (no CORS errors)
-- [ ] Production build: `cityuniversityclub://` should work
+- [ ] Production build: `ugc://` should work
 
 ---
 
@@ -367,6 +391,7 @@ The authentication failures are caused by **multiple configuration issues**:
 5. **Potentially insufficient** trusted origin patterns for development
 
 The fix requires changes to:
+
 - Convex environment variables
 - Server auth configuration (add crossDomain plugin)
 - HTTP routes (enable CORS)

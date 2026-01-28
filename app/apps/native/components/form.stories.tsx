@@ -168,7 +168,7 @@ export const Header: StoryObj = {
 export const HeaderWithSubtitle: StoryObj = {
   render: () => (
     <FormHeader
-      description="Create an account to access all features of the City University Club app."
+      description="Create an account to access all features of the UGC app."
       title="Create Account"
     />
   ),

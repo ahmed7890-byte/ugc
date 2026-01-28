@@ -17,7 +17,7 @@ import { useAppleAuth, useGitHubAuth, useGoogleAuth } from "@/lib/oauth";
 
 // Local assets for instant loading
 const HERO_IMAGE = require("@/assets/images/hero-background.jpg");
-const CUC_LOGO = require("@/assets/images/city_uni_club_gold.png");
+const UGC_LOGO = require("@/assets/images/city_uni_club_gold.png");
 
 export default function Landing() {
   const router = useRouter();
@@ -74,7 +74,7 @@ export default function Landing() {
           <View className="mb-4 h-24 w-24 justify-center overflow-hidden rounded-full bg-transparentitems-center">
             <Image
               resizeMode="contain"
-              source={CUC_LOGO}
+              source={UGC_LOGO}
               style={{ width: 80, height: 80 }}
             />
           </View>
@@ -86,7 +86,7 @@ export default function Landing() {
               fontFamily: "serif",
             }}
           >
-            City University Club
+            User Generated Content
           </Text>
           <Text
             className="text-accent"

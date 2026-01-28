@@ -5,10 +5,10 @@
 @source "./node_modules/heroui-native/lib";
 
 /* ============================================
-   City University Club Brand Theme
+   User Generated Content (UGC) Brand Theme
 
    Override HeroUI Native's default theme with
-   CUC brand colors using the correct structure.
+   UGC brand colors using the correct structure.
    ============================================ */
 
 @layer theme {

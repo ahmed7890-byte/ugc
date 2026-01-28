@@ -1,6 +1,6 @@
 # HeroUI Native Theming Migration Plan
 
-This document outlines the migration from hardcoded `CUC_COLORS` to HeroUI Native's idiomatic theming system with light/dark mode support.
+This document outlines the migration from hardcoded `UGC_COLORS` to HeroUI Native's idiomatic theming system with light/dark mode support.
 
 ## Idiomatic Approach (Per HeroUI Documentation)
 
@@ -17,14 +17,14 @@ This document outlines the migration from hardcoded `CUC_COLORS` to HeroUI Nativ
 
 ## Current Brand Colors (Baseline - Must Be Preserved)
 
-| Color Name | Hex Value | Current Usage |
-|------------|-----------|---------------|
-| Navy | `#06273a` | Headers, tab bar, text on light bg, overlays |
-| Sage | `#85b09a` | Accent text, links, highlights |
-| Cream | `#fffef8` | Page backgrounds, text on dark bg |
-| White | `#ffffff` | Cards, inputs, surfaces |
-| Muted | `#666666` | Secondary text |
-| Border | `#e5e5e5` | Input borders |
+| Color Name | Hex Value | Current Usage                                |
+| ---------- | --------- | -------------------------------------------- |
+| Navy       | `#06273a` | Headers, tab bar, text on light bg, overlays |
+| Sage       | `#85b09a` | Accent text, links, highlights               |
+| Cream      | `#fffef8` | Page backgrounds, text on dark bg            |
+| White      | `#ffffff` | Cards, inputs, surfaces                      |
+| Muted      | `#666666` | Secondary text                               |
+| Border     | `#e5e5e5` | Input borders                                |
 
 ---
 
@@ -40,7 +40,7 @@ This document outlines the migration from hardcoded `CUC_COLORS` to HeroUI Nativ
 @source "./node_modules/heroui-native/lib";
 
 /* ============================================
-   City University Club Brand Theme
+   UGC Brand Theme
 
    These CSS variables integrate with HeroUI's
    theming system. Use className with Tailwind
@@ -49,19 +49,19 @@ This document outlines the migration from hardcoded `CUC_COLORS` to HeroUI Nativ
 
 :root {
   /* Brand constants (theme-independent) */
-  --cuc-navy: #06273a;
-  --cuc-sage: #85b09a;
-  --cuc-cream: #fffef8;
+  --ugc-navy: #06273a;
+  --ugc-sage: #85b09a;
+  --ugc-cream: #fffef8;
 
   /* Light mode semantic tokens */
-  --background: #fffef8;           /* cream - page backgrounds */
-  --foreground: #06273a;           /* navy - primary text */
-  --accent: #85b09a;               /* sage - links, highlights */
-  --accent-foreground: #06273a;    /* navy - text on accent bg */
-  --surface: #ffffff;              /* white - cards, inputs */
-  --surface-foreground: #06273a;   /* navy - text on surfaces */
-  --muted: #666666;                /* gray - secondary text */
-  --border: #e5e5e5;               /* light gray - borders */
+  --background: #fffef8; /* cream - page backgrounds */
+  --foreground: #06273a; /* navy - primary text */
+  --accent: #85b09a; /* sage - links, highlights */
+  --accent-foreground: #06273a; /* navy - text on accent bg */
+  --surface: #ffffff; /* white - cards, inputs */
+  --surface-foreground: #06273a; /* navy - text on surfaces */
+  --muted: #666666; /* gray - secondary text */
+  --border: #e5e5e5; /* light gray - borders */
 
   /* Primary brand (locked - always navy for tab bar, headers) */
   --primary: #06273a;
@@ -70,14 +70,14 @@ This document outlines the migration from hardcoded `CUC_COLORS` to HeroUI Nativ
 
 .dark {
   /* Dark mode semantic tokens */
-  --background: #06273a;           /* navy - page backgrounds */
-  --foreground: #fffef8;           /* cream - primary text */
-  --accent: #85b09a;               /* sage - links, highlights */
-  --accent-foreground: #06273a;    /* navy - text on accent bg */
-  --surface: #0a3d54;              /* lighter navy - cards */
-  --surface-foreground: #fffef8;   /* cream - text on surfaces */
-  --muted: #85b09a;                /* sage - secondary text */
-  --border: #1a4d64;               /* dark blue - borders */
+  --background: #06273a; /* navy - page backgrounds */
+  --foreground: #fffef8; /* cream - primary text */
+  --accent: #85b09a; /* sage - links, highlights */
+  --accent-foreground: #06273a; /* navy - text on accent bg */
+  --surface: #0a3d54; /* lighter navy - cards */
+  --surface-foreground: #fffef8; /* cream - text on surfaces */
+  --muted: #85b09a; /* sage - secondary text */
+  --border: #1a4d64; /* dark blue - borders */
 
   /* Primary brand stays the same */
   --primary: #06273a;
@@ -92,11 +92,13 @@ This document outlines the migration from hardcoded `CUC_COLORS` to HeroUI Nativ
 ### Pattern A: Backgrounds (Use className)
 
 **Before:**
+
 ```tsx
-<View style={{ backgroundColor: CUC_COLORS.cream }}>
+<View style={{ backgroundColor: UGC_COLORS.cream }}>
 ```
 
 **After:**
+
 ```tsx
 <View className="bg-background">
 ```
@@ -104,11 +106,13 @@ This document outlines the migration from hardcoded `CUC_COLORS` to HeroUI Nativ
 ### Pattern B: Text Colors (Use className)
 
 **Before:**
+
 ```tsx
-<Text style={{ color: CUC_COLORS.navy, fontSize: 16, fontWeight: "600" }}>
+<Text style={{ color: UGC_COLORS.navy, fontSize: 16, fontWeight: "600" }}>
 ```
 
 **After:**
+
 ```tsx
 <Text className="text-foreground text-base font-semibold">
 ```
@@ -116,24 +120,27 @@ This document outlines the migration from hardcoded `CUC_COLORS` to HeroUI Nativ
 ### Pattern C: Icons (Use useThemeColor - only exception)
 
 **Before:**
+
 ```tsx
-<Ionicons color={CUC_COLORS.navy} name="home" size={24} />
+<Ionicons color={UGC_COLORS.navy} name="home" size={24} />
 ```
 
 **After:**
+
 ```tsx
 import { useThemeColor } from "heroui-native";
 
 const foreground = useThemeColor("foreground");
-<Ionicons color={foreground} name="home" size={24} />
+<Ionicons color={foreground} name="home" size={24} />;
 ```
 
 ### Pattern D: Mixed (className for colors, style for layout)
 
 **Before:**
+
 ```tsx
 <View style={{
-  backgroundColor: CUC_COLORS.white,
+  backgroundColor: UGC_COLORS.white,
   borderRadius: 12,
   padding: 16,
   shadowColor: "#000",
@@ -142,6 +149,7 @@ const foreground = useThemeColor("foreground");
 ```
 
 **After:**
+
 ```tsx
 <View
   className="bg-surface"
@@ -157,11 +165,13 @@ const foreground = useThemeColor("foreground");
 ### Pattern E: Conditional Colors (Use useThemeColor for dynamic scenarios)
 
 **Before:**
+
 ```tsx
-backgroundColor: featured ? CUC_COLORS.navy : CUC_COLORS.white,
+backgroundColor: featured ? UGC_COLORS.navy : UGC_COLORS.white,
 ```
 
 **After:**
+
 ```tsx
 const primary = useThemeColor("primary");
 const surface = useThemeColor("surface");
@@ -173,26 +183,28 @@ backgroundColor: featured ? primary : surface,
 
 ## Phase 3: Color Mapping Reference
 
-| Old Code | New className | New useThemeColor | When to Use |
-|----------|---------------|-------------------|-------------|
-| `CUC_COLORS.cream` (bg) | `bg-background` | `useThemeColor("background")` | className preferred |
-| `CUC_COLORS.navy` (text) | `text-foreground` | `useThemeColor("foreground")` | className for Text, hook for Icons |
-| `CUC_COLORS.navy` (bg) | `bg-primary` | `useThemeColor("primary")` | Tab bar, headers (brand-locked) |
-| `CUC_COLORS.sage` | `text-accent` / `bg-accent` | `useThemeColor("accent")` | Accent elements |
-| `CUC_COLORS.white` | `bg-surface` | `useThemeColor("surface")` | Cards, inputs |
-| `"#666"` / `"#888"` | `text-muted` | `useThemeColor("muted")` | Secondary text |
-| `"#e5e5e5"` | `border-border` | `useThemeColor("border")` | Borders |
+| Old Code                 | New className               | New useThemeColor             | When to Use                        |
+| ------------------------ | --------------------------- | ----------------------------- | ---------------------------------- |
+| `UGC_COLORS.cream` (bg)  | `bg-background`             | `useThemeColor("background")` | className preferred                |
+| `UGC_COLORS.navy` (text) | `text-foreground`           | `useThemeColor("foreground")` | className for Text, hook for Icons |
+| `UGC_COLORS.navy` (bg)   | `bg-primary`                | `useThemeColor("primary")`    | Tab bar, headers (brand-locked)    |
+| `UGC_COLORS.sage`        | `text-accent` / `bg-accent` | `useThemeColor("accent")`     | Accent elements                    |
+| `UGC_COLORS.white`       | `bg-surface`                | `useThemeColor("surface")`    | Cards, inputs                      |
+| `"#666"` / `"#888"`      | `text-muted`                | `useThemeColor("muted")`      | Secondary text                     |
+| `"#e5e5e5"`              | `border-border`             | `useThemeColor("border")`     | Borders                            |
 
 ---
 
 ## Phase 4: Files to Update (27 files)
 
-### Files with Local CUC_COLORS Duplicates (Remove constant, use theme)
+### Files with Local UGC_COLORS Duplicates (Remove constant, use theme)
+
 - `app/(tabs)/_layout.tsx`
 - `app/(auth)/landing.tsx`
 - `components/ExternalLinkButton.tsx`
 
 ### Files Importing from @/theme/colors (Update imports, use theme)
+
 - `components/form.tsx`
 - `components/CategoryFilter.tsx`
 - `components/MembershipCard.tsx`
@@ -218,6 +230,7 @@ backgroundColor: featured ? primary : surface,
 - `app/(auth)/email/(reset)/verify-reset-code.tsx`
 
 ### Files to Delete
+
 - `theme/colors.ts`
 - `theme/index.ts`
 
@@ -226,6 +239,7 @@ backgroundColor: featured ? primary : surface,
 ## Phase 5: Subagent Work Distribution
 
 ### Subagent 1: Foundation + Core Components
+
 - `global.css` (CSS variables)
 - `components/form.tsx`
 - `components/CategoryFilter.tsx`
@@ -233,6 +247,7 @@ backgroundColor: featured ? primary : surface,
 - `components/ExternalLinkButton.tsx`
 
 ### Subagent 2: Tab Layouts + Menu
+
 - `app/(tabs)/_layout.tsx`
 - `app/(tabs)/index.tsx`
 - `app/(tabs)/menu/_layout.tsx`
@@ -240,12 +255,14 @@ backgroundColor: featured ? primary : surface,
 - `app/(tabs)/menu/[category].tsx`
 
 ### Subagent 3: Events + More (part 1)
+
 - `app/(tabs)/events/index.tsx`
 - `app/(tabs)/events/[id].tsx`
 - `app/(tabs)/more/index.tsx`
 - `app/(tabs)/more/membership.tsx`
 
 ### Subagent 4: More Screens (part 2)
+
 - `app/(tabs)/more/about.tsx`
 - `app/(tabs)/more/bugle.tsx`
 - `app/(tabs)/more/contact.tsx`
@@ -254,6 +271,7 @@ backgroundColor: featured ? primary : surface,
 - `app/(tabs)/more/reciprocal-clubs.tsx`
 
 ### Subagent 5: Auth Screens
+
 - `app/(auth)/landing.tsx`
 - `app/(auth)/_layout.tsx`
 - `app/(auth)/email/_layout.tsx`
@@ -268,6 +286,7 @@ backgroundColor: featured ? primary : surface,
 ## Phase 6: Verification Protocol
 
 After EACH subagent batch:
+
 1. Run `bun run check-types` - must pass with no errors
 2. Run `bun biome check --write .` - must pass with no errors
 3. Take iOS simulator screenshot - compare to baseline
@@ -305,11 +324,8 @@ const muted = useThemeColor("muted");
       </Text>
     </View>
   </View>
-  <Switch
-    value={colorScheme === "dark"}
-    onValueChange={toggleColorScheme}
-  />
-</View>
+  <Switch value={colorScheme === "dark"} onValueChange={toggleColorScheme} />
+</View>;
 ```
 
 ---
@@ -322,7 +338,7 @@ const muted = useThemeColor("muted");
 
 3. **useThemeColor for Icons Only** — The hook is only for `Ionicons` and components that don't accept className.
 
-4. **NO Custom Hook Wrappers** — Do NOT create `useCUCTheme()` or any wrapper. Use `useThemeColor` directly from `heroui-native`.
+4. **NO Custom Hook Wrappers** — Do NOT create `useUGCTheme()` or any wrapper. Use `useThemeColor` directly from `heroui-native`.
 
 5. **Verify After Each Batch** — Run type check, lint, and compare screenshots before proceeding.
 
@@ -332,4 +348,4 @@ const muted = useThemeColor("muted");
 
 1. Delete `apps/native/theme/colors.ts`
 2. Delete `apps/native/theme/index.ts`
-3. Verify no remaining `CUC_COLORS` references: `grep -r "CUC_COLORS" apps/native/`
+3. Verify no remaining `UGC_COLORS` references: `grep -r "UGC_COLORS" apps/native/`

@@ -5,7 +5,7 @@ import { useThemeColor } from "heroui-native";
 import { Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-// Dining room image from the CUC website
+// Dining room image from the UGC website
 const DINING_ROOM_IMAGE =
   "https://static.wixstatic.com/media/5e0aaa_89c287ebeaca49b398ec7c86b8397a0f~mv2.jpg/v1/fill/w_800,h_600,al_c,q_85/5e0aaa_89c287ebeaca49b398ec7c86b8397a0f~mv2.webp";
 
@@ -23,7 +23,7 @@ export default function DiningRoom() {
   };
 
   const handleEmail = () => {
-    Linking.openURL("mailto:secretary@cityuniversityclub.co.uk");
+    Linking.openURL("mailto:contact@ugc.com");
   };
 
   return (

@@ -2,11 +2,11 @@ import type { ConfigContext, ExpoConfig } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: "City University Club",
-  slug: "city-university-club",
+  name: "User Generated Content",
+  slug: "user-generated-content",
   version: "1.0.0",
   orientation: "portrait",
-  scheme: "cityuniversityclub",
+  scheme: "ugc",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
 
@@ -16,7 +16,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   // iOS-specific configuration
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "com.cityuniversityclub.app",
+    bundleIdentifier: "com.ugc.app",
     config: {
       usesNonExemptEncryption: false,
     },
@@ -40,14 +40,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       monochromeImage: "./assets/images/icons/adaptive-icon.png",
       backgroundColor: "#06273A",
     },
-    package: "com.cityuniversityclub.app",
+    package: "com.ugc.app",
   },
 
   // Web-specific configuration
   web: {
     bundler: "metro",
     output: "static",
-    favicon: "./assets/images/icons/favicon.ico",
+    favicon: "./assets/images/icons/favicon-32x32.png",
   },
 
   // Plugins
@@ -61,7 +61,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       "expo-calendar",
       {
         calendarPermission:
-          "Allow City University Club to add events to your calendar",
+          "Allow UGC to add events to your calendar",
       },
     ],
     [
@@ -77,7 +77,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       "expo-sensors",
       {
         motionPermission:
-          "Allow City University Club to access device motion for card animations",
+          "Allow UGC to access device motion for card animations",
       },
     ],
     [

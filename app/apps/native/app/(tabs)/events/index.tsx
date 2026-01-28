@@ -21,7 +21,7 @@ export const EVENTS = [
     title: "Christmas Lunch",
     description: "Enjoy our special festive menu in the Main Dining Room",
     fullDescription:
-      "Join us for a memorable Christmas Lunch experience at City University Club. Our award-winning chefs have prepared a special festive menu featuring traditional favorites with a modern twist. The elegant Main Dining Room will be beautifully decorated for the season, creating the perfect atmosphere for celebrating with friends, family, or colleagues.\n\nThe lunch includes a three-course meal with wine pairings, followed by coffee and mince pies. Vegetarian and dietary options are available upon request.",
+      "Join us for a memorable Christmas Lunch experience at UGC. Our award-winning chefs have prepared a special festive menu featuring traditional favorites with a modern twist. The elegant Main Dining Room will be beautifully decorated for the season, creating the perfect atmosphere for celebrating with friends, family, or colleagues.\n\nThe lunch includes a three-course meal with wine pairings, followed by coffee and mince pies. Vegetarian and dietary options are available upon request.",
     dateRange: "1st - 23rd December",
     time: "12:00 PM - 3:00 PM",
     location: "Main Dining Room",
@@ -124,7 +124,7 @@ export default function Events() {
             marginTop: 4,
           }}
         >
-          Upcoming events at City University Club
+          Upcoming events at UGC
         </Text>
       </View>
 
@@ -195,7 +195,7 @@ export default function Events() {
         {/* View Website Link */}
         <ExternalLinkButton
           label="View All Events"
-          url="https://www.cityuniversityclub.co.uk/events"
+          url="https://ugc.com/events"
           variant="subtle"
         />
       </ScrollView>

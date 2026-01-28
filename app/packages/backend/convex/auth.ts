@@ -25,7 +25,7 @@ export const resend = new Resend(components.resend, {
 const siteUrl = process.env.SITE_URL!;
 const nativeAppUrl =
   process.env.NATIVE_APP_URL || "convoexpo-and-nextjs-web-bun-better-auth://";
-const nativeAppScheme = process.env.NATIVE_APP_SCHEME || "cityuniversityclub";
+const nativeAppScheme = process.env.NATIVE_APP_SCHEME || "ugc";
 const emailFromAddress =
   process.env.EMAIL_FROM_ADDRESS || "Password Reset <onboarding@resend.dev>";
 

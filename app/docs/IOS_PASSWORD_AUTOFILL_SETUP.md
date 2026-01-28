@@ -2,7 +2,7 @@
 
 > **Status**: Planned - awaiting Apple Developer account setup
 > **Created**: 2025-01-14
-> **Website**: cityuniversityclub.co.uk (hosted on Wix)
+> **Website**: ugc.com (hosted on Wix)
 
 ## Problem Summary
 
@@ -20,13 +20,14 @@ Three compounding issues:
 
 ### How iOS Password AutoFill Works
 
-| Feature | Requirement | Current Status |
-|---------|-------------|----------------|
-| Save password prompt | `textContentType="newPassword"` | ✅ Working |
-| "Passwords" key icon | `textContentType="password"` | ✅ Working |
+| Feature                       | Requirement                                   | Current Status    |
+| ----------------------------- | --------------------------------------------- | ----------------- |
+| Save password prompt          | `textContentType="newPassword"`               | ✅ Working        |
+| "Passwords" key icon          | `textContentType="password"`                  | ✅ Working        |
 | **QuickType bar suggestions** | Associated Domains + AASA file + Native build | ❌ Not configured |
 
 From Apple's documentation:
+
 > "The QuickType bar only appears if the user has at least one password saved on the iOS device and the Keychain AutoFill setting is enabled. The QuickType bar includes any credentials for your associated domains."
 
 ---
@@ -35,13 +36,13 @@ From Apple's documentation:
 
 ### Requirements
 
-| Requirement | Status | Cost | Notes |
-|-------------|--------|------|-------|
-| Expo Account | ❌ Needed | Free | https://expo.dev/signup |
-| EAS CLI | ❌ Needed | Free | `npm install -g eas-cli` |
-| EAS Build (cloud) | ❌ Needed | Free tier: 30 builds/month | |
-| Apple Developer Account | ❌ Needed | $99/year | Required for device builds |
-| Apple Team ID | ❌ Needed | Included with dev account | 10-char code like `ABCD123456` |
+| Requirement             | Status    | Cost                       | Notes                          |
+| ----------------------- | --------- | -------------------------- | ------------------------------ |
+| Expo Account            | ❌ Needed | Free                       | https://expo.dev/signup        |
+| EAS CLI                 | ❌ Needed | Free                       | `npm install -g eas-cli`       |
+| EAS Build (cloud)       | ❌ Needed | Free tier: 30 builds/month |                                |
+| Apple Developer Account | ❌ Needed | $99/year                   | Required for device builds     |
+| Apple Team ID           | ❌ Needed | Included with dev account  | 10-char code like `ABCD123456` |
 
 ### Build Options
 
@@ -59,8 +60,8 @@ Add `associatedDomains` to the iOS configuration:
 ```typescript
 ios: {
   supportsTablet: true,
-  bundleIdentifier: "com.cityuniversityclub.app",
-  associatedDomains: ["webcredentials:cityuniversityclub.co.uk"],  // ADD THIS
+  bundleIdentifier: "com.ugc.app",
+  associatedDomains: ["webcredentials:ugc.com"],  // ADD THIS
   config: {
     usesNonExemptEncryption: false,
   },
@@ -114,7 +115,7 @@ import { NextResponse } from "next/server";
 
 const AASA = {
   webcredentials: {
-    apps: ["YOUR_TEAM_ID.com.cityuniversityclub.app"],  // Replace YOUR_TEAM_ID
+    apps: ["YOUR_TEAM_ID.com.ugc.app"], // Replace YOUR_TEAM_ID
   },
 };
 
@@ -132,20 +133,22 @@ export async function GET() {
 Since the website is hosted on Wix, you'll need to:
 
 1. Create a file named `apple-app-site-association` (no extension) with content:
+
 ```json
 {
   "webcredentials": {
-    "apps": ["YOUR_TEAM_ID.com.cityuniversityclub.app"]
+    "apps": ["YOUR_TEAM_ID.com.ugc.app"]
   }
 }
 ```
 
 2. Upload it to Wix so it's accessible at:
-   `https://cityuniversityclub.co.uk/.well-known/apple-app-site-association`
+   `https://ugc.com/.well-known/apple-app-site-association`
 
 3. Ensure the response has `Content-Type: application/json`
 
 **Wix Limitations**: Wix may not support serving files from `/.well-known/` paths. You may need to:
+
 - Use Wix Velo (custom code) to create an HTTP function
 - Point a subdomain to your Next.js app for the AASA file
 - Use a reverse proxy or CDN like Cloudflare
@@ -176,13 +179,15 @@ Replace `YOUR_TEAM_ID` with your actual Team ID in the AASA configuration.
 ### Step 3: Deploy AASA File
 
 Make the AASA file accessible at:
+
 ```
-https://cityuniversityclub.co.uk/.well-known/apple-app-site-association
+https://ugc.com/.well-known/apple-app-site-association
 ```
 
 Verify with:
+
 ```bash
-curl -I https://cityuniversityclub.co.uk/.well-known/apple-app-site-association
+curl -I https://ugc.com/.well-known/apple-app-site-association
 ```
 
 Should return `Content-Type: application/json` and HTTP 200.
@@ -209,11 +214,13 @@ eas build:configure
 ### Step 7: Build Development Client
 
 **For iOS Simulator (free):**
+
 ```bash
 eas build --platform ios --profile development
 ```
 
 **For iOS Device (requires Apple Developer account):**
+
 ```bash
 eas build --platform ios --profile development-device
 ```
@@ -241,32 +248,34 @@ After adding `expo-dev-client`, the app will no longer open in Expo Go. You must
 ### AASA Caching
 
 iOS caches the AASA file aggressively. After deploying changes:
+
 - Wait 24-48 hours for cache to refresh
 - Or reinstall the app to force re-fetch
-- Use Apple's AASA validator: https://app-site-association.cdn-apple.com/a/v1/cityuniversityclub.co.uk
+- Use Apple's AASA validator: https://app-site-association.cdn-apple.com/a/v1/ugc.com
 
 ### Wix AASA Hosting Challenge
 
 Wix may not support the `/.well-known/` path natively. Options:
+
 1. **Cloudflare Workers**: Proxy the AASA request
-2. **Subdomain**: Point `api.cityuniversityclub.co.uk` to your Next.js app
+2. **Subdomain**: Point `api.ugc.com` to your Next.js app
 3. **Wix Velo HTTP Function**: Create a custom endpoint (if supported)
 
 ### Testing on Simulator vs Device
 
-| Environment | Password Save | QuickType Suggestions |
-|-------------|---------------|----------------------|
-| Expo Go | Works (under "Expo") | Never works |
+| Environment           | Password Save          | QuickType Suggestions          |
+| --------------------- | ---------------------- | ------------------------------ |
+| Expo Go               | Works (under "Expo")   | Never works                    |
 | Dev Build + Simulator | Works (under your app) | Inconsistent (known Apple bug) |
-| Dev Build + Device | Works | Should work properly |
+| Dev Build + Device    | Works                  | Should work properly           |
 
 ---
 
 ## Validation Tools
 
 - **AASA Validator**: https://branch.io/resources/aasa-validator/
-- **Apple CDN Check**: `https://app-site-association.cdn-apple.com/a/v1/cityuniversityclub.co.uk`
-- **Manual Check**: `curl https://cityuniversityclub.co.uk/.well-known/apple-app-site-association`
+- **Apple CDN Check**: `https://app-site-association.cdn-apple.com/a/v1/ugc.com`
+- **Manual Check**: `curl https://ugc.com/.well-known/apple-app-site-association`
 
 ---
 
@@ -288,7 +297,7 @@ Wix may not support the `/.well-known/` path natively. Options:
 - [ ] Update `app.config.ts` with `associatedDomains`
 - [ ] Create `eas.json` configuration
 - [ ] Install `expo-dev-client`
-- [ ] Deploy AASA file to `cityuniversityclub.co.uk/.well-known/`
+- [ ] Deploy AASA file to `ugc.com/.well-known/`
 - [ ] Verify AASA file is accessible with correct content-type
 - [ ] Run `eas build:configure`
 - [ ] Build development client for iOS

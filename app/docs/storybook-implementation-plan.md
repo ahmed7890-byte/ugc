@@ -21,16 +21,17 @@ This document provides a comprehensive plan for implementing Storybook in the `c
 
 ### Project Overview
 
-| Aspect | Details |
-|--------|---------|
-| **Monorepo Tool** | Turborepo with Bun workspaces |
-| **Package Manager** | Bun v1.2.20 |
-| **Linting/Formatting** | Biome |
-| **Git Hooks** | Lefthook |
+| Aspect                 | Details                       |
+| ---------------------- | ----------------------------- |
+| **Monorepo Tool**      | Turborepo with Bun workspaces |
+| **Package Manager**    | Bun v1.2.20                   |
+| **Linting/Formatting** | Biome                         |
+| **Git Hooks**          | Lefthook                      |
 
 ### Apps Structure
 
 #### `apps/web` - Next.js Admin Portal
+
 - **Framework**: Next.js 16 with App Router
 - **React Version**: 19.2.3
 - **Styling**: Tailwind CSS v4 via `@tailwindcss/postcss`
@@ -39,6 +40,7 @@ This document provides a comprehensive plan for implementing Storybook in the `c
 - **Variant System**: `class-variance-authority` (cva)
 
 **Existing Components:**
+
 ```
 apps/web/src/components/
 ├── ui/
@@ -61,6 +63,7 @@ apps/web/src/components/
 ```
 
 #### `apps/native` - Expo Customer App
+
 - **Framework**: Expo SDK 54 with expo-router
 - **React Native**: 0.81.5
 - **React Version**: 19.1.0
@@ -70,6 +73,7 @@ apps/web/src/components/
 - **Metro Config**: Custom with monorepo support
 
 **Existing Components:**
+
 ```
 apps/native/components/
 ├── CategoryFilter.tsx      # Animated filter chips with Reanimated
@@ -87,9 +91,10 @@ apps/native/components/
 ```
 
 **Theme System:**
+
 ```typescript
 // apps/native/theme/colors.ts
-export const CUC_COLORS = {
+export const UGC_COLORS = {
   navy: "#06273a",
   sage: "#85b09a",
   cream: "#fffef8",
@@ -98,6 +103,7 @@ export const CUC_COLORS = {
 ```
 
 ### Current State
+
 - **No existing Storybook configuration**
 - **No `.stories.tsx` files**
 - **No `.storybook/` directories**
@@ -111,6 +117,7 @@ export const CUC_COLORS = {
 Given the fundamental differences between React Native and Next.js components, we recommend **separate Storybook configurations** for each app rather than a shared root configuration.
 
 **Rationale:**
+
 1. **Different Frameworks**: Native uses `@storybook/react-native`, Web uses `@storybook/nextjs`
 2. **Different Component APIs**: RN primitives vs HTML elements
 3. **Different Styling**: UniWind style objects vs Tailwind classNames
@@ -520,9 +527,9 @@ Add to `biome.jsonc` at root:
   "files": {
     "includes": [
       "!**/storybook-static",
-      "!**/*.stories.tsx"  // Optional: if you want different lint rules for stories
-    ]
-  }
+      "!**/*.stories.tsx", // Optional: if you want different lint rules for stories
+    ],
+  },
 }
 ```
 
@@ -576,7 +583,7 @@ export default config;
 import type { Preview } from "@storybook/react-native";
 import { View, Appearance } from "react-native";
 import { withBackgrounds } from "@storybook/addon-ondevice-backgrounds";
-import { CUC_COLORS } from "../theme/colors";
+import { UGC_COLORS } from "../theme/colors";
 
 const preview: Preview = {
   decorators: [
@@ -586,7 +593,7 @@ const preview: Preview = {
         style={{
           flex: 1,
           padding: 16,
-          backgroundColor: CUC_COLORS.cream,
+          backgroundColor: UGC_COLORS.cream,
         }}
       >
         <Story />
@@ -608,9 +615,9 @@ const preview: Preview = {
     backgrounds: {
       default: Appearance.getColorScheme() === "dark" ? "dark" : "light",
       values: [
-        { name: "light", value: CUC_COLORS.cream },
-        { name: "dark", value: CUC_COLORS.navy },
-        { name: "white", value: CUC_COLORS.white },
+        { name: "light", value: UGC_COLORS.cream },
+        { name: "dark", value: UGC_COLORS.navy },
+        { name: "white", value: UGC_COLORS.white },
       ],
     },
   },
@@ -1021,13 +1028,9 @@ bun add -d @storybook/react-native-web-vite @storybook/addon-essentials react-na
 import type { StorybookConfig } from "@storybook/react-native-web-vite";
 
 const config: StorybookConfig = {
-  stories: [
-    "../components/**/*.stories.?(ts|tsx|js|jsx)",
-  ],
+  stories: ["../components/**/*.stories.?(ts|tsx|js|jsx)"],
 
-  addons: [
-    "@storybook/addon-essentials",
-  ],
+  addons: ["@storybook/addon-essentials"],
 
   framework: "@storybook/react-native-web-vite",
 
@@ -1044,16 +1047,16 @@ export default config;
 ```typescript
 // apps/native/.storybook-web/preview.tsx
 import type { Preview } from "@storybook/react-native-web-vite";
-import { CUC_COLORS } from "../theme/colors";
+import { UGC_COLORS } from "../theme/colors";
 
 const preview: Preview = {
   parameters: {
     backgrounds: {
       default: "cream",
       values: [
-        { name: "cream", value: CUC_COLORS.cream },
-        { name: "navy", value: CUC_COLORS.navy },
-        { name: "white", value: CUC_COLORS.white },
+        { name: "cream", value: UGC_COLORS.cream },
+        { name: "navy", value: UGC_COLORS.navy },
+        { name: "white", value: UGC_COLORS.white },
       ],
     },
   },
@@ -1183,6 +1186,7 @@ bun add -d @storybook/addon-a11y
 ```
 
 Add to addons in `main.ts`:
+
 ```typescript
 addons: [
   "@storybook/addon-essentials",
@@ -1284,6 +1288,7 @@ bun run storybook:build
 ## Implementation Checklist
 
 ### Phase 1: Web App (Estimated: 2-3 hours)
+
 - [ ] Install dependencies in `apps/web`
 - [ ] Create `.storybook/main.ts`
 - [ ] Create `.storybook/preview.tsx`
@@ -1295,6 +1300,7 @@ bun run storybook:build
 - [ ] Test with `bun run storybook:web`
 
 ### Phase 2: Native App (Estimated: 3-4 hours)
+
 - [ ] Install dependencies in `apps/native`
 - [ ] Create `.storybook/main.ts`
 - [ ] Create `.storybook/preview.tsx`
@@ -1306,6 +1312,7 @@ bun run storybook:build
 - [ ] Test on iOS/Android/Web
 
 ### Phase 3: Turborepo & Polish (Estimated: 1 hour)
+
 - [ ] Update `turbo.json` with storybook tasks
 - [ ] Update root `package.json` with scripts
 - [ ] Update `biome.jsonc` to ignore outputs
@@ -1313,6 +1320,7 @@ bun run storybook:build
 - [ ] Test full workflow
 
 ### Phase 4: Optional Web UI for Native (Estimated: 1-2 hours)
+
 - [ ] Install `@storybook/react-native-web-vite`
 - [ ] Create `.storybook-web/` configuration
 - [ ] Test web build

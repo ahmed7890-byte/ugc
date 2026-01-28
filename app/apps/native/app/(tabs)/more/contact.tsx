@@ -232,7 +232,7 @@ export default function Contact() {
 
             <Pressable
               onPress={() =>
-                Linking.openURL("mailto:info@cityuniversityclub.co.uk")
+                Linking.openURL("mailto:info@ugc.com")
               }
               style={{ flexDirection: "row", alignItems: "center" }}
             >
@@ -241,7 +241,7 @@ export default function Contact() {
                 className="text-foreground"
                 style={{ fontSize: 14, marginLeft: 10 }}
               >
-                info@cityuniversityclub.co.uk
+                info@ugc.com
               </Text>
             </Pressable>
           </View>

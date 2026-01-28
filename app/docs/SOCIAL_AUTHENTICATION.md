@@ -2,8 +2,8 @@
 
 **Last Updated:** January 14, 2026
 **Stack:** Better Auth + Convex + Expo (React Native)
-**App Scheme:** `cityuniversityclub://`
-**Bundle ID:** `com.cityuniversityclub.app`
+**App Scheme:** `ugc://`
+**Bundle ID:** `com.ugc.app`
 **Convex Deployment:** `artful-cod-78`
 **Convex Site URL:** `https://artful-cod-78.convex.site`
 
@@ -27,15 +27,15 @@
 
 ## Overview
 
-This document provides a complete, fact-based guide for implementing social authentication (GitHub, Google, Apple) in the City University Club app. The guide is grounded in 2025/2026 documentation for Better Auth and Convex Better Auth.
+This document provides a complete, fact-based guide for implementing social authentication (GitHub, Google, Apple) in the UGC app. The guide is grounded in 2025/2026 documentation for Better Auth and Convex Better Auth.
 
 ### Provider Complexity Matrix
 
-| Provider | Setup Time | Requirements | Best For | Notes |
-|----------|-----------|--------------|----------|-------|
-| **GitHub** | ~10 min | GitHub account | Quick demos, developer apps | Simplest to configure |
-| **Google** | ~30 min | Google Cloud account | General consumer apps | Requires OAuth consent screen |
-| **Apple** | 1-2 hours | Apple Developer ($99/year) | iOS apps | **Required** if offering other social logins in App Store |
+| Provider   | Setup Time | Requirements               | Best For                    | Notes                                                     |
+| ---------- | ---------- | -------------------------- | --------------------------- | --------------------------------------------------------- |
+| **GitHub** | ~10 min    | GitHub account             | Quick demos, developer apps | Simplest to configure                                     |
+| **Google** | ~30 min    | Google Cloud account       | General consumer apps       | Requires OAuth consent screen                             |
+| **Apple**  | 1-2 hours  | Apple Developer ($99/year) | iOS apps                    | **Required** if offering other social logins in App Store |
 
 ### Key Insight: Single Callback URL Architecture
 
@@ -83,7 +83,7 @@ With Convex + Better Auth, OAuth callbacks **always** go to the Convex site URL,
          │    HTML with deep     │                        │
          │    link redirect      │                        │
          │ <──────────────────── │                        │
-         │ cityuniversityclub:// │                        │
+         │ ugc:// │                        │
          │                       │                        │
          │ 8. WebBrowser detects │                        │
          │    custom scheme,     │                        │
@@ -96,14 +96,14 @@ With Convex + Better Auth, OAuth callbacks **always** go to the Convex site URL,
 
 ### Key URLs
 
-| URL Type | Value |
-|----------|-------|
-| **Convex Site URL** | `https://artful-cod-78.convex.site` |
-| **OAuth Callback Base** | `https://artful-cod-78.convex.site/api/auth/callback/` |
-| **GitHub Callback** | `https://artful-cod-78.convex.site/api/auth/callback/github` |
-| **Google Callback** | `https://artful-cod-78.convex.site/api/auth/callback/google` |
-| **Apple Callback** | `https://artful-cod-78.convex.site/api/auth/callback/apple` |
-| **App Deep Link** | `cityuniversityclub://` |
+| URL Type                | Value                                                        |
+| ----------------------- | ------------------------------------------------------------ |
+| **Convex Site URL**     | `https://artful-cod-78.convex.site`                          |
+| **OAuth Callback Base** | `https://artful-cod-78.convex.site/api/auth/callback/`       |
+| **GitHub Callback**     | `https://artful-cod-78.convex.site/api/auth/callback/github` |
+| **Google Callback**     | `https://artful-cod-78.convex.site/api/auth/callback/google` |
+| **Apple Callback**      | `https://artful-cod-78.convex.site/api/auth/callback/apple`  |
+| **App Deep Link**       | `ugc://`                                                     |
 
 ---
 
@@ -113,13 +113,13 @@ With Convex + Better Auth, OAuth callbacks **always** go to the Convex site URL,
 
 The OAuth callback URL is **always** the Convex site URL, regardless of where the app runs:
 
-| Environment | App Running At | Origin Sent | OAuth Callback | Final Redirect |
-|------------|----------------|-------------|----------------|----------------|
-| iOS Simulator | `exp://127.0.0.1:8081` | `exp://127.0.0.1:8081` | Convex site URL | `cityuniversityclub://` |
-| Expo Go (Device) | `exp://192.168.x.x:8081` | `exp://192.168.x.x:8081` | Convex site URL | `cityuniversityclub://` |
-| Dev Build | `cityuniversityclub://` | `cityuniversityclub://` | Convex site URL | `cityuniversityclub://` |
-| TestFlight | `cityuniversityclub://` | `cityuniversityclub://` | Convex site URL | `cityuniversityclub://` |
-| Production | `cityuniversityclub://` | `cityuniversityclub://` | Convex site URL | `cityuniversityclub://` |
+| Environment      | App Running At           | Origin Sent              | OAuth Callback  | Final Redirect |
+| ---------------- | ------------------------ | ------------------------ | --------------- | -------------- |
+| iOS Simulator    | `exp://127.0.0.1:8081`   | `exp://127.0.0.1:8081`   | Convex site URL | `ugc://`       |
+| Expo Go (Device) | `exp://192.168.x.x:8081` | `exp://192.168.x.x:8081` | Convex site URL | `ugc://`       |
+| Dev Build        | `ugc://`                 | `ugc://`                 | Convex site URL | `ugc://`       |
+| TestFlight       | `ugc://`                 | `ugc://`                 | Convex site URL | `ugc://`       |
+| Production       | `ugc://`                 | `ugc://`                 | Convex site URL | `ugc://`       |
 
 ### Required trustedOrigins Configuration
 
@@ -128,7 +128,7 @@ To support all development environments, the `trustedOrigins` array in `auth.ts`
 ```typescript
 trustedOrigins: [
     siteUrl,                          // Convex site URL
-    nativeAppUrl,                     // cityuniversityclub://
+    nativeAppUrl,                     // ugc://
     "https://appleid.apple.com",      // Required for Apple Sign-In
     // Expo development URLs
     "exp://127.0.0.1:*/**",           // iOS Simulator
@@ -141,11 +141,11 @@ trustedOrigins: [
 
 ### Pattern Syntax (from Better Auth docs)
 
-| Pattern | Description |
-|---------|-------------|
-| `?` | Matches exactly one character (except `/`) |
-| `*` | Matches zero or more characters that don't cross `/` |
-| `**` | Matches zero or more characters including `/` |
+| Pattern    | Description                                                 |
+| ---------- | ----------------------------------------------------------- |
+| `?`        | Matches exactly one character (except `/`)                  |
+| `*`        | Matches zero or more characters that don't cross `/`        |
+| `**`       | Matches zero or more characters including `/`               |
 | `myapp://` | Prefix matching - matches all URLs starting with `myapp://` |
 
 ---
@@ -157,18 +157,18 @@ trustedOrigins: [
 ```bash
 # Via: npx convex env list
 BETTER_AUTH_SECRET=wdh0RLepFOAuSkdlRpWDwnT3dLOINPgTJC8xV9N1+d0
-NATIVE_APP_URL=cityuniversityclub://
+NATIVE_APP_URL=ugc://
 SITE_URL=http://localhost:3001  # ⚠️ NEEDS UPDATE for OAuth to work
 ```
 
 ### Issues Identified
 
-| Issue | Current State | Required State | Priority |
-|-------|---------------|----------------|----------|
-| SITE_URL | `http://localhost:3001` | `https://artful-cod-78.convex.site` | **CRITICAL** |
-| socialProviders | Not configured | GitHub/Google/Apple config | **CRITICAL** |
-| useGitHubAuth hook | Does not exist | Create hook | HIGH |
-| useGoogleAuth callbackURL | Uses `Linking.createURL("")` | Should use `"/"` | MEDIUM |
+| Issue                     | Current State                | Required State                      | Priority     |
+| ------------------------- | ---------------------------- | ----------------------------------- | ------------ |
+| SITE_URL                  | `http://localhost:3001`      | `https://artful-cod-78.convex.site` | **CRITICAL** |
+| socialProviders           | Not configured               | GitHub/Google/Apple config          | **CRITICAL** |
+| useGitHubAuth hook        | Does not exist               | Create hook                         | HIGH         |
+| useGoogleAuth callbackURL | Uses `Linking.createURL("")` | Should use `"/"`                    | MEDIUM       |
 
 ### Required Environment Variable Update
 
@@ -186,7 +186,7 @@ npx convex env set SITE_URL="https://artful-cod-78.convex.site"
 1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
 2. Click **"OAuth Apps"** → **"New OAuth App"**
 3. Fill in the form:
-   - **Application name:** `City University Club`
+   - **Application name:** `UGC`
    - **Homepage URL:** `https://artful-cod-78.convex.site`
    - **Authorization callback URL:** `https://artful-cod-78.convex.site/api/auth/callback/github`
 4. Click **"Register application"**
@@ -250,26 +250,26 @@ import { useState } from "react";
 import { authClient } from "../auth-client";
 
 export const useGitHubAuth = () => {
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const signIn = async () => {
-        setIsLoading(true);
-        try {
-            await authClient.signIn.social({
-                provider: "github",
-                callbackURL: "/", // Converts to deep link automatically
-            });
-        } catch (error) {
-            console.error("GitHub sign in error:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const signIn = async () => {
+    setIsLoading(true);
+    try {
+      await authClient.signIn.social({
+        provider: "github",
+        callbackURL: "/", // Converts to deep link automatically
+      });
+    } catch (error) {
+      console.error("GitHub sign in error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return {
-        signIn,
-        isLoading,
-    };
+  return {
+    signIn,
+    isLoading,
+  };
 };
 ```
 
@@ -298,7 +298,7 @@ In `apps/native/app/(auth)/landing.tsx`, add the GitHub button and hook usage.
 3. Navigate to **APIs & Services** → **Credentials**
 4. If prompted, configure OAuth consent screen:
    - User Type: External (or Internal for Google Workspace)
-   - App name: City University Club
+   - App name: UGC
    - User support email: your email
    - Developer contact: your email
    - Add scopes: `email`, `profile`, `openid`
@@ -308,7 +308,7 @@ In `apps/native/app/(auth)/landing.tsx`, add the GitHub button and hook usage.
 
 1. Click **"Create Credentials"** → **"OAuth client ID"**
 2. Application type: **Web application**
-3. Name: `City University Club - Convex`
+3. Name: `UGC - Convex`
 4. Authorized JavaScript origins: `https://artful-cod-78.convex.site`
 5. Authorized redirect URIs: `https://artful-cod-78.convex.site/api/auth/callback/google`
 6. Copy **Client ID** and **Client Secret**
@@ -345,30 +345,30 @@ import { useState } from "react";
 import { authClient } from "../auth-client";
 
 export const useGoogleAuth = () => {
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const signIn = async () => {
-        setIsLoading(true);
-        try {
-            await authClient.signIn.social({
-                provider: "google",
-                callbackURL: "/", // ✅ Correct - converts to deep link
-            });
-        } catch (error) {
-            console.error("Google sign in error:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const signIn = async () => {
+    setIsLoading(true);
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/", // ✅ Correct - converts to deep link
+      });
+    } catch (error) {
+      console.error("Google sign in error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return {
-        signIn,
-        isLoading,
-    };
+  return {
+    signIn,
+    isLoading,
+  };
 };
 ```
 
-**Note:** The previous implementation used `Linking.createURL("")` which is incorrect. Better Auth's expoClient plugin automatically converts `"/"` to the app's deep link scheme (`cityuniversityclub://`).
+**Note:** The previous implementation used `Linking.createURL("")` which is incorrect. Better Auth's expoClient plugin automatically converts `"/"` to the app's deep link scheme (`ugc://`).
 
 ---
 
@@ -382,7 +382,7 @@ export const useGoogleAuth = () => {
 ### Step 1: Configure App ID
 
 1. Go to [Apple Developer Portal - Identifiers](https://developer.apple.com/account/resources/identifiers/list)
-2. Find `com.cityuniversityclub.app` or create it
+2. Find `com.ugc.app` or create it
 3. Enable **"Sign in with Apple"** capability
 4. Save
 
@@ -391,11 +391,11 @@ export const useGoogleAuth = () => {
 1. Go to **Identifiers** → Click **+**
 2. Select **"Services IDs"** → Continue
 3. Fill in:
-   - Description: `City University Club Web`
-   - Identifier: `com.cityuniversityclub.web`
+   - Description: `UGC Web`
+   - Identifier: `com.ugc.web`
 4. Enable **"Sign in with Apple"**
 5. Click **Configure**:
-   - Primary App ID: `com.cityuniversityclub.app`
+   - Primary App ID: `com.ugc.app`
    - Domains: `artful-cod-78.convex.site`
    - Return URLs: `https://artful-cod-78.convex.site/api/auth/callback/apple`
 6. Save
@@ -403,7 +403,7 @@ export const useGoogleAuth = () => {
 ### Step 3: Create Private Key
 
 1. Go to **Keys** → Click **+**
-2. Name: `City University Club Sign In`
+2. Name: `UGC Sign In`
 3. Enable **"Sign in with Apple"**
 4. Configure → Select your Primary App ID
 5. Register and **download the `.p8` key file**
@@ -413,6 +413,7 @@ export const useGoogleAuth = () => {
 ### Step 4: Generate Client Secret JWT
 
 Apple requires a JWT as the client secret. This JWT must be:
+
 - Signed with ES256 algorithm
 - Max expiration: 6 months
 - Contains: Team ID, Key ID, Service ID
@@ -425,16 +426,16 @@ const fs = require("fs");
 
 const privateKey = fs.readFileSync("path/to/AuthKey_XXXXXXXXXX.p8");
 const teamId = "YOUR_TEAM_ID"; // Found in Apple Developer account membership
-const clientId = "com.cityuniversityclub.web"; // Your Service ID
+const clientId = "com.ugc.web"; // Your Service ID
 const keyId = "XXXXXXXXXX"; // Your Key ID from step 3
 
 const token = jwt.sign({}, privateKey, {
-    algorithm: "ES256",
-    expiresIn: "180d", // Max 6 months
-    audience: "https://appleid.apple.com",
-    issuer: teamId,
-    subject: clientId,
-    keyid: keyId,
+  algorithm: "ES256",
+  expiresIn: "180d", // Max 6 months
+  audience: "https://appleid.apple.com",
+  issuer: teamId,
+  subject: clientId,
+  keyid: keyId,
 });
 
 console.log("Apple Client Secret:", token);
@@ -445,9 +446,9 @@ console.log("\nExpires in 180 days. Set a reminder to regenerate!");
 
 ```bash
 cd packages/backend
-npx convex env set APPLE_CLIENT_ID="com.cityuniversityclub.web"
+npx convex env set APPLE_CLIENT_ID="com.ugc.web"
 npx convex env set APPLE_CLIENT_SECRET="eyJhbGciOiJFUzI1NiIs..."
-npx convex env set APPLE_APP_BUNDLE_IDENTIFIER="com.cityuniversityclub.app"
+npx convex env set APPLE_APP_BUNDLE_IDENTIFIER="com.ugc.app"
 ```
 
 ### Step 6: Add to Backend Configuration
@@ -478,39 +479,39 @@ import { useState } from "react";
 import { authClient } from "../auth-client";
 
 export const useAppleAuth = () => {
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const signIn = async () => {
-        setIsLoading(true);
-        try {
-            const credential = await AppleAuthentication.signInAsync({
-                requestedScopes: [
-                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
-                ],
-            });
+  const signIn = async () => {
+    setIsLoading(true);
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
 
-            if (!credential.identityToken) {
-                throw new Error("Failed to get Apple identity token");
-            }
+      if (!credential.identityToken) {
+        throw new Error("Failed to get Apple identity token");
+      }
 
-            await authClient.signIn.social({
-                provider: "apple",
-                idToken: {
-                    token: credential.identityToken,
-                },
-            });
-        } catch (error) {
-            console.error("Apple sign in error:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+      await authClient.signIn.social({
+        provider: "apple",
+        idToken: {
+          token: credential.identityToken,
+        },
+      });
+    } catch (error) {
+      console.error("Apple sign in error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return {
-        signIn,
-        isLoading,
-    };
+  return {
+    signIn,
+    isLoading,
+  };
 };
 ```
 
@@ -519,8 +520,8 @@ export const useAppleAuth = () => {
 1. **HTTPS Required**: Apple Sign-In only works with HTTPS. Convex provides this.
 
 2. **Bundle ID vs Service ID**:
-   - Native iOS apps validate against **Bundle ID** (`com.cityuniversityclub.app`)
-   - Web/backend OAuth uses **Service ID** (`com.cityuniversityclub.web`)
+   - Native iOS apps validate against **Bundle ID** (`com.ugc.app`)
+   - Web/backend OAuth uses **Service ID** (`com.ugc.web`)
    - Set `appBundleIdentifier` in config for native support
 
 3. **Client Secret Expiration**: Apple JWTs expire after 6 months max. **Set a calendar reminder to regenerate!**
@@ -551,7 +552,7 @@ import { lastLoginMethod } from "better-auth/plugins";
 import authConfig from "./auth.config";
 
 const siteUrl = process.env.SITE_URL!;
-const nativeAppUrl = process.env.NATIVE_APP_URL || "cityuniversityclub://";
+const nativeAppUrl = process.env.NATIVE_APP_URL || "ugc://";
 
 const authFunctions: AuthFunctions = internal.auth;
 
@@ -636,6 +637,7 @@ export const getCurrentUser = query({
 ### Testing GitHub OAuth
 
 1. Start the development servers:
+
    ```bash
    bun run dev
    ```
@@ -656,27 +658,30 @@ export const getCurrentUser = query({
 ### Testing Google OAuth
 
 Same flow as GitHub. Additional notes:
+
 - If OAuth consent screen is in "Testing" mode, add your test email to test users
 - First-time consent will show Google's permission dialog
 
 ### Testing Apple Sign-In
 
 **On iOS Simulator:**
+
 - Works with your Apple ID signed into the simulator
 - Settings → Sign in with your Apple ID first
 
 **On Physical Device:**
+
 - Uses device's logged-in Apple ID
 - Full native experience with Face ID/Touch ID
 
 ### Common Test Scenarios
 
-| Scenario | Expected Behavior |
-|----------|------------------|
-| First-time sign-in | New user created, redirected to app |
-| Returning user | Existing user signed in |
-| Cancel during OAuth | Returns to app, no error shown |
-| Network error | Error message displayed |
+| Scenario            | Expected Behavior                      |
+| ------------------- | -------------------------------------- |
+| First-time sign-in  | New user created, redirected to app    |
+| Returning user      | Existing user signed in                |
+| Cancel during OAuth | Returns to app, no error shown         |
+| Network error       | Error message displayed                |
 | Session persistence | User stays signed in after app restart |
 
 ---
@@ -690,13 +695,14 @@ Same flow as GitHub. Additional notes:
 **Cause:** The origin sent by the Expo app is not in `trustedOrigins`.
 
 **Solution:** Ensure `trustedOrigins` includes all Expo development patterns:
+
 ```typescript
 trustedOrigins: [
-    "exp://127.0.0.1:*/**",
-    "exp://192.168.*.*:*/**",
-    "exp://10.*.*.*:*/**",
-    "exp://localhost:*/**",
-]
+  "exp://127.0.0.1:*/**",
+  "exp://192.168.*.*:*/**",
+  "exp://10.*.*.*:*/**",
+  "exp://localhost:*/**",
+];
 ```
 
 ### "redirect_uri_mismatch" Error
@@ -706,6 +712,7 @@ trustedOrigins: [
 **Cause:** The callback URL configured in the provider doesn't match what Better Auth sends.
 
 **Solution:**
+
 1. Verify callback URL matches exactly: `https://artful-cod-78.convex.site/api/auth/callback/{provider}`
 2. Check for trailing slashes - must match exactly
 3. Verify `SITE_URL` env var is set to `https://artful-cod-78.convex.site`
@@ -717,11 +724,12 @@ trustedOrigins: [
 **Cause:** Native iOS sends the Bundle ID as audience, but config only has Service ID.
 
 **Solution:** Set `appBundleIdentifier` in Apple provider config:
+
 ```typescript
 apple: {
     clientId: process.env.APPLE_CLIENT_ID!,
     clientSecret: process.env.APPLE_CLIENT_SECRET!,
-    appBundleIdentifier: "com.cityuniversityclub.app",
+    appBundleIdentifier: "com.ugc.app",
 }
 ```
 
@@ -730,9 +738,10 @@ apple: {
 **Symptom:** After OAuth completes, browser stays open.
 
 **Causes & Solutions:**
+
 1. Verify `expo-web-browser` plugin is in `app.config.ts` plugins array
-2. Check app scheme: `scheme: "cityuniversityclub"`
-3. Verify `NATIVE_APP_URL` matches: `cityuniversityclub://`
+2. Check app scheme: `scheme: "ugc"`
+3. Verify `NATIVE_APP_URL` matches: `ugc://`
 4. Rebuild the app: `npx expo prebuild --clean`
 
 ### Session Not Persisting
@@ -740,13 +749,14 @@ apple: {
 **Symptom:** User logged out after app restart.
 
 **Solution:**
+
 1. Verify `expo-secure-store` plugin is in app.config.ts
 2. Check expoClient configuration:
    ```typescript
    expoClient({
-       scheme: Constants.expoConfig?.scheme,
-       storage: SecureStore,
-   })
+     scheme: Constants.expoConfig?.scheme,
+     storage: SecureStore,
+   });
    ```
 3. Rebuild after adding plugins
 
@@ -757,6 +767,7 @@ apple: {
 **Cause:** CORS not enabled or `crossDomain` plugin missing.
 
 **Solution:**
+
 1. Verify `http.ts` has `cors: true`:
    ```typescript
    authComponent.registerRoutes(http, createAuth, { cors: true });
@@ -764,9 +775,9 @@ apple: {
 2. Add `crossDomain` plugin to auth config:
    ```typescript
    plugins: [
-       // ... other plugins
-       crossDomain({ siteUrl }),
-   ]
+     // ... other plugins
+     crossDomain({ siteUrl }),
+   ];
    ```
 3. Use `crossDomainClient()` on web, `expoClient()` on native
 

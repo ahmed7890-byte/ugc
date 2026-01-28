@@ -1,8 +1,8 @@
-# City University Club - Project Summary for CV
+# UGC - Project Summary for CV
 
 ## What This Project Demonstrates
 
-This is a **production-grade, full-stack application** for the City University Club, a private members' club in central London. It demonstrates end-to-end product engineering across **web (React/Next.js)** and **mobile (React Native/Expo)** from a single codebase.
+This is a **production-grade, full-stack application** for the UGC, a private members' club in central London. It demonstrates end-to-end product engineering across **web (React/Next.js)** and **mobile (React Native/Expo)** from a single codebase.
 
 **Built in 2 days** using an agentic development harness - demonstrating how AI-native workflows compress delivery cycles without sacrificing quality.
 
@@ -34,12 +34,14 @@ Turborepo Monorepo
 ```
 
 ### Web Stack (apps/web)
+
 - **Next.js 16** - App Router, React Server Components
 - **Tailwind CSS v4** + shadcn/ui components
 - **Storybook** - Component documentation
 - **Cloudflare deployment** via Alchemy
 
 ### Mobile Stack (apps/native)
+
 - **Expo/React Native** - Cross-platform iOS/Android
 - **HeroUI Native** - Component library with theming
 - **NativeWind** - Tailwind for React Native
@@ -48,12 +50,15 @@ Turborepo Monorepo
 - **Storybook React Native** - Component documentation
 
 ### Backend Stack (packages/backend)
+
 - **Convex** - Real-time reactive backend
 - **Better-Auth** - Multi-provider authentication
 - **AI Agent** - Convex Agent SDK with Google Gemini
 
 ### Authentication System
+
 Multi-platform authentication supporting:
+
 - Email/password with secure session management
 - OAuth providers: Google, Apple, GitHub
 - Password reset flow with OTP email verification
@@ -65,6 +70,7 @@ Multi-platform authentication supporting:
 ## Key Features Built
 
 ### 1. Event RSVP System
+
 - Real-time RSVP creation/cancellation via Convex mutations
 - Guest count selection (1-5+)
 - Special requirements capture (dietary, accessibility)
@@ -72,6 +78,7 @@ Multi-platform authentication supporting:
 - Optimistic UI updates with Convex's reactive queries
 
 ### 2. Native Calendar Integration
+
 - Custom `useAddToCalendar` hook using expo-calendar
 - Date/time parsing for various event formats
 - Permission handling with graceful degradation
@@ -79,18 +86,23 @@ Multi-platform authentication supporting:
 - Automatic timezone detection
 
 ### 3. Password Reset Flow (Mobile)
+
 Three-screen flow:
+
 1. Request reset - email input
 2. Verify OTP - 6-digit code input with resend
 3. Reset password - new password with confirmation
 
 ### 4. Digital Membership Card
+
 - Device motion-reactive parallax effect
 - Spring physics animations
 - Secure storage of member details
 
 ### 5. Design System Implementation
+
 Brand-accurate implementation from Wix site extraction:
+
 - Navy (#06273a) + Sage (#8fa89d) + Cream (#fffef8) palette
 - Cormorant Garamond (display) + Raleway (body) typography
 - 8px spacing system
@@ -101,12 +113,15 @@ Brand-accurate implementation from Wix site extraction:
 ## What This Proves for CV Purposes
 
 ### 1. Full-Stack Product Engineering
+
 Not just frontend or backend - complete ownership from database schema to mobile animations to deployment infrastructure.
 
 ### 2. React AND React Native Expertise
+
 Same codebase, two platforms. Shared business logic, platform-specific UI where needed.
 
 ### 3. Production Quality
+
 - Type-safe throughout (TypeScript strict mode)
 - Real-time reactive architecture (Convex)
 - Proper error handling and loading states
@@ -114,12 +129,15 @@ Same codebase, two platforms. Shared business logic, platform-specific UI where 
 - Component documentation (Storybook)
 
 ### 4. Modern Stack Choices
+
 - 2025/2026 technologies (Next.js 16, Expo SDK 52, Convex, Better-Auth)
 - Monorepo architecture (Turborepo)
 - AI-assisted development workflow
 
 ### 5. Real Customer Problem
+
 Not a toy project - a real private members' club with real requirements:
+
 - Event management for 450+ reciprocal clubs
 - Membership verification
 - Dining reservations
@@ -141,17 +159,17 @@ Instead of the current data-heavy Gruckion section, this project supports bullet
 
 ## File References
 
-| Feature | Location |
-|---------|----------|
-| Event RSVP UI | `apps/native/app/(tabs)/events/[id].tsx` |
-| Calendar Hook | `apps/native/lib/useAddToCalendar.ts` |
-| RSVP Backend | `packages/backend/convex/rsvps.ts` |
-| Auth Config | `packages/backend/convex/auth.ts` |
-| Schema | `packages/backend/convex/schema.ts` |
-| Password Reset | `apps/native/app/(auth)/email/(reset)/` |
-| Design System | `design.md` |
-| Web Components | `apps/web/src/components/` |
-| Native Components | `apps/native/components/` |
+| Feature           | Location                                 |
+| ----------------- | ---------------------------------------- |
+| Event RSVP UI     | `apps/native/app/(tabs)/events/[id].tsx` |
+| Calendar Hook     | `apps/native/lib/useAddToCalendar.ts`    |
+| RSVP Backend      | `packages/backend/convex/rsvps.ts`       |
+| Auth Config       | `packages/backend/convex/auth.ts`        |
+| Schema            | `packages/backend/convex/schema.ts`      |
+| Password Reset    | `apps/native/app/(auth)/email/(reset)/`  |
+| Design System     | `design.md`                              |
+| Web Components    | `apps/web/src/components/`               |
+| Native Components | `apps/native/components/`                |
 
 ---
 

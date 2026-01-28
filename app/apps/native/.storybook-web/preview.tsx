@@ -5,8 +5,8 @@ import { View } from "react-native";
 // Import global styles for UniWind/Tailwind
 import "../global.css";
 
-// CUC Brand Colors (hex values for Storybook background)
-const CUC_COLORS = {
+// UGC Brand Colors (hex values for Storybook background)
+const UGC_COLORS = {
   light: {
     background: "#fffef8", // cream
     foreground: "#06273a", // navy
@@ -27,7 +27,7 @@ const withProviders = (Story: () => ReactNode) => (
     style={{
       flex: 1,
       padding: 16,
-      backgroundColor: CUC_COLORS.light.background,
+      backgroundColor: UGC_COLORS.light.background,
     }}
   >
     <Story />
@@ -44,15 +44,15 @@ const preview: Preview = {
       },
     },
     backgrounds: {
-      default: "CUC Light",
+      default: "UGC Light",
       values: [
         {
-          name: "CUC Light",
-          value: CUC_COLORS.light.background,
+          name: "UGC Light",
+          value: UGC_COLORS.light.background,
         },
         {
-          name: "CUC Dark",
-          value: CUC_COLORS.dark.background,
+          name: "UGC Dark",
+          value: UGC_COLORS.dark.background,
         },
       ],
     },

@@ -8,11 +8,11 @@ This document outlines the phased implementation of Storybook across the monorep
 
 ### Applications to Configure
 
-| App | Location | Storybook Framework | Port |
-|-----|----------|---------------------|------|
-| Next.js Web Admin | `apps/web` | `@storybook/nextjs` | 6006 |
-| Expo Native Mobile | `apps/native` | `@storybook/react-native` | Device |
-| Expo Native Web | `apps/native` | `@storybook/react-native-web-vite` | 6007 |
+| App                | Location      | Storybook Framework                | Port   |
+| ------------------ | ------------- | ---------------------------------- | ------ |
+| Next.js Web Admin  | `apps/web`    | `@storybook/nextjs`                | 6006   |
+| Expo Native Mobile | `apps/native` | `@storybook/react-native`          | Device |
+| Expo Native Web    | `apps/native` | `@storybook/react-native-web-vite` | 6007   |
 
 ### Validation Commands (Run After Each Phase)
 
@@ -37,6 +37,7 @@ bun install
 ```
 
 The CLI will:
+
 - Detect Next.js framework automatically
 - Create `.storybook/main.ts` and `.storybook/preview.ts`
 - Add required dependencies to `package.json`
@@ -107,20 +108,21 @@ bun biome check --write .
 
 ### Components to Document
 
-| Component | Variants/States | Priority |
-|-----------|-----------------|----------|
-| `button.tsx` | 6 variants, 8 sizes, disabled, loading, with icon | High |
-| `input.tsx` | text, email, password, disabled, with label | High |
-| `label.tsx` | default, required indicator | Medium |
-| `card.tsx` | with header, footer, simple | High |
-| `checkbox.tsx` | checked, unchecked, disabled, indeterminate | Medium |
-| `dropdown-menu.tsx` | open, closed, with items, nested | Medium |
-| `skeleton.tsx` | line, circle, card shapes | Low |
-| `sonner.tsx` | success, error, warning, info toasts | Medium |
+| Component           | Variants/States                                   | Priority |
+| ------------------- | ------------------------------------------------- | -------- |
+| `button.tsx`        | 6 variants, 8 sizes, disabled, loading, with icon | High     |
+| `input.tsx`         | text, email, password, disabled, with label       | High     |
+| `label.tsx`         | default, required indicator                       | Medium   |
+| `card.tsx`          | with header, footer, simple                       | High     |
+| `checkbox.tsx`      | checked, unchecked, disabled, indeterminate       | Medium   |
+| `dropdown-menu.tsx` | open, closed, with items, nested                  | Medium   |
+| `skeleton.tsx`      | line, circle, card shapes                         | Low      |
+| `sonner.tsx`        | success, error, warning, info toasts              | Medium   |
 
 ### 3.1 Create Stories for Each Component
 
 Each story file should include:
+
 - Default state
 - All variants
 - All sizes (if applicable)
@@ -145,14 +147,14 @@ bun biome check --write .
 
 ### Components to Document
 
-| Component | Description | Dependencies |
-|-----------|-------------|--------------|
-| `sign-in-form.tsx` | Auth sign-in form | Input, Button, Card |
-| `sign-up-form.tsx` | Auth sign-up form | Input, Button, Card |
-| `user-menu.tsx` | User dropdown menu | DropdownMenu, Button |
-| `header.tsx` | Page header | Multiple |
-| `mode-toggle.tsx` | Theme toggle button | Button, DropdownMenu |
-| `loader.tsx` | Loading indicator | Skeleton |
+| Component          | Description         | Dependencies         |
+| ------------------ | ------------------- | -------------------- |
+| `sign-in-form.tsx` | Auth sign-in form   | Input, Button, Card  |
+| `sign-up-form.tsx` | Auth sign-up form   | Input, Button, Card  |
+| `user-menu.tsx`    | User dropdown menu  | DropdownMenu, Button |
+| `header.tsx`       | Page header         | Multiple             |
+| `mode-toggle.tsx`  | Theme toggle button | Button, DropdownMenu |
+| `loader.tsx`       | Loading indicator   | Skeleton             |
 
 ### 4.1 Create Feature Component Stories
 
@@ -187,14 +189,8 @@ export const FilledForm: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await userEvent.type(
-      canvas.getByLabelText(/email/i),
-      "test@example.com"
-    );
-    await userEvent.type(
-      canvas.getByLabelText(/password/i),
-      "password123"
-    );
+    await userEvent.type(canvas.getByLabelText(/email/i), "test@example.com");
+    await userEvent.type(canvas.getByLabelText(/password/i), "password123");
     await userEvent.click(canvas.getByRole("button", { name: /sign in/i }));
 
     await expect(canvas.getByRole("button")).toBeDisabled();
@@ -310,12 +306,13 @@ STORYBOOK=true expo start  # Test on device/simulator
 
 ## Phase 9: Expo Native App - Theme Integration
 
-**Goal:** Configure Storybook to use CUC brand colors and UniWind styles.
+**Goal:** Configure Storybook to use UGC brand colors and UniWind styles.
 
 ### 9.1 Configure Preview with Brand Theme
 
 Update `.storybook/preview.tsx`:
-- Import CUC_COLORS
+
+- Import UGC_COLORS
 - Set background values
 - Configure decorators for consistent styling
 
@@ -338,13 +335,13 @@ bun biome check --write .
 
 ### Components to Document
 
-| Component | Location | Features |
-|-----------|----------|----------|
-| `StyledButton` | `form.tsx` | primary, secondary, tertiary, loading |
-| `StyledTextInput` | `form.tsx` | text, email, password, with label |
-| `FormContainer` | `form.tsx` | layout wrapper |
-| `FormHeader` | `form.tsx` | title, subtitle |
-| `KeyboardAwareForm` | `keyboard/` | platform-specific behavior |
+| Component           | Location    | Features                              |
+| ------------------- | ----------- | ------------------------------------- |
+| `StyledButton`      | `form.tsx`  | primary, secondary, tertiary, loading |
+| `StyledTextInput`   | `form.tsx`  | text, email, password, with label     |
+| `FormContainer`     | `form.tsx`  | layout wrapper                        |
+| `FormHeader`        | `form.tsx`  | title, subtitle                       |
+| `KeyboardAwareForm` | `keyboard/` | platform-specific behavior            |
 
 ### 10.1 Create Form Stories
 
@@ -365,14 +362,14 @@ bun biome check --write .
 
 ### Components to Document
 
-| Component | Features |
-|-----------|----------|
-| `CategoryFilter.tsx` | Animated chips, selection state, Reanimated |
-| `MembershipCard.tsx` | Card layout, user data display |
-| `ExternalLinkButton.tsx` | Link handling |
-| `LastUsedIndicator.tsx` | Status indicator |
-| `container.tsx` | Layout wrapper |
-| `theme-toggle.tsx` | Theme switching |
+| Component                | Features                                    |
+| ------------------------ | ------------------------------------------- |
+| `CategoryFilter.tsx`     | Animated chips, selection state, Reanimated |
+| `MembershipCard.tsx`     | Card layout, user data display              |
+| `ExternalLinkButton.tsx` | Link handling                               |
+| `LastUsedIndicator.tsx`  | Status indicator                            |
+| `container.tsx`          | Layout wrapper                              |
+| `theme-toggle.tsx`       | Theme switching                             |
 
 ### 11.1 Create UI Stories
 
@@ -393,8 +390,8 @@ bun biome check --write .
 
 ### Components to Document
 
-| Component | Description |
-|-----------|-------------|
+| Component     | Description             |
+| ------------- | ----------------------- |
 | `sign-in.tsx` | Complete sign-in screen |
 | `sign-up.tsx` | Complete sign-up screen |
 
@@ -485,6 +482,7 @@ bun run storybook:build:native-web
 ### 15.2 Configure Deployment (Optional)
 
 Options:
+
 - Vercel (auto-deploy on PR)
 - Netlify
 - GitHub Pages
@@ -582,16 +580,16 @@ bun biome check --write .       # Lint + format
 
 ## Estimated Timeline
 
-| Phase | Description | Complexity |
-|-------|-------------|------------|
-| 1-2 | Web basic + themes | Low |
-| 3-4 | Web components | Medium |
-| 5-7 | Web testing + docs | Medium |
-| 8-9 | Native basic + themes | Medium |
-| 10-12 | Native components | Medium |
-| 13 | Native web UI | Medium |
-| 14-15 | Integration + builds | Low |
-| 16-17 | Visual testing + polish | Low |
+| Phase | Description             | Complexity |
+| ----- | ----------------------- | ---------- |
+| 1-2   | Web basic + themes      | Low        |
+| 3-4   | Web components          | Medium     |
+| 5-7   | Web testing + docs      | Medium     |
+| 8-9   | Native basic + themes   | Medium     |
+| 10-12 | Native components       | Medium     |
+| 13    | Native web UI           | Medium     |
+| 14-15 | Integration + builds    | Low        |
+| 16-17 | Visual testing + polish | Low        |
 
 ---
 
