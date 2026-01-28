@@ -32,12 +32,13 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Deploy with Alchemy
-        working-directory: app/packages/infra
-        run: bun run deploy
+      - name: Build with OpenNext
+        working-directory: app/apps/web
+        run: npx @opennextjs/cloudflare build
+
+      - name: Deploy with Wrangler
+        working-directory: app/apps/web
+        run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          ALCHEMY_STATE_TOKEN: ${{ secrets.ALCHEMY_STATE_TOKEN }}
-          NEXT_PUBLIC_CONVEX_URL: ${{ vars.NEXT_PUBLIC_CONVEX_URL }}
-          NEXT_PUBLIC_CONVEX_SITE_URL: ${{ vars.NEXT_PUBLIC_CONVEX_SITE_URL }}
