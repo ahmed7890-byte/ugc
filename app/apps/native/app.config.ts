@@ -38,7 +38,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     adaptiveIcon: {
       foregroundImage: "./assets/images/icons/adaptive-icon.png",
       monochromeImage: "./assets/images/icons/adaptive-icon.png",
-      backgroundColor: "#06273A",
+      backgroundColor: "#1DBF73", // Fiverr green
     },
     package: "com.ugc.app",
   },
@@ -83,21 +83,21 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       "expo-splash-screen",
       {
-        backgroundColor: "#1a1a2e",
+        backgroundColor: "#1DBF73", // Fiverr green
         image: "./assets/images/icons/splash-icon-light.png",
         imageWidth: 200,
         ios: {
-          backgroundColor: "#1a1a2e",
+          backgroundColor: "#1DBF73",
           image: "./assets/images/icons/splash-icon-light.png",
           resizeMode: "contain",
         },
         android: {
-          backgroundColor: "#1a1a2e",
+          backgroundColor: "#1DBF73",
           image: "./assets/images/icons/splash-icon-light.png",
           imageWidth: 200,
         },
         dark: {
-          backgroundColor: "#0d0d1a",
+          backgroundColor: "#222325", // Dark gray
           image: "./assets/images/icons/splash-icon-dark.png",
         },
       },

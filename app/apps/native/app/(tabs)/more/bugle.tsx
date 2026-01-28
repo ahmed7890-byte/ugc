@@ -26,7 +26,7 @@ export default function Bugle() {
   const foreground = useThemeColor("foreground");
   const accent = useThemeColor("accent");
   const muted = useThemeColor("muted");
-  const primaryForeground = "#fffef8";
+  const primaryForeground = "#FFFFFF";
 
   const handleOpenPDF = async () => {
     await WebBrowser.openBrowserAsync(BUGLE_PDF_URL);

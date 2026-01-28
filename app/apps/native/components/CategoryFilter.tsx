@@ -79,8 +79,8 @@ function CategoryChip({
 }) {
   const scale = useSharedValue(1);
   // useThemeColor only for Ionicons (which don't support className)
-  const accent = useThemeColor("accent") || "#85b09a";
-  const foreground = useThemeColor("foreground") || "#06273a";
+  const accent = useThemeColor("accent") || "#ffbe5b";
+  const foreground = useThemeColor("foreground") || "#222325";
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],

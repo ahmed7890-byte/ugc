@@ -21,7 +21,7 @@ export default function MenuCategory() {
   const { category } = useLocalSearchParams<{ category: string }>();
 
   // Theme colors for Ionicons
-  const primaryForeground = "#fffef8";
+  const primaryForeground = "#FFFFFF";
 
   const categoryTitle = CATEGORY_TITLES[category || ""] || "Menu";
   const items = MENU_DATA[category as keyof typeof MENU_DATA] || [];

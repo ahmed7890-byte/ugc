@@ -59,14 +59,14 @@ This is unhelpful because:
 
 ### Convex Deployment
 
-- Deployment: `artful-cod-78`
-- Site URL: `https://artful-cod-78.convex.site`
+- Deployment: `<YOUR_CONVEX_DEPLOYMENT>`
+- Site URL: `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site`
 
 ### Convex Environment Variables (Current)
 
 ```
-BETTER_AUTH_SECRET=wdh0RLepFOAuSkdlRpWDwnT3dLOINPgTJC8xV9N1+d0
-NATIVE_APP_URL=convoexpo-and-nextjs-web-bun-better-auth://
+BETTER_AUTH_SECRET=<YOUR_SECRET>
+NATIVE_APP_URL=<YOUR_APP_SCHEME>://
 SITE_URL=http://localhost:3001
 ```
 
@@ -76,7 +76,7 @@ SITE_URL=http://localhost:3001
 scheme: "ugc"
 ```
 
-**ISSUE FOUND**: The `NATIVE_APP_URL` env var is `convoexpo-and-nextjs-web-bun-better-auth://` but the actual app scheme is `ugc://`
+**ISSUE FOUND**: The `NATIVE_APP_URL` env var is `<YOUR_APP_SCHEME>://` but the actual app scheme is `ugc://`
 
 ---
 
@@ -98,7 +98,7 @@ scheme: "ugc"
 ```typescript
 trustedOrigins: [
   siteUrl,  // http://localhost:3001
-  nativeAppUrl,  // convoexpo-and-nextjs-web-bun-better-auth:// (WRONG - should be ugc://)
+  nativeAppUrl,  // <YOUR_APP_SCHEME>:// (WRONG - should be ugc://)
   // Expo Go development URLs
   ...(process.env.NODE_ENV === "development"
     ? ["exp://"]
@@ -240,7 +240,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-### Reference Repo Analysis (`~/gruckion-workdir/convexpo/`)
+### Reference Repo Analysis
 
 The reference repo uses a different approach:
 
@@ -256,7 +256,7 @@ The reference repo uses a different approach:
 
 ### Issue 1: NATIVE_APP_URL Mismatch
 
-- **Current**: `NATIVE_APP_URL=convoexpo-and-nextjs-web-bun-better-auth://`
+- **Current**: `NATIVE_APP_URL=<YOUR_APP_SCHEME>://`
 - **Required**: `NATIVE_APP_URL=ugc://` (matches app.config.ts scheme)
 
 ### Issue 2: CORS Disabled

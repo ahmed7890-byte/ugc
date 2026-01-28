@@ -4,8 +4,8 @@
 **Stack:** Better Auth + Convex + Expo (React Native)
 **App Scheme:** `ugc://`
 **Bundle ID:** `com.ugc.app`
-**Convex Deployment:** `artful-cod-78`
-**Convex Site URL:** `https://artful-cod-78.convex.site`
+**Convex Deployment:** `<YOUR_CONVEX_DEPLOYMENT>`
+**Convex Site URL:** `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site`
 
 ---
 
@@ -54,7 +54,7 @@ With Convex + Better Auth, OAuth callbacks **always** go to the Convex site URL,
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
 │   Mobile App    │     │   Convex Site    │     │  OAuth Provider │
-│  (Expo/Native)  │     │ (artful-cod-78)  │     │ (GitHub/Google) │
+│  (Expo/Native)  │     │ (<YOUR_CONVEX_DEPLOYMENT>)  │     │ (GitHub/Google) │
 └────────┬────────┘     └────────┬─────────┘     └────────┬────────┘
          │                       │                        │
          │ 1. User taps          │                        │
@@ -96,14 +96,14 @@ With Convex + Better Auth, OAuth callbacks **always** go to the Convex site URL,
 
 ### Key URLs
 
-| URL Type                | Value                                                        |
-| ----------------------- | ------------------------------------------------------------ |
-| **Convex Site URL**     | `https://artful-cod-78.convex.site`                          |
-| **OAuth Callback Base** | `https://artful-cod-78.convex.site/api/auth/callback/`       |
-| **GitHub Callback**     | `https://artful-cod-78.convex.site/api/auth/callback/github` |
-| **Google Callback**     | `https://artful-cod-78.convex.site/api/auth/callback/google` |
-| **Apple Callback**      | `https://artful-cod-78.convex.site/api/auth/callback/apple`  |
-| **App Deep Link**       | `ugc://`                                                     |
+| URL Type                | Value                                                                   |
+| ----------------------- | ----------------------------------------------------------------------- |
+| **Convex Site URL**     | `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site`                          |
+| **OAuth Callback Base** | `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site/api/auth/callback/`       |
+| **GitHub Callback**     | `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site/api/auth/callback/github` |
+| **Google Callback**     | `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site/api/auth/callback/google` |
+| **Apple Callback**      | `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site/api/auth/callback/apple`  |
+| **App Deep Link**       | `ugc://`                                                                |
 
 ---
 
@@ -156,25 +156,25 @@ trustedOrigins: [
 
 ```bash
 # Via: npx convex env list
-BETTER_AUTH_SECRET=wdh0RLepFOAuSkdlRpWDwnT3dLOINPgTJC8xV9N1+d0
+BETTER_AUTH_SECRET=<YOUR_VALUE>
 NATIVE_APP_URL=ugc://
-SITE_URL=http://localhost:3001  # ⚠️ NEEDS UPDATE for OAuth to work
+SITE_URL=<YOUR_VALUE>  # ⚠️ NEEDS UPDATE for OAuth to work
 ```
 
 ### Issues Identified
 
-| Issue                     | Current State                | Required State                      | Priority     |
-| ------------------------- | ---------------------------- | ----------------------------------- | ------------ |
-| SITE_URL                  | `http://localhost:3001`      | `https://artful-cod-78.convex.site` | **CRITICAL** |
-| socialProviders           | Not configured               | GitHub/Google/Apple config          | **CRITICAL** |
-| useGitHubAuth hook        | Does not exist               | Create hook                         | HIGH         |
-| useGoogleAuth callbackURL | Uses `Linking.createURL("")` | Should use `"/"`                    | MEDIUM       |
+| Issue                     | Current State                | Required State                                 | Priority     |
+| ------------------------- | ---------------------------- | ---------------------------------------------- | ------------ |
+| SITE_URL                  | `http://localhost:3001`      | `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site` | **CRITICAL** |
+| socialProviders           | Not configured               | GitHub/Google/Apple config                     | **CRITICAL** |
+| useGitHubAuth hook        | Does not exist               | Create hook                                    | HIGH         |
+| useGoogleAuth callbackURL | Uses `Linking.createURL("")` | Should use `"/"`                               | MEDIUM       |
 
 ### Required Environment Variable Update
 
 ```bash
 # Fix SITE_URL for OAuth callbacks
-npx convex env set SITE_URL="https://artful-cod-78.convex.site"
+npx convex env set SITE_URL="https://<YOUR_CONVEX_DEPLOYMENT>.convex.site"
 ```
 
 ---
@@ -187,8 +187,8 @@ npx convex env set SITE_URL="https://artful-cod-78.convex.site"
 2. Click **"OAuth Apps"** → **"New OAuth App"**
 3. Fill in the form:
    - **Application name:** `UGC`
-   - **Homepage URL:** `https://artful-cod-78.convex.site`
-   - **Authorization callback URL:** `https://artful-cod-78.convex.site/api/auth/callback/github`
+   - **Homepage URL:** `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site`
+   - **Authorization callback URL:** `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site/api/auth/callback/github`
 4. Click **"Register application"**
 5. Copy the **Client ID**
 6. Click **"Generate a new client secret"** and copy it immediately (shown only once)
@@ -197,9 +197,9 @@ npx convex env set SITE_URL="https://artful-cod-78.convex.site"
 
 ```bash
 cd packages/backend
-npx convex env set GITHUB_CLIENT_ID="your_client_id_here"
-npx convex env set GITHUB_CLIENT_SECRET="your_client_secret_here"
-npx convex env set SITE_URL="https://artful-cod-78.convex.site"
+npx convex env set GITHUB_CLIENT_ID="<YOUR_VALUE>"
+npx convex env set GITHUB_CLIENT_SECRET="<YOUR_VALUE>"
+npx convex env set SITE_URL="https://<YOUR_CONVEX_DEPLOYMENT>.convex.site"
 ```
 
 ### Step 3: Update Backend Auth Configuration
@@ -309,16 +309,16 @@ In `apps/native/app/(auth)/landing.tsx`, add the GitHub button and hook usage.
 1. Click **"Create Credentials"** → **"OAuth client ID"**
 2. Application type: **Web application**
 3. Name: `UGC - Convex`
-4. Authorized JavaScript origins: `https://artful-cod-78.convex.site`
-5. Authorized redirect URIs: `https://artful-cod-78.convex.site/api/auth/callback/google`
+4. Authorized JavaScript origins: `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site`
+5. Authorized redirect URIs: `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site/api/auth/callback/google`
 6. Copy **Client ID** and **Client Secret**
 
 ### Step 3: Set Environment Variables
 
 ```bash
 cd packages/backend
-npx convex env set GOOGLE_CLIENT_ID="your_client_id_here"
-npx convex env set GOOGLE_CLIENT_SECRET="your_client_secret_here"
+npx convex env set GOOGLE_CLIENT_ID="<YOUR_VALUE>"
+npx convex env set GOOGLE_CLIENT_SECRET="<YOUR_VALUE>"
 ```
 
 ### Step 4: Add to Backend Configuration
@@ -396,8 +396,8 @@ export const useGoogleAuth = () => {
 4. Enable **"Sign in with Apple"**
 5. Click **Configure**:
    - Primary App ID: `com.ugc.app`
-   - Domains: `artful-cod-78.convex.site`
-   - Return URLs: `https://artful-cod-78.convex.site/api/auth/callback/apple`
+   - Domains: `<YOUR_CONVEX_DEPLOYMENT>.convex.site`
+   - Return URLs: `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site/api/auth/callback/apple`
 6. Save
 
 ### Step 3: Create Private Key
@@ -446,8 +446,8 @@ console.log("\nExpires in 180 days. Set a reminder to regenerate!");
 
 ```bash
 cd packages/backend
-npx convex env set APPLE_CLIENT_ID="com.ugc.web"
-npx convex env set APPLE_CLIENT_SECRET="eyJhbGciOiJFUzI1NiIs..."
+npx convex env set APPLE_CLIENT_ID="<YOUR_VALUE>"
+npx convex env set APPLE_CLIENT_SECRET="<YOUR_VALUE>"
 npx convex env set APPLE_APP_BUNDLE_IDENTIFIER="com.ugc.app"
 ```
 
@@ -713,9 +713,9 @@ trustedOrigins: [
 
 **Solution:**
 
-1. Verify callback URL matches exactly: `https://artful-cod-78.convex.site/api/auth/callback/{provider}`
+1. Verify callback URL matches exactly: `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site/api/auth/callback/{provider}`
 2. Check for trailing slashes - must match exactly
-3. Verify `SITE_URL` env var is set to `https://artful-cod-78.convex.site`
+3. Verify `SITE_URL` env var is set to `https://<YOUR_CONVEX_DEPLOYMENT>.convex.site`
 
 ### Apple Sign-In "aud claim" Error
 

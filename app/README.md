@@ -1,4 +1,4 @@
-# convoexpo-and-nextjs-web-bun-better-auth
+# ugc
 
 This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines Next.js, Convex, and more.
 
@@ -60,7 +60,7 @@ For more details, see the guide on [Deploying to Cloudflare with Alchemy](https:
 ## Project Structure
 
 ```
-convoexpo-and-nextjs-web-bun-better-auth/
+ugc/
 ├── apps/
 │   ├── web/         # Frontend application (Next.js)
 │   ├── native/      # Mobile application (React Native, Expo)

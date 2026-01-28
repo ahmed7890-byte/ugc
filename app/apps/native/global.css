@@ -13,45 +13,55 @@
 
 @layer theme {
   @variant light {
-    /* Page backgrounds - cream #fffef8 */
-    --background: oklch(99.6141% 0.007875 99.05);
-    /* Primary text - navy #06273a */
-    --foreground: oklch(25.9985% 0.051504 238.78);
-    /* Brand primary - navy #06273a (for buttons, headers) */
-    --primary: oklch(25.9985% 0.051504 238.78);
-    --primary-foreground: oklch(99.6141% 0.007875 99.05);
-    /* Brand accent - sage #85b09a */
-    --accent: oklch(71.9703% 0.056261 162.39);
-    --accent-foreground: oklch(25.9985% 0.051504 238.78);
-    /* Cards, inputs - white #ffffff */
+    /* Fiverr-style theme - Light mode */
+    /* Page backgrounds - pure white */
+    --background: oklch(100% 0 0);
+    /* Primary text - dark gray #222325 */
+    --foreground: oklch(25% 0.005 240);
+    /* Brand primary - Fiverr green #1DBF73 */
+    --primary: oklch(70% 0.18 155);
+    --primary-foreground: oklch(100% 0 0);
+    /* Brand accent - Pro gold #ffbe5b */
+    --accent: oklch(85% 0.13 80);
+    --accent-foreground: oklch(25% 0.005 240);
+    /* Cards, inputs - white */
     --surface: oklch(100% 0 0);
-    --surface-foreground: oklch(25.9985% 0.051504 238.78);
-    /* Secondary text - gray #666666 */
-    --muted: oklch(51.0278% 0 0);
-    /* Borders - #e5e5e5 */
-    --border: oklch(92.1906% 0 0);
-    --divider: oklch(92.1906% 0 0);
+    --surface-foreground: oklch(25% 0.005 240);
+    /* Secondary text - body gray #62646a */
+    --muted: oklch(50% 0.01 250);
+    /* Borders - warm neutral */
+    --border: oklch(90% 0.005 90);
+    --divider: oklch(90% 0.005 90);
+    /* Semantic colors */
+    --success: oklch(70% 0.18 155);
+    --warning: oklch(85% 0.13 80);
+    --info: oklch(60% 0.15 240);
   }
 
   @variant dark {
-    /* Page backgrounds - very dark navy #030d14 (much darker than primary) */
-    --background: oklch(15.1835% 0.023239 235.72);
-    /* Primary text - cream #fffef8 */
-    --foreground: oklch(99.6141% 0.007875 99.05);
-    /* Brand primary - navy #06273a (stands out against dark background) */
-    --primary: oklch(25.9985% 0.051504 238.78);
-    --primary-foreground: oklch(99.6141% 0.007875 99.05);
-    /* Brand accent - sage #85b09a (same) */
-    --accent: oklch(71.9703% 0.056261 162.39);
-    --accent-foreground: oklch(25.9985% 0.051504 238.78);
-    /* Cards - dark navy #0a1822 (between background and primary) */
-    --surface: oklch(20.1713% 0.028043 241.13);
-    --surface-foreground: oklch(99.6141% 0.007875 99.05);
-    /* Secondary text - sage in dark mode */
-    --muted: oklch(71.9703% 0.056261 162.39);
-    /* Borders - subtle dark #162530 */
-    --border: oklch(23.5% 0.035 235);
-    --divider: oklch(23.5% 0.035 235);
+    /* Fiverr-style theme - Dark mode */
+    /* Page backgrounds - dark gray */
+    --background: oklch(20% 0.01 240);
+    /* Primary text - near white */
+    --foreground: oklch(98% 0 0);
+    /* Brand primary - Fiverr green (same) */
+    --primary: oklch(70% 0.18 155);
+    --primary-foreground: oklch(15% 0.01 240);
+    /* Brand accent - Pro gold */
+    --accent: oklch(85% 0.13 80);
+    --accent-foreground: oklch(20% 0.01 240);
+    /* Cards - slightly lighter than background */
+    --surface: oklch(25% 0.01 240);
+    --surface-foreground: oklch(98% 0 0);
+    /* Secondary text - muted light */
+    --muted: oklch(65% 0.005 240);
+    /* Borders - subtle dark */
+    --border: oklch(30% 0.01 240);
+    --divider: oklch(30% 0.01 240);
+    /* Semantic colors */
+    --success: oklch(70% 0.18 155);
+    --warning: oklch(85% 0.13 80);
+    --info: oklch(60% 0.15 240);
   }
 }
 

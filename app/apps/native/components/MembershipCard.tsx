@@ -40,8 +40,9 @@ export function MembershipCard({
   disableAnimation = false,
 }: MembershipCardProps) {
   // Theme colors with fallbacks to handle timing issue where useThemeColor may return "invalid"
-  const foreground = useThemeColor("foreground") || "#06273a";
-  const background = useThemeColor("background") || "#fffef8";
+  // Fiverr-style theme colors
+  const foreground = useThemeColor("foreground") || "#222325";
+  const background = useThemeColor("background") || "#FFFFFF";
   const border = useThemeColor("border") || "#e5e5e5";
 
   // Format member since date to "Month Year" format

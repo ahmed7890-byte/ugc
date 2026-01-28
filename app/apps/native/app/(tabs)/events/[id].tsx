@@ -41,7 +41,7 @@ export default function EventDetail() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const primaryForeground = "#fffef8";
+  const primaryForeground = "#FFFFFF";
 
   // Auth state
   const { isAuthenticated } = useConvexAuth();
@@ -571,7 +571,7 @@ function RsvpForm({
   onSubmit: () => void;
 }) {
   const accent = useThemeColor("accent");
-  const primaryForeground = "#fffef8";
+  const primaryForeground = "#FFFFFF";
 
   return (
     <>
@@ -827,8 +827,8 @@ function GuestButton({
   const scale = useSharedValue(1);
   // Add fallbacks to handle timing issue where useThemeColor may return "invalid" before theme loads
   const accent = useThemeColor("accent") || "#85b09a";
-  const foreground = useThemeColor("foreground") || "#06273a";
-  const primaryForeground = "#fffef8";
+  const foreground = useThemeColor("foreground") || "#222325";
+  const primaryForeground = "#FFFFFF";
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -884,7 +884,7 @@ function SubmitButton({
 }) {
   const scale = useSharedValue(1);
   // Add fallbacks to handle timing issue where useThemeColor may return "invalid" before theme loads
-  const foreground = useThemeColor("foreground") || "#06273a";
+  const foreground = useThemeColor("foreground") || "#222325";
   const accent = useThemeColor("accent") || "#85b09a";
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -961,8 +961,8 @@ function ActionButton({
   const scale = useSharedValue(1);
   // Add fallbacks to handle timing issue where useThemeColor may return "invalid" before theme loads
   const accent = useThemeColor("accent") || "#85b09a";
-  const foreground = useThemeColor("foreground") || "#06273a";
-  const primaryForeground = "#fffef8";
+  const foreground = useThemeColor("foreground") || "#222325";
+  const primaryForeground = "#FFFFFF";
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],

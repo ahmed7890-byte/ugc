@@ -1,6 +1,6 @@
 # Storybook Implementation Plan
 
-This document provides a comprehensive plan for implementing Storybook in the `convoexpo-and-nextjs-web-bun-better-auth` monorepo, covering both the Expo React Native app (`apps/native`) and the Next.js web app (`apps/web`).
+This document provides a comprehensive plan for implementing Storybook in a monorepo with both an Expo React Native app (`apps/native`) and a Next.js web app (`apps/web`).
 
 ---
 
@@ -19,94 +19,83 @@ This document provides a comprehensive plan for implementing Storybook in the `c
 
 ## Current Codebase Analysis
 
+> **Template Section**: Run the following analysis on your codebase to document your current component inventory.
+
 ### Project Overview
 
-| Aspect                 | Details                       |
-| ---------------------- | ----------------------------- |
-| **Monorepo Tool**      | Turborepo with Bun workspaces |
-| **Package Manager**    | Bun v1.2.20                   |
-| **Linting/Formatting** | Biome                         |
-| **Git Hooks**          | Lefthook                      |
+| Aspect                 | Details                          |
+| ---------------------- | -------------------------------- |
+| **Monorepo Tool**      | (e.g., Turborepo, Nx, Lerna)     |
+| **Package Manager**    | (e.g., Bun, pnpm, npm, yarn)     |
+| **Linting/Formatting** | (e.g., Biome, ESLint + Prettier) |
+| **Git Hooks**          | (e.g., Lefthook, Husky)          |
 
 ### Apps Structure
 
-#### `apps/web` - Next.js Admin Portal
+#### `apps/web` - Web Application
 
-- **Framework**: Next.js 16 with App Router
-- **React Version**: 19.2.3
-- **Styling**: Tailwind CSS v4 via `@tailwindcss/postcss`
-- **Component Library**: shadcn/ui built on `@base-ui/react`
-- **CSS Entry**: `src/index.css`
-- **Variant System**: `class-variance-authority` (cva)
+- **Framework**: (e.g., Next.js, Remix, Vite)
+- **React Version**: (check package.json)
+- **Styling**: (e.g., Tailwind CSS, styled-components)
+- **Component Library**: (e.g., shadcn/ui, Radix, MUI)
+- **CSS Entry**: (e.g., `src/index.css`, `src/globals.css`)
+- **Variant System**: (e.g., `class-variance-authority`, `tailwind-variants`)
 
 **Existing Components:**
+
+> Run `find apps/web/src/components -name "*.tsx" | head -20` to list your components
 
 ```
 apps/web/src/components/
 ├── ui/
-│   ├── button.tsx      # CVA variants: default, outline, secondary, ghost, destructive, link
+│   ├── button.tsx
 │   ├── input.tsx
-│   ├── label.tsx
 │   ├── card.tsx
-│   ├── checkbox.tsx
-│   ├── dropdown-menu.tsx
-│   ├── skeleton.tsx
-│   └── sonner.tsx      # Toast notifications
-├── header.tsx
-├── loader.tsx
-├── mode-toggle.tsx
-├── providers.tsx
-├── sign-in-form.tsx
-├── sign-up-form.tsx
-├── theme-provider.tsx
-└── user-menu.tsx
+│   └── ...
+└── ...
 ```
 
-#### `apps/native` - Expo Customer App
+#### `apps/native` - React Native Application
 
-- **Framework**: Expo SDK 54 with expo-router
-- **React Native**: 0.81.5
-- **React Version**: 19.1.0
-- **Styling**: UniWind (Tailwind v4 for React Native)
-- **Component Library**: heroui-native v1.0.0-beta.12
-- **CSS Entry**: `global.css`
-- **Metro Config**: Custom with monorepo support
+- **Framework**: (e.g., Expo SDK, bare React Native)
+- **React Native Version**: (check package.json)
+- **React Version**: (check package.json)
+- **Styling**: (e.g., UniWind, NativeWind, StyleSheet)
+- **Component Library**: (e.g., heroui-native, React Native Paper)
+- **CSS Entry**: (e.g., `global.css`)
+- **Metro Config**: (describe any custom configuration)
 
 **Existing Components:**
 
+> Run `find apps/native/components -name "*.tsx" | head -20` to list your components
+
 ```
 apps/native/components/
-├── CategoryFilter.tsx      # Animated filter chips with Reanimated
-├── ExternalLinkButton.tsx
-├── LastUsedIndicator.tsx
-├── MembershipCard.tsx
-├── container.tsx
-├── form.tsx               # FormContainer, FormHeader, StyledTextInput, StyledButton
-├── keyboard/
-│   ├── KeyboardAwareForm.tsx
-│   └── KeyboardAwareForm.native.tsx
-├── sign-in.tsx
-├── sign-up.tsx
-└── theme-toggle.tsx
+├── Button.tsx
+├── Card.tsx
+├── Form.tsx
+└── ...
 ```
 
 **Theme System:**
 
 ```typescript
-// apps/native/theme/colors.ts
-export const UGC_COLORS = {
-  navy: "#06273a",
-  sage: "#85b09a",
-  cream: "#fffef8",
-  white: "#ffffff",
+// apps/native/theme/colors.ts (example)
+export const BRAND_COLORS = {
+  primary: "#your-primary-color",
+  secondary: "#your-secondary-color",
+  background: "#your-background-color",
+  foreground: "#your-foreground-color",
 } as const;
 ```
 
 ### Current State
 
-- **No existing Storybook configuration**
-- **No `.stories.tsx` files**
-- **No `.storybook/` directories**
+> Document your current Storybook status:
+
+- **Existing Storybook configuration?** (Yes/No)
+- **Existing `.stories.tsx` files?** (Yes/No, count if applicable)
+- **Existing `.storybook/` directories?** (Yes/No)
 
 ---
 
@@ -126,7 +115,7 @@ Given the fundamental differences between React Native and Next.js components, w
 ### High-Level Structure
 
 ```
-convoexpo-and-nextjs-web-bun-better-auth/
+your-monorepo/
 ├── turbo.json                    # Storybook tasks
 ├── package.json                  # Root storybook scripts
 ├── biome.jsonc                   # Ignore storybook outputs
@@ -583,7 +572,7 @@ export default config;
 import type { Preview } from "@storybook/react-native";
 import { View, Appearance } from "react-native";
 import { withBackgrounds } from "@storybook/addon-ondevice-backgrounds";
-import { UGC_COLORS } from "../theme/colors";
+import { BRAND_COLORS } from "../theme/colors";
 
 const preview: Preview = {
   decorators: [
@@ -593,7 +582,7 @@ const preview: Preview = {
         style={{
           flex: 1,
           padding: 16,
-          backgroundColor: UGC_COLORS.cream,
+          backgroundColor: BRAND_COLORS.cream,
         }}
       >
         <Story />
@@ -615,9 +604,9 @@ const preview: Preview = {
     backgrounds: {
       default: Appearance.getColorScheme() === "dark" ? "dark" : "light",
       values: [
-        { name: "light", value: UGC_COLORS.cream },
-        { name: "dark", value: UGC_COLORS.navy },
-        { name: "white", value: UGC_COLORS.white },
+        { name: "light", value: BRAND_COLORS.cream },
+        { name: "dark", value: BRAND_COLORS.navy },
+        { name: "white", value: BRAND_COLORS.white },
       ],
     },
   },
@@ -657,15 +646,15 @@ const StorybookUIRoot = view.getStorybookUI({
     name: "StyledButton",
   },
 
-  // Theme customization
+  // Theme customization - replace with your brand colors
   theme: {
-    backgroundColor: "#fffef8",
-    headerTextColor: "#06273a",
-    labelColor: "#06273a",
-    borderColor: "#85b09a",
-    previewBorderColor: "#85b09a",
-    buttonTextColor: "#06273a",
-    buttonActiveTextColor: "#fffef8",
+    backgroundColor: "<background-color>",
+    headerTextColor: "<primary-color>",
+    labelColor: "<primary-color>",
+    borderColor: "<secondary-color>",
+    previewBorderColor: "<secondary-color>",
+    buttonTextColor: "<primary-color>",
+    buttonActiveTextColor: "<background-color>",
   },
 });
 
@@ -782,39 +771,35 @@ Alternatively, create a dedicated entry point for Storybook mode.
 
 ### Step 2.8: Create Component Stories
 
-#### Form Component Stories
+> **Template Section**: Adapt these examples to your own components. Replace the placeholder components with your actual component imports.
+
+#### Button Stories (Native)
 
 ```typescript
-// apps/native/components/form.stories.tsx
+// apps/native/components/Button.stories.tsx
 import type { Meta, StoryObj } from "@storybook/react-native";
 import { View } from "react-native";
 import { fn } from "@storybook/test";
-import {
-  FormContainer,
-  FormHeader,
-  StyledTextInput,
-  StyledButton,
-} from "./form";
+import { Button } from "./Button"; // Import your actual Button component
 
-// StyledButton Stories
-const buttonMeta = {
-  title: "Components/Form/StyledButton",
-  component: StyledButton,
+const meta = {
+  title: "Components/Button",
+  component: Button,
   argTypes: {
     variant: {
       control: "select",
-      options: ["primary", "secondary", "tertiary"],
+      options: ["primary", "secondary", "outline"],
     },
     isLoading: {
       control: "boolean",
     },
-    label: {
-      control: "text",
+    disabled: {
+      control: "boolean",
     },
   },
   args: {
     onPress: fn(),
-    label: "Button",
+    children: "Button",
   },
   decorators: [
     (Story) => (
@@ -823,53 +808,60 @@ const buttonMeta = {
       </View>
     ),
   ],
-} satisfies Meta<typeof StyledButton>;
+} satisfies Meta<typeof Button>;
 
-export default buttonMeta;
-type ButtonStory = StoryObj<typeof buttonMeta>;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Primary: ButtonStory = {
+export const Primary: Story = {
   args: {
     variant: "primary",
-    label: "Primary Button",
+    children: "Primary Button",
   },
 };
 
-export const Secondary: ButtonStory = {
+export const Secondary: Story = {
   args: {
     variant: "secondary",
-    label: "Secondary Button",
+    children: "Secondary Button",
   },
 };
 
-export const Tertiary: ButtonStory = {
+export const Outline: Story = {
   args: {
-    variant: "tertiary",
-    label: "Tertiary Button",
+    variant: "outline",
+    children: "Outline Button",
   },
 };
 
-export const Loading: ButtonStory = {
+export const Loading: Story = {
   args: {
     isLoading: true,
-    label: "Loading...",
+    children: "Loading...",
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+    children: "Disabled Button",
   },
 };
 ```
 
-#### StyledTextInput Stories
+#### TextInput Stories (Native)
 
 ```typescript
-// apps/native/components/styled-text-input.stories.tsx
+// apps/native/components/TextInput.stories.tsx
 import type { Meta, StoryObj } from "@storybook/react-native";
 import { View } from "react-native";
 import { useState } from "react";
 import { fn } from "@storybook/test";
-import { StyledTextInput } from "./form";
+import { TextInput } from "./TextInput"; // Import your actual TextInput component
 
 const meta = {
-  title: "Components/Form/StyledTextInput",
-  component: StyledTextInput,
+  title: "Components/TextInput",
+  component: TextInput,
   argTypes: {
     keyboardType: {
       control: "select",
@@ -890,22 +882,22 @@ const meta = {
       </View>
     ),
   ],
-} satisfies Meta<typeof StyledTextInput>;
+} satisfies Meta<typeof TextInput>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Wrapper component to handle state
-const TextInputWithState = (props: React.ComponentProps<typeof StyledTextInput>) => {
+const TextInputWithState = (props: React.ComponentProps<typeof TextInput>) => {
   const [value, setValue] = useState(props.value || "");
-  return <StyledTextInput {...props} value={value} onChangeText={setValue} />;
+  return <TextInput {...props} value={value} onChangeText={setValue} />;
 };
 
 export const Default: Story = {
   render: (args) => <TextInputWithState {...args} />,
   args: {
-    label: "Email",
-    placeholder: "Enter your email",
+    label: "Label",
+    placeholder: "Enter text...",
     value: "",
     onChangeText: fn(),
   },
@@ -939,71 +931,48 @@ export const Email: Story = {
 };
 ```
 
-#### CategoryFilter Stories
+#### Card Stories (Native)
 
 ```typescript
-// apps/native/components/CategoryFilter.stories.tsx
+// apps/native/components/Card.stories.tsx
 import type { Meta, StoryObj } from "@storybook/react-native";
-import { useState } from "react";
-import { View } from "react-native";
-import { CategoryFilter, EVENT_CATEGORIES, type Category } from "./CategoryFilter";
+import { View, Text } from "react-native";
+import { Card } from "./Card"; // Import your actual Card component
 
 const meta = {
-  title: "Components/CategoryFilter",
-  component: CategoryFilter,
+  title: "Components/Card",
+  component: Card,
   decorators: [
     (Story) => (
-      <View style={{ width: "100%" }}>
+      <View style={{ width: "100%", padding: 16 }}>
         <Story />
       </View>
     ),
   ],
-} satisfies Meta<typeof CategoryFilter>;
+} satisfies Meta<typeof Card>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Interactive wrapper
-const CategoryFilterWithState = ({
-  categories,
-  initialCategory = null,
-}: {
-  categories: Category[];
-  initialCategory?: string | null;
-}) => {
-  const [selected, setSelected] = useState<string | null>(initialCategory);
-  return (
-    <CategoryFilter
-      categories={categories}
-      selectedCategory={selected}
-      onSelectCategory={setSelected}
-    />
-  );
-};
-
 export const Default: Story = {
-  render: () => <CategoryFilterWithState categories={EVENT_CATEGORIES} />,
-};
-
-export const WithSelection: Story = {
   render: () => (
-    <CategoryFilterWithState
-      categories={EVENT_CATEGORIES}
-      initialCategory="seasonal"
-    />
+    <Card>
+      <Text>Card content goes here</Text>
+    </Card>
   ),
 };
 
-export const CustomCategories: Story = {
+export const WithHeader: Story = {
   render: () => (
-    <CategoryFilterWithState
-      categories={[
-        { id: null, label: "All", icon: "apps-outline" },
-        { id: "music", label: "Music", icon: "musical-notes-outline" },
-        { id: "sports", label: "Sports", icon: "football-outline" },
-        { id: "food", label: "Food", icon: "restaurant-outline" },
-      ]}
-    />
+    <Card>
+      <Card.Header>
+        <Card.Title>Card Title</Card.Title>
+        <Card.Description>Card description text</Card.Description>
+      </Card.Header>
+      <Card.Content>
+        <Text>Main card content</Text>
+      </Card.Content>
+    </Card>
   ),
 };
 ```
@@ -1047,16 +1016,16 @@ export default config;
 ```typescript
 // apps/native/.storybook-web/preview.tsx
 import type { Preview } from "@storybook/react-native-web-vite";
-import { UGC_COLORS } from "../theme/colors";
+import { BRAND_COLORS } from "../theme/colors";
 
 const preview: Preview = {
   parameters: {
     backgrounds: {
       default: "cream",
       values: [
-        { name: "cream", value: UGC_COLORS.cream },
-        { name: "navy", value: UGC_COLORS.navy },
-        { name: "white", value: UGC_COLORS.white },
+        { name: "cream", value: BRAND_COLORS.cream },
+        { name: "navy", value: BRAND_COLORS.navy },
+        { name: "white", value: BRAND_COLORS.white },
       ],
     },
   },
@@ -1215,7 +1184,7 @@ For each component, create stories covering:
 After implementation, your project will have this structure:
 
 ```
-convoexpo-and-nextjs-web-bun-better-auth/
+your-monorepo/
 ├── .gitignore                           # + storybook-static/
 ├── turbo.json                           # + storybook tasks
 ├── package.json                         # + storybook scripts
@@ -1234,10 +1203,10 @@ convoexpo-and-nextjs-web-bun-better-auth/
 │   │   ├── metro.config.cjs             # + withStorybook
 │   │   ├── package.json                 # + storybook deps & scripts
 │   │   └── components/
-│   │       ├── form.tsx
-│   │       ├── form.stories.tsx
-│   │       ├── CategoryFilter.tsx
-│   │       ├── CategoryFilter.stories.tsx
+│   │       ├── Button.tsx
+│   │       ├── Button.stories.tsx
+│   │       ├── Card.tsx
+│   │       ├── Card.stories.tsx
 │   │       └── ...
 │   │
 │   └── web/
@@ -1254,8 +1223,6 @@ convoexpo-and-nextjs-web-bun-better-auth/
 │           │   ├── card.tsx
 │           │   ├── card.stories.tsx
 │           │   └── ...
-│           ├── sign-in-form.tsx
-│           ├── sign-in-form.stories.tsx
 │           └── ...
 │
 └── docs/
@@ -1293,10 +1260,7 @@ bun run storybook:build
 - [ ] Create `.storybook/main.ts`
 - [ ] Create `.storybook/preview.tsx`
 - [ ] Add scripts to `package.json`
-- [ ] Create `button.stories.tsx`
-- [ ] Create `input.stories.tsx`
-- [ ] Create `card.stories.tsx`
-- [ ] Create remaining UI component stories
+- [ ] Create stories for your UI components (Button, Input, Card, etc.)
 - [ ] Test with `bun run storybook:web`
 
 ### Phase 2: Native App (Estimated: 3-4 hours)
@@ -1307,8 +1271,7 @@ bun run storybook:build
 - [ ] Create `.storybook/index.tsx`
 - [ ] Update `metro.config.cjs` with `withStorybook`
 - [ ] Add scripts to `package.json`
-- [ ] Create form component stories
-- [ ] Create CategoryFilter stories
+- [ ] Create stories for your native components
 - [ ] Test on iOS/Android/Web
 
 ### Phase 3: Turborepo & Polish (Estimated: 1 hour)
@@ -1331,9 +1294,9 @@ bun run storybook:build
 
 1. **Storybook Version**: This plan uses Storybook 9.x which is the current latest. Verify compatibility before installation.
 
-2. **UniWind Compatibility**: The native Storybook may require additional configuration to properly render Tailwind styles. Test thoroughly and adjust decorators as needed.
+2. **Tailwind/Styling Compatibility**: The native Storybook may require additional configuration to properly render Tailwind styles (UniWind, NativeWind, etc.). Test thoroughly and adjust decorators as needed.
 
-3. **heroui-native Components**: If documenting heroui-native components, they should work out of the box since they're React Native components.
+3. **Component Library Integration**: If documenting third-party component library components, they should work out of the box since they're React Native components.
 
 4. **CI/CD**: Consider adding Storybook build to your CI pipeline for visual regression testing.
 

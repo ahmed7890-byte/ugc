@@ -33,7 +33,7 @@ export default function Contact() {
 
   // Theme colors for Ionicons
   const accent = useThemeColor("accent");
-  const primaryForeground = "#fffef8";
+  const primaryForeground = "#FFFFFF";
 
   // Get session - authenticated users don't need to enter name/email/phone
   const { data: session } = authClient.useSession();

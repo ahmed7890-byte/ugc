@@ -2,13 +2,12 @@
 
 **Date:** January 13, 2026
 **Issue:** Better-Auth authentication not working in React Native/Expo app
-**Working Reference:** `~/gruckion-workdir/convexpo` repository
 
 ---
 
 ## Executive Summary
 
-This document analyzes why Better-Auth works in the `convexpo` repository but fails in `convoexpo-and-nextjs-web-bun-better-auth`. After a comprehensive comparison of both codebases, **7 critical issues** were identified that prevent authentication from functioning correctly.
+This document analyzes common issues that prevent Better-Auth from functioning correctly in a Convex + Expo setup. After comprehensive analysis, **7 critical issues** were identified that can prevent authentication from working.
 
 ---
 
@@ -21,6 +20,7 @@ This document analyzes why Better-Auth works in the `convexpo` repository but fa
 **Location:** `apps/native/.env`
 
 **Broken Configuration:**
+
 ```env
 EXPO_PUBLIC_CONVEX_URL=https://<YOUR_CONVEX_URL>
 EXPO_PUBLIC_CONVEX_SITE_URL=https://<YOUR_CONVEX_URL>
@@ -29,24 +29,27 @@ EXPO_PUBLIC_CONVEX_SITE_URL=https://<YOUR_CONVEX_URL>
 **Problem:** The `.env` file contains placeholder values `<YOUR_CONVEX_URL>` instead of actual Convex deployment URLs. The auth client's `baseURL` becomes invalid, causing all authentication requests to fail.
 
 **Backend `.env.local` also has issues:**
+
 ```env
 EXPO_PUBLIC_CONVEX_SITE_URL=  # EMPTY!
 NEXT_PUBLIC_CONVEX_SITE_URL=  # EMPTY!
 ```
 
-**Working Configuration (from convexpo):**
-- Uses actual Convex URLs like `https://brilliant-antelope-830.convex.cloud`
+**Working Configuration:**
+
+- Uses actual Convex URLs like `https://<YOUR_CONVEX_DEPLOYMENT>.convex.cloud`
 - The `.site` URL variant is required for HTTP actions
 
 **Fix Required:**
+
 ```env
 # apps/native/.env
-EXPO_PUBLIC_CONVEX_URL=https://artful-cod-78.convex.cloud
-EXPO_PUBLIC_CONVEX_SITE_URL=https://artful-cod-78.convex.site
+EXPO_PUBLIC_CONVEX_URL=https://<YOUR_CONVEX_DEPLOYMENT>.convex.cloud
+EXPO_PUBLIC_CONVEX_SITE_URL=https://<YOUR_CONVEX_DEPLOYMENT>.convex.site
 
 # packages/backend/.env.local
-EXPO_PUBLIC_CONVEX_SITE_URL=https://artful-cod-78.convex.site
-NEXT_PUBLIC_CONVEX_SITE_URL=https://artful-cod-78.convex.site
+EXPO_PUBLIC_CONVEX_SITE_URL=https://<YOUR_CONVEX_DEPLOYMENT>.convex.site
+NEXT_PUBLIC_CONVEX_SITE_URL=https://<YOUR_CONVEX_DEPLOYMENT>.convex.site
 ```
 
 ---
@@ -58,6 +61,7 @@ NEXT_PUBLIC_CONVEX_SITE_URL=https://artful-cod-78.convex.site
 **Location:** `apps/native/app.json`
 
 **Broken Configuration:**
+
 ```json
 {
   "expo": {
@@ -66,7 +70,8 @@ NEXT_PUBLIC_CONVEX_SITE_URL=https://artful-cod-78.convex.site
 }
 ```
 
-**Working Configuration (from convexpo):**
+**Working Configuration:**
+
 ```json
 {
   "expo": {
@@ -90,12 +95,13 @@ NEXT_PUBLIC_CONVEX_SITE_URL=https://artful-cod-78.convex.site
 **Why This Matters:**
 
 The auth client uses SecureStore for token persistence:
+
 ```typescript
 expoClient({
   scheme: Constants.expoConfig?.scheme as string,
   storagePrefix: Constants.expoConfig?.scheme as string,
-  storage: SecureStore,  // Requires expo-secure-store plugin!
-})
+  storage: SecureStore, // Requires expo-secure-store plugin!
+});
 ```
 
 ---
@@ -107,6 +113,7 @@ expoClient({
 **Location:** `packages/backend/convex/auth.ts`
 
 **Broken Configuration:**
+
 ```typescript
 export const authComponent = createClient<DataModel>(components.betterAuth);
 
@@ -121,7 +128,8 @@ export const getCurrentUser = query({...});
 // MISSING: Trigger exports!
 ```
 
-**Working Configuration (from convexpo):**
+**Working Configuration:**
+
 ```typescript
 // convex/auth.ts
 import { authComponent } from "./lib/betterAuth";
@@ -142,12 +150,14 @@ The `triggersApi()` exports are required by the `@convex-dev/better-auth` compon
 **Location:** `packages/backend/convex/auth.ts`
 
 **Broken Configuration:**
+
 ```typescript
 export const authComponent = createClient<DataModel>(components.betterAuth);
 // No options passed!
 ```
 
-**Working Configuration (from convexpo):**
+**Working Configuration:**
+
 ```typescript
 import { type AuthFunctions, createClient } from "@convex-dev/better-auth";
 import { components, internal } from "./_generated/api";
@@ -186,16 +196,18 @@ The `authFunctions` parameter connects the Better Auth component to Convex's int
 **Location:** `apps/native/app/_layout.tsx`
 
 **Broken Configuration:**
+
 ```typescript
 const convex = new ConvexReactClient(env.EXPO_PUBLIC_CONVEX_URL, {
   unsavedChangesWarning: false,
 });
 ```
 
-**Working Configuration (from convexpo):**
+**Working Configuration:**
+
 ```typescript
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL, {
-  expectAuth: true,  // IMPORTANT!
+  expectAuth: true, // IMPORTANT!
   unsavedChangesWarning: false,
   verbose: false,
 });
@@ -204,6 +216,7 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL, {
 **Why This Matters:**
 
 The `expectAuth: true` option tells Convex to pause all queries until the user is authenticated. Without it:
+
 - Queries may fire before auth state is ready
 - Protected queries may fail with "unauthenticated" errors
 - Race conditions between auth and data fetching
@@ -217,12 +230,14 @@ The `expectAuth: true` option tells Convex to pause all queries until the user i
 **Location:** `packages/backend/convex/http.ts`
 
 **Broken Configuration:**
+
 ```typescript
 authComponent.registerRoutes(http, createAuth);
 // No CORS option!
 ```
 
-**Working Configuration (from convexpo):**
+**Working Configuration:**
+
 ```typescript
 authComponent.registerRoutes(http, createAuth, { cors: false });
 ```
@@ -240,6 +255,7 @@ For mobile apps (React Native/Expo), CORS settings can impact whether HTTP reque
 **Location:** `packages/backend/convex/auth.config.ts`
 
 **Broken Configuration:**
+
 ```typescript
 import { getAuthConfigProvider } from "@convex-dev/better-auth/auth-config";
 import type { AuthConfig } from "convex/server";
@@ -249,7 +265,8 @@ export default {
 } satisfies AuthConfig;
 ```
 
-**Working Configuration (from convexpo):**
+**Working Configuration:**
+
 ```typescript
 export default {
   providers: [
@@ -269,14 +286,14 @@ The working project explicitly sets the `domain` and `applicationID` for the aut
 
 ## Package Version Comparison
 
-| Package | Working (convexpo) | Broken (yours) | Notes |
-|---------|-------------------|----------------|-------|
-| `better-auth` | 1.3.11 | 1.4.9 | Major version jump |
-| `@convex-dev/better-auth` | ^0.8.6 | ^0.10.9 | Breaking changes possible |
-| `@better-auth/expo` | 1.3.11 | 1.4.9 | Should match better-auth |
-| `convex` | ^1.27.3 | ^1.31.2 | Minor update |
+| Package                   | Known Working     | Notes                            |
+| ------------------------- | ----------------- | -------------------------------- |
+| `better-auth`             | 1.3.11+           | Check for breaking changes       |
+| `@convex-dev/better-auth` | ^0.8.6+           | Breaking changes possible        |
+| `@better-auth/expo`       | Match better-auth | Should match better-auth version |
+| `convex`                  | ^1.27.3+          | Minor updates usually safe       |
 
-**Recommendation:** If issues persist after fixes, consider downgrading to the working versions.
+**Recommendation:** If issues persist after fixes, consider checking the changelog for breaking changes between your versions.
 
 ---
 
@@ -284,41 +301,45 @@ The working project explicitly sets the `domain` and `applicationID` for the aut
 
 ### Backend Auth Setup
 
-| File | Working | Broken | Issue |
-|------|---------|--------|-------|
-| `convex/auth.ts` | Exports triggers via `triggersApi()` | Only exports `createAuth` and `getCurrentUser` | Missing trigger exports |
-| `convex/auth.ts` | Uses `authFunctions` parameter | No options in `createClient` | Missing authFunctions |
-| `convex/auth.config.ts` | Explicit domain/applicationID | Uses `getAuthConfigProvider()` | Abstraction may fail |
-| `convex/http.ts` | `{ cors: false }` option | No CORS option | May cause issues |
+| File                    | Working                              | Broken                                         | Issue                   |
+| ----------------------- | ------------------------------------ | ---------------------------------------------- | ----------------------- |
+| `convex/auth.ts`        | Exports triggers via `triggersApi()` | Only exports `createAuth` and `getCurrentUser` | Missing trigger exports |
+| `convex/auth.ts`        | Uses `authFunctions` parameter       | No options in `createClient`                   | Missing authFunctions   |
+| `convex/auth.config.ts` | Explicit domain/applicationID        | Uses `getAuthConfigProvider()`                 | Abstraction may fail    |
+| `convex/http.ts`        | `{ cors: false }` option             | No CORS option                                 | May cause issues        |
 
 ### Native App Setup
 
-| File | Working | Broken | Issue |
-|------|---------|--------|-------|
-| `app.json` | Has expo-secure-store plugin | Missing plugin | Token storage fails |
-| `app/_layout.tsx` | `expectAuth: true` | Missing option | Race conditions |
-| `.env` | Actual URLs | Placeholder values | Auth requests fail |
-| `lib/auth-client.ts` | Proper baseURL | Invalid baseURL | All requests fail |
+| File                 | Working                      | Broken             | Issue               |
+| -------------------- | ---------------------------- | ------------------ | ------------------- |
+| `app.json`           | Has expo-secure-store plugin | Missing plugin     | Token storage fails |
+| `app/_layout.tsx`    | `expectAuth: true`           | Missing option     | Race conditions     |
+| `.env`               | Actual URLs                  | Placeholder values | Auth requests fail  |
+| `lib/auth-client.ts` | Proper baseURL               | Invalid baseURL    | All requests fail   |
 
 ---
 
 ## Fix Implementation Plan
 
 ### Step 1: Fix Environment Variables
+
 1. Update `apps/native/.env` with actual Convex URLs
 2. Update `packages/backend/.env.local` with site URLs
 
 ### Step 2: Update app.json
+
 1. Add `expo-secure-store` plugin
 2. Add `expo-web-browser` plugin
 
 ### Step 3: Update Backend Auth
+
 1. Restructure `auth.ts` to include authFunctions
 2. Add trigger exports
 3. Update `auth.config.ts` with explicit provider config
 4. Add CORS option to `http.ts`
 
 ### Step 4: Update Native App
+
 1. Add `expectAuth: true` to ConvexReactClient
 
 ---
@@ -345,19 +366,22 @@ All issues have been fixed. Here's a summary of the changes made:
 ### 1. Environment Variables Fixed
 
 **File:** `apps/native/.env`
+
 ```env
-EXPO_PUBLIC_CONVEX_URL=https://artful-cod-78.convex.cloud
-EXPO_PUBLIC_CONVEX_SITE_URL=https://artful-cod-78.convex.site
+EXPO_PUBLIC_CONVEX_URL=https://<YOUR_CONVEX_DEPLOYMENT>.convex.cloud
+EXPO_PUBLIC_CONVEX_SITE_URL=https://<YOUR_CONVEX_DEPLOYMENT>.convex.site
 ```
 
 **File:** `packages/backend/.env.local`
-- Added `EXPO_PUBLIC_CONVEX_SITE_URL=https://artful-cod-78.convex.site`
-- Added `NEXT_PUBLIC_CONVEX_SITE_URL=https://artful-cod-78.convex.site`
-- Added `NATIVE_APP_URL=convoexpo-and-nextjs-web-bun-better-auth://`
+
+- Added `EXPO_PUBLIC_CONVEX_SITE_URL=https://<YOUR_CONVEX_DEPLOYMENT>.convex.site`
+- Added `NEXT_PUBLIC_CONVEX_SITE_URL=https://<YOUR_CONVEX_DEPLOYMENT>.convex.site`
+- Added `NATIVE_APP_URL=<YOUR_APP_SCHEME>://`
 
 ### 2. Expo Plugins Added
 
 **File:** `apps/native/app.json`
+
 ```json
 "plugins": [
   "expo-font",
@@ -370,6 +394,7 @@ EXPO_PUBLIC_CONVEX_SITE_URL=https://artful-cod-78.convex.site
 ### 3. Auth Triggers and authFunctions Added
 
 **File:** `packages/backend/convex/auth.ts`
+
 - Added `authFunctions` parameter to `createClient`
 - Added `triggers` configuration for user lifecycle events
 - Added trigger exports: `export const { onCreate, onUpdate, onDelete } = authComponent.triggersApi();`
@@ -378,6 +403,7 @@ EXPO_PUBLIC_CONVEX_SITE_URL=https://artful-cod-78.convex.site
 ### 4. expectAuth Added
 
 **File:** `apps/native/app/_layout.tsx`
+
 ```typescript
 const convex = new ConvexReactClient(env.EXPO_PUBLIC_CONVEX_URL, {
   expectAuth: true,
@@ -388,6 +414,7 @@ const convex = new ConvexReactClient(env.EXPO_PUBLIC_CONVEX_URL, {
 ### 5. CORS Configuration Added
 
 **File:** `packages/backend/convex/http.ts`
+
 ```typescript
 authComponent.registerRoutes(http, createAuth, { cors: false });
 ```
@@ -395,6 +422,7 @@ authComponent.registerRoutes(http, createAuth, { cors: false });
 ### 6. Auth Config Updated
 
 **File:** `packages/backend/convex/auth.config.ts`
+
 ```typescript
 export default {
   providers: [
@@ -413,6 +441,7 @@ export default {
 After applying fixes:
 
 1. **Convex functions compiled successfully:** ✅
+
    ```
    ✔ Convex functions ready!
    ```
@@ -449,6 +478,7 @@ After applying fixes:
 **Root Cause:** The root `_layout.tsx` didn't use `Stack.Protected` guards to automatically show/hide screens based on auth state.
 
 **File:** `apps/native/app/_layout.tsx`
+
 ```typescript
 function StackLayout() {
   const { isAuthenticated, isLoading } = useConvexAuth();
@@ -492,20 +522,22 @@ function StackLayout() {
 **Fix:** Sanitized all auth error messages to use generic responses:
 
 **Files Modified:**
+
 - `apps/native/app/(auth)/email/signup.tsx`
 - `apps/native/app/(auth)/email/signin.tsx`
 - `apps/native/app/(auth)/email/(reset)/request-password-reset.tsx`
 - `apps/native/app/(auth)/email/(reset)/reset-password.tsx`
 
 **Error Message Mapping:**
-| Original (Revealing)               | Fixed (Generic)                                                  |
+| Original (Revealing) | Fixed (Generic) |
 |-----------------------------------|------------------------------------------------------------------|
-| "User already exists"             | "Unable to create account. Please check your details or try signing in." |
-| "User not found"                  | "Invalid email or password. Please try again."                   |
-| "Invalid password"                | "Invalid email or password. Please try again."                   |
-| "No user with this email"         | "If an account exists, you'll receive a reset link."            |
+| "User already exists" | "Unable to create account. Please check your details or try signing in." |
+| "User not found" | "Invalid email or password. Please try again." |
+| "Invalid password" | "Invalid email or password. Please try again." |
+| "No user with this email" | "If an account exists, you'll receive a reset link." |
 
 **Security Best Practices Applied:**
+
 1. **Signup/Signin:** Same generic error for both "user exists" and "user not found"
 2. **Password Reset:** Always show success message regardless of email existence
 3. **Rate Limiting Messages:** Preserved (not a security risk to reveal)
@@ -515,6 +547,7 @@ function StackLayout() {
 ## All Files Modified
 
 ### Session 1 (Better Auth Integration)
+
 - `apps/native/.env` - Set actual Convex URLs
 - `apps/native/app.json` - Added expo plugins
 - `apps/native/app/_layout.tsx` - Added expectAuth
@@ -524,6 +557,7 @@ function StackLayout() {
 - `packages/backend/convex/http.ts` - Added CORS config
 
 ### Session 2 (Navigation & Security)
+
 - `apps/native/app/_layout.tsx` - Added Stack.Protected guards (later changed)
 - `apps/native/app/(auth)/email/signup.tsx` - Sanitized error messages
 - `apps/native/app/(auth)/email/signin.tsx` - Sanitized error messages
@@ -531,6 +565,7 @@ function StackLayout() {
 - `apps/native/app/(auth)/email/(reset)/reset-password.tsx` - Sanitized error messages
 
 ### Session 3 (Selective Auth Pattern)
+
 - `apps/native/app/_layout.tsx` - Changed to Selective Auth pattern (no guards)
 - `apps/native/app/(auth)/landing.tsx` - Changed X button to use `router.dismiss()`
 - `docs/AUTH_NAVIGATION_PATTERNS.md` - Created comprehensive documentation
@@ -542,4 +577,3 @@ function StackLayout() {
 - [Convex Better Auth Expo Guide](https://github.com/get-convex/better-auth/blob/main/docs/content/docs/framework-guides/expo.mdx)
 - [Better Auth Triggers Documentation](https://github.com/get-convex/better-auth/blob/main/docs/content/docs/features/triggers.mdx)
 - [OWASP Email Enumeration Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-and-error-messages)
-- Working Reference: `~/gruckion-workdir/convexpo`

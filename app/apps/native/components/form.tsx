@@ -162,6 +162,12 @@ export interface StyledButtonProps {
   variant?: "primary" | "secondary" | "tertiary";
 }
 
+// Fiverr-style theme colors
+// These match the CSS variables defined in global.css
+const BUTTON_THEME_COLORS = {
+  primaryForeground: "#FFFFFF",
+};
+
 export function StyledButton({
   onPress,
   label,
@@ -169,7 +175,7 @@ export function StyledButton({
   variant = "primary",
 }: StyledButtonProps) {
   const foreground = useThemeColor("foreground");
-  const primaryForeground = "#fffef8";
+  const primaryForeground = BUTTON_THEME_COLORS.primaryForeground;
 
   const getClassName = () => {
     switch (variant) {

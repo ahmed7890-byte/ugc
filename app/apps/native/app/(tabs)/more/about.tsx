@@ -1,14 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useThemeColor } from "heroui-native";
 import { Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ExternalLinkButton } from "@/components/ExternalLinkButton";
-
-// Local assets for instant loading
-const HERO_IMAGE = require("@/assets/images/hero-background.jpg");
-const UGC_LOGO = require("@/assets/images/city_uni_club_gold.png");
+import { UGCLogo } from "@/components/UGCLogo";
 
 export default function About() {
   const router = useRouter();
@@ -16,7 +12,7 @@ export default function About() {
 
   // Theme colors for Ionicons
   const foreground = useThemeColor("foreground");
-  const primaryForeground = "#fffef8";
+  const primaryForeground = "#FFFFFF";
 
   return (
     <View className="flex-1 bg-background">
@@ -59,55 +55,24 @@ export default function About() {
         showsVerticalScrollIndicator={false}
         style={{ flex: 1 }}
       >
-        {/* Hero Image */}
-        <View style={{ height: 220 }}>
-          <Image
-            contentFit="cover"
-            source={HERO_IMAGE}
-            style={{ width: "100%", height: "100%" }}
-          />
-          {/* Overlay with logo */}
-          <View
-            style={{
-              position: "absolute",
-              bottom: -40,
-              left: 0,
-              right: 0,
-              alignItems: "center",
-            }}
-          >
-            <View
-              className="bg-surface"
-              style={{
-                width: 80,
-                height: 80,
-                borderRadius: 40,
-                alignItems: "center",
-                justifyContent: "center",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.15,
-                shadowRadius: 8,
-                elevation: 4,
-              }}
-            >
-              <Image
-                contentFit="contain"
-                source={UGC_LOGO}
-                style={{ width: 70, height: 70 }}
-              />
-            </View>
-          </View>
+        {/* Hero Section with Logo */}
+        <View
+          className="bg-primary"
+          style={{
+            height: 180,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <UGCLogo backgroundColor="#FFFFFF" size={80} textColor="#1DBF73" />
         </View>
 
-        {/* Spacer for overlapping logo */}
-        <View style={{ height: 50 }} />
-
-        {/* Club Title */}
+        {/* Title */}
         <View
           style={{
             alignItems: "center",
             paddingHorizontal: 20,
+            marginTop: 24,
             marginBottom: 24,
           }}
         >
@@ -115,20 +80,19 @@ export default function About() {
             className="text-center text-foreground"
             style={{
               fontSize: 26,
-              fontWeight: "300",
-              fontFamily: "serif",
+              fontWeight: "600",
             }}
           >
-            User Generated Content
+            UGC Marketplace
           </Text>
           <Text
-            className="text-center text-accent"
+            className="text-center text-muted"
             style={{
               fontSize: 16,
               marginTop: 4,
             }}
           >
-            Established 1895
+            Connect with creators
           </Text>
         </View>
 

@@ -16,7 +16,7 @@ export default function DiningRoom() {
   // Theme colors for Ionicons
   const foreground = useThemeColor("foreground");
   const accent = useThemeColor("accent");
-  const primaryForeground = "#fffef8";
+  const primaryForeground = "#FFFFFF";
 
   const handleCall = () => {
     Linking.openURL("tel:02071676682");

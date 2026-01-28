@@ -16,7 +16,7 @@ export default function MembershipScreen() {
   // Theme colors for icons
   const foreground = useThemeColor("foreground");
   const accent = useThemeColor("accent");
-  const primaryForeground = "#fffef8";
+  const primaryForeground = "#FFFFFF";
 
   const handleSignIn = () => {
     router.push("/(auth)/landing");

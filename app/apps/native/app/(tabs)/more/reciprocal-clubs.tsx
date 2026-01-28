@@ -53,7 +53,7 @@ export default function ReciprocalClubs() {
   // Theme colors for Ionicons
   const foreground = useThemeColor("foreground");
   const accent = useThemeColor("accent");
-  const primaryForeground = "#fffef8";
+  const primaryForeground = "#FFFFFF";
 
   const handleSignIn = () => {
     router.push("/(auth)/landing");

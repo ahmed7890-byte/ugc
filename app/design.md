@@ -1,59 +1,51 @@
-# UGC - Design System
+# Design System
 
-**Source:** Design extracted from original branding.
-**Extracted:** 11:48
+**Source:** Design system template.
 
 ---
 
 ## Logo
 
-- **URL:** <https://static.wixstatic.com/media/5e0aaa_0e0a73fe0edb472b8eebfde40d24d47f~mv2.png/v1/fill/w_102,h_102,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Untitled%20(Instagram%20Post).png>
-- **Dimensions:** 102×102px
+<!-- Replace with your logo URL and dimensions -->
+
+- **URL:** `<your-logo-url>`
+- **Dimensions:** 102×102px (recommended)
 
 ### Favicons
 
-| Type             | URL                                                 |
-| ---------------- | --------------------------------------------------- |
-| icon (192x192)   | <https://static.parastorage.com/client/pfavico.ico> |
-| shortcut icon    | <https://static.parastorage.com/client/pfavico.ico> |
-| apple-touch-icon | <https://static.parastorage.com/client/pfavico.ico> |
-| favicon.ico      | `https://ugc.com/favicon.ico`                       |
+<!-- Replace with your favicon URLs -->
+
+| Type             | URL                  |
+| ---------------- | -------------------- |
+| icon (192x192)   | `<your-favicon-url>` |
+| shortcut icon    | `<your-favicon-url>` |
+| apple-touch-icon | `<your-favicon-url>` |
+| favicon.ico      | `<your-favicon-url>` |
 
 ---
 
 ## Colors
 
-### Primary Brand Colors (Visible in Live Site)
+### Primary Brand Colors
 
-These are the colors actually used in the visible design:
+<!-- Replace placeholder values with your brand colors -->
 
-| Color      | Hex       | RGB                | Usage                                                |
-| ---------- | --------- | ------------------ | ---------------------------------------------------- |
-| Dark Navy  | `#06273a` | rgb(6, 39, 58)     | Hero backgrounds, buttons, text on light backgrounds |
-| Muted Sage | `#8fa89d` | rgb(143, 168, 157) | Header/nav background, subtle accents                |
-| Cream      | `#fffef8` | rgb(255, 254, 248) | Page backgrounds, text on dark backgrounds           |
-| White      | `#ffffff` | rgb(255, 255, 255) | Input backgrounds, cards on light theme              |
+| Token      | Placeholder          | Usage                                                |
+| ---------- | -------------------- | ---------------------------------------------------- |
+| Primary    | `<primary-color>`    | Hero backgrounds, buttons, text on light backgrounds |
+| Secondary  | `<secondary-color>`  | Header/nav background, subtle accents                |
+| Background | `<background-color>` | Page backgrounds, text on dark backgrounds           |
+| White      | `#ffffff`            | Input backgrounds, cards on light theme              |
 
 ### UI Color Applications
 
-| Context                         | Background | Text      | Border          |
-| ------------------------------- | ---------- | --------- | --------------- |
-| Dark sections (hero, footer)    | `#06273a`  | `#fffef8` | `#fffef8` (1px) |
-| Light sections (forms, content) | `#fffef8`  | `#06273a` | `#06273a` (1px) |
-| Header/Navigation               | `#8fa89d`  | `#06273a` | —               |
-| Primary buttons                 | `#06273a`  | `#fffef8` | —               |
-| Secondary buttons               | `#fffef8`  | `#06273a` | `#06273a`       |
-
-### Unused CSS Variables (from Wix template)
-
-These exist in the stylesheet but are NOT used in the visible design:
-
-| Color         | Hex       | CSS Variable                    | Note   |
-| ------------- | --------- | ------------------------------- | ------ |
-| Deep Brown    | `#783600` | `--wst-color-custom-20`         | Unused |
-| Bright Orange | `#f06c00` | `--wst-color-custom-19`         | Unused |
-| Golden Yellow | `#f6a800` | `--wst-color-custom-14`         | Unused |
-| Sky Blue      | `#32a7ea` | `--wst-color-fill-base-shade-2` | Unused |
+| Context                         | Background           | Text                 | Border                     |
+| ------------------------------- | -------------------- | -------------------- | -------------------------- |
+| Dark sections (hero, footer)    | `<primary-color>`    | `<background-color>` | `<background-color>` (1px) |
+| Light sections (forms, content) | `<background-color>` | `<primary-color>`    | `<primary-color>` (1px)    |
+| Header/Navigation               | `<secondary-color>`  | `<primary-color>`    | —                          |
+| Primary buttons                 | `<primary-color>`    | `<background-color>` | —                          |
+| Secondary buttons               | `<background-color>` | `<primary-color>`    | `<primary-color>`          |
 
 ---
 
@@ -61,38 +53,38 @@ These exist in the stylesheet but are NOT used in the visible design:
 
 ### Font Families
 
-#### Primary: Cormorant Garamond
+<!-- Replace placeholder fonts with your brand fonts -->
 
-- **Variant:** Light
-- **Fallbacks:** cormorantgaramond, cormorant garamond
+#### Primary: `<heading-font>`
+
+- **Variant:** Light (recommended)
 - **Usage:** Headings, display text
 
-#### Secondary: Raleway
+#### Secondary: `<body-font>`
 
 - **Usage:** Body text, navigation, captions
 
-#### System Fonts
+#### System Fonts (Fallbacks)
 
 - **Times New Roman** (fallbacks: times)
-- **Helvetica** (fallbacks: Arial, メイリオ, meiryo, ヒラギノ角ゴ pro w3, hiragino kaku gothic pro)
+- **Helvetica** (fallbacks: Arial)
 - **Arial**
-- **helvetica-w01-roman**
 
 ### Type Scale
 
-| Element            | Font                | Size              | Line Height    | Weight |
-| ------------------ | ------------------- | ----------------- | -------------- | ------ |
-| Heading 1 (Large)  | Cormorant Garamond  | 40px (2.50rem)    | 0.80 (tight)   | —      |
-| Heading 1 (Bold)   | Cormorant Garamond  | 40px (2.50rem)    | 1.35           | 700    |
-| Heading 1 (Medium) | Times New Roman     | 35px (2.19rem)    | 0.91 (tight)   | —      |
-| Heading 2          | Cormorant Garamond  | 22px (1.38rem)    | 1.41           | —      |
-| Body/Nav           | Raleway             | 15px (0.94rem)    | 1.67 (relaxed) | —      |
-| Subheading         | helvetica-w01-roman | 15px (0.94rem)    | 1.40           | 700    |
-| Link               | Raleway             | 14px (0.88rem)    | 1.79 (relaxed) | —      |
-| Button             | Helvetica           | 14px (0.88rem)    | —              | —      |
-| Button (Alt)       | Arial               | 13.33px (0.83rem) | —              | —      |
-| Caption            | Raleway             | 14px (0.88rem)    | 3.57 (relaxed) | —      |
-| Small Text         | Arial               | 10px (0.63rem)    | —              | —      |
+| Element            | Font             | Size              | Line Height    | Weight |
+| ------------------ | ---------------- | ----------------- | -------------- | ------ |
+| Heading 1 (Large)  | `<heading-font>` | 40px (2.50rem)    | 0.80 (tight)   | —      |
+| Heading 1 (Bold)   | `<heading-font>` | 40px (2.50rem)    | 1.35           | 700    |
+| Heading 1 (Medium) | Times New Roman  | 35px (2.19rem)    | 0.91 (tight)   | —      |
+| Heading 2          | `<heading-font>` | 22px (1.38rem)    | 1.41           | —      |
+| Body/Nav           | `<body-font>`    | 15px (0.94rem)    | 1.67 (relaxed) | —      |
+| Subheading         | Helvetica        | 15px (0.94rem)    | 1.40           | 700    |
+| Link               | `<body-font>`    | 14px (0.88rem)    | 1.79 (relaxed) | —      |
+| Button             | Helvetica        | 14px (0.88rem)    | —              | —      |
+| Button (Alt)       | Arial            | 13.33px (0.83rem) | —              | —      |
+| Caption            | `<body-font>`    | 14px (0.88rem)    | 3.57 (relaxed) | —      |
+| Small Text         | Arial            | 10px (0.63rem)    | —              | —      |
 
 ---
 
@@ -122,9 +114,9 @@ These exist in the stylesheet but are NOT used in the visible design:
 
 ## Borders
 
-| Style     | Color                        | Use           |
-| --------- | ---------------------------- | ------------- |
-| 1px solid | `#fffef8` rgb(255, 254, 248) | Input borders |
+| Style     | Color                | Use           |
+| --------- | -------------------- | ------------- |
+| 1px solid | `<background-color>` | Input borders |
 
 ---
 
@@ -132,20 +124,20 @@ These exist in the stylesheet but are NOT used in the visible design:
 
 ### Buttons
 
-#### Primary Button (Off-White)
+#### Primary Button
 
-| State   | Background                             | Text      | Border                       |
-| ------- | -------------------------------------- | --------- | ---------------------------- |
-| Default | `#fffef8`                              | `#000000` | 2px solid rgba(6, 39, 58, 0) |
-| Hover   | `var(--corvid-hover-background-color)` | —         | —                            |
-| Active  | `var(--corvid-hover-background-color)` | —         | —                            |
+| State   | Background           | Text      | Border                |
+| ------- | -------------------- | --------- | --------------------- |
+| Default | `<background-color>` | `#000000` | 2px solid transparent |
+| Hover   | `var(--hover-bg)`    | —         | —                     |
+| Active  | `var(--hover-bg)`    | —         | —                     |
 
 ### Text Inputs
 
-| State   | Background             | Text      | Border              | Padding         |
-| ------- | ---------------------- | --------- | ------------------- | --------------- |
-| Default | `#06273a` (1% opacity) | `#fffef8` | 1px solid #fffef8   | 3px 3px 3px 5px |
-| Focus   | `rgba(255,255,255,1)`  | —         | rgba(163,217,246,1) | —               |
+| State   | Background                     | Text                 | Border                       | Padding         |
+| ------- | ------------------------------ | -------------------- | ---------------------------- | --------------- |
+| Default | `<primary-color>` (1% opacity) | `<background-color>` | 1px solid <background-color> | 3px 3px 3px 5px |
+| Focus   | `rgba(255,255,255,1)`          | —                    | rgba(163,217,246,1)          | —               |
 
 **Focus Ring:** `var(--focus-ring-box-shadow)`
 **Focus Outline:** rgb(17, 109, 255) solid 2px
@@ -154,20 +146,20 @@ These exist in the stylesheet but are NOT used in the visible design:
 
 ## Links
 
-| State             | Color     | Hex       |
-| ----------------- | --------- | --------- |
-| Default (Visited) | Blue      | `#0000ee` |
-| Light Theme       | Off White | `#fffef8` |
-| Dark Theme        | Dark Teal | `#06273a` |
+| State             | Color | Token                |
+| ----------------- | ----- | -------------------- |
+| Default (Visited) | Blue  | `#0000ee`            |
+| Light Theme       | Light | `<background-color>` |
+| Dark Theme        | Dark  | `<primary-color>`    |
 
 ---
 
-## Frameworks Detected
+## Recommended UI Libraries
 
-| Framework         | Details             |
-| ----------------- | ------------------- |
-| Radix UI          | 11 Radix primitives |
-| PrimeReact/Vue/NG | 57 Prime components |
+| Framework    | Details               |
+| ------------ | --------------------- |
+| Radix UI     | Accessible primitives |
+| Tailwind CSS | Utility-first styling |
 
 ---
 
@@ -175,16 +167,15 @@ These exist in the stylesheet but are NOT used in the visible design:
 
 ```css
 :root {
-  /* Primary Brand Colors (ACTUALLY USED) */
-  --ugc-navy: #06273a;
-  --ugc-sage: #8fa89d;
-  --ugc-cream: #fffef8;
-  --ugc-white: #ffffff;
+  /* Primary Brand Colors - Replace with your values */
+  --brand-primary: <primary-color>;
+  --brand-secondary: <secondary-color>;
+  --brand-background: <background-color>;
+  --brand-white: #ffffff;
 
-  /* Unused Wix Template Variables (kept for reference) */
-  --wst-color-custom-20: #783600; /* Deep Brown - UNUSED */
-  --wst-color-custom-19: #f06c00; /* Bright Orange - UNUSED */
-  --wst-color-custom-14: #f6a800; /* Golden Yellow - UNUSED */
+  /* Typography - Replace with your fonts */
+  --font-heading: <heading-font>;
+  --font-body: <body-font>;
 }
 ```
 
@@ -192,9 +183,7 @@ These exist in the stylesheet but are NOT used in the visible design:
 
 ## Design Notes
 
-- **Visual Style:** Sophisticated British private club aesthetic with cool, muted tones
-- **Color Palette:** Dark navy/teal paired with muted sage green and cream - creating a refined, understated look reminiscent of traditional London clubs
-- **Color Mood:** Cool and professional, NOT warm or earthy
-- **Typography:** Serif display font (Cormorant Garamond) for elegance, sans-serif (Raleway) for readability
-- **Platform:** Built on Wix with Radix UI and PrimeReact components
-- **Important:** The browns/oranges in the Wix CSS variables are template defaults that are NOT used in the actual visible design
+- **Visual Style:** Define your brand aesthetic here
+- **Color Mood:** Choose complementary colors that reflect your brand identity
+- **Typography:** Pair a display/heading font with a readable body font
+- **Accessibility:** Ensure sufficient contrast ratios between text and backgrounds

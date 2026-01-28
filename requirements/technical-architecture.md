@@ -10,7 +10,7 @@ This document outlines the technical architecture for the UGC Creator Platform, 
 - **Authentication**: BetterAuth with Convex
 - **Payments**: Polar (subscriptions + escrow)
 
-Reference architecture: `/Users/sigex/gruckion-workdir/convoexpo-and-nextjs-web-bun-better-auth`
+Reference architecture: This document describes the UGC platform architecture.
 
 ---
 

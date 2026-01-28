@@ -1,0 +1,242 @@
+import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import { Pressable, Text, TextInput, View } from "react-native";
+import { useResponsive } from "@/hooks/useResponsive";
+
+// Fiverr-style theme colors
+const THEME_COLORS = {
+  primary: "#1DBF73",
+  primaryForeground: "#FFFFFF",
+  foreground: "#222325",
+  muted: "#62646a",
+  border: "#e4e5e7",
+  background: "#FFFFFF",
+};
+
+export interface CategoryOption {
+  id: string;
+  label: string;
+  icon?: keyof typeof Ionicons.glyphMap;
+}
+
+export interface SearchBarProps {
+  /** Placeholder text for the search input */
+  placeholder?: string;
+  /** Categories for the dropdown */
+  categories?: CategoryOption[];
+  /** Currently selected category */
+  selectedCategory?: string;
+  /** Search submit handler */
+  onSearch?: (query: string, categoryId?: string) => void;
+  /** Category change handler */
+  onCategoryChange?: (categoryId: string | undefined) => void;
+}
+
+const DEFAULT_CATEGORIES: CategoryOption[] = [
+  { id: "all", label: "All Categories", icon: "grid-outline" },
+  { id: "lifestyle", label: "Lifestyle", icon: "heart-outline" },
+  { id: "tech", label: "Tech & Gadgets", icon: "phone-portrait-outline" },
+  { id: "beauty", label: "Beauty", icon: "sparkles-outline" },
+  { id: "food", label: "Food & Beverage", icon: "restaurant-outline" },
+  { id: "fitness", label: "Fitness", icon: "barbell-outline" },
+];
+
+export function SearchBar({
+  placeholder = "Search for creators or briefs...",
+  categories = DEFAULT_CATEGORIES,
+  selectedCategory,
+  onSearch,
+  onCategoryChange,
+}: SearchBarProps) {
+  const { isMobile } = useResponsive();
+  const [query, setQuery] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState(
+    selectedCategory || "all"
+  );
+
+  const selectedCategoryOption = categories.find(
+    (c) => c.id === currentCategory
+  );
+
+  const handleSearch = () => {
+    onSearch?.(query, currentCategory === "all" ? undefined : currentCategory);
+  };
+
+  const handleCategorySelect = (categoryId: string) => {
+    setCurrentCategory(categoryId);
+    onCategoryChange?.(categoryId === "all" ? undefined : categoryId);
+    setIsDropdownOpen(false);
+  };
+
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "stretch",
+        backgroundColor: THEME_COLORS.background,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: THEME_COLORS.border,
+        overflow: "hidden",
+        maxWidth: 700,
+        width: "100%",
+      }}
+    >
+      {/* Category Dropdown */}
+      {!isMobile && (
+        <View style={{ position: "relative" }}>
+          <Pressable
+            onPress={() => setIsDropdownOpen(!isDropdownOpen)}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+              gap: 8,
+              borderRightWidth: 1,
+              borderRightColor: THEME_COLORS.border,
+              backgroundColor: "#fafafa",
+            }}
+          >
+            {selectedCategoryOption?.icon && (
+              <Ionicons
+                color={THEME_COLORS.muted}
+                name={selectedCategoryOption.icon}
+                size={18}
+              />
+            )}
+            <Text
+              style={{
+                fontSize: 14,
+                color: THEME_COLORS.foreground,
+                fontWeight: "500",
+              }}
+            >
+              {selectedCategoryOption?.label || "All Categories"}
+            </Text>
+            <Ionicons
+              color={THEME_COLORS.muted}
+              name={isDropdownOpen ? "chevron-up" : "chevron-down"}
+              size={16}
+            />
+          </Pressable>
+
+          {/* Dropdown Menu */}
+          {isDropdownOpen && (
+            <View
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                backgroundColor: THEME_COLORS.background,
+                borderWidth: 1,
+                borderColor: THEME_COLORS.border,
+                borderRadius: 8,
+                marginTop: 4,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.1,
+                shadowRadius: 8,
+                elevation: 4,
+                zIndex: 1000,
+                minWidth: 200,
+              }}
+            >
+              {categories.map((category) => (
+                <Pressable
+                  key={category.id}
+                  onPress={() => handleCategorySelect(category.id)}
+                  style={({ hovered }) => ({
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 12,
+                    paddingHorizontal: 16,
+                    paddingVertical: 12,
+                    backgroundColor:
+                      currentCategory === category.id
+                        ? "#f0fdf4"
+                        : hovered
+                          ? "#fafafa"
+                          : "transparent",
+                  })}
+                >
+                  {category.icon && (
+                    <Ionicons
+                      color={
+                        currentCategory === category.id
+                          ? THEME_COLORS.primary
+                          : THEME_COLORS.muted
+                      }
+                      name={category.icon}
+                      size={18}
+                    />
+                  )}
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color:
+                        currentCategory === category.id
+                          ? THEME_COLORS.primary
+                          : THEME_COLORS.foreground,
+                      fontWeight:
+                        currentCategory === category.id ? "600" : "400",
+                    }}
+                  >
+                    {category.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          )}
+        </View>
+      )}
+
+      {/* Search Input */}
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 16,
+        }}
+      >
+        <TextInput
+          onChangeText={setQuery}
+          onSubmitEditing={handleSearch}
+          placeholder={placeholder}
+          placeholderTextColor={THEME_COLORS.muted}
+          returnKeyType="search"
+          style={{
+            flex: 1,
+            fontSize: 15,
+            color: THEME_COLORS.foreground,
+            paddingVertical: 14,
+          }}
+          value={query}
+        />
+      </View>
+
+      {/* Search Button */}
+      <Pressable
+        onPress={handleSearch}
+        style={({ pressed }) => ({
+          backgroundColor: THEME_COLORS.primary,
+          paddingHorizontal: 20,
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: pressed ? 0.9 : 1,
+        })}
+      >
+        <Ionicons
+          color={THEME_COLORS.primaryForeground}
+          name="search"
+          size={22}
+        />
+      </Pressable>
+    </View>
+  );
+}
+
+export default SearchBar;

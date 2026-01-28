@@ -1,6 +1,6 @@
 # Better-T-Stack Project Rules
 
-This is a convoexpo-and-nextjs-web-bun-better-auth project created with Better-T-Stack CLI.
+This is the ugc project created with Better-T-Stack CLI.
 
 ## Project Structure
 
@@ -12,7 +12,6 @@ This is a monorepo with the following structure:
 
 - **`apps/native/`** - React Native mobile app (with NativeWind)
 
-
 ## Available Scripts
 
 - `bun run dev` - Start all apps in development mode
@@ -22,11 +21,10 @@ This is a monorepo with the following structure:
 - `bun run lint` - Lint all packages
 - `bun run typecheck` - Type check all packages
 
-
-
 ## Authentication
 
 Authentication is powered by Better Auth:
+
 - Auth configuration is in `packages/auth/src/`
 - Web app auth client is in `apps/web/src/lib/auth-client.ts`
 - Native app auth client is in `apps/native/src/lib/auth-client.ts`

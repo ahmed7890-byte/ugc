@@ -4,7 +4,6 @@ import { useConvexAuth, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
 import { useThemeColor } from "heroui-native";
 import {
-  Image,
   Linking,
   Pressable,
   ScrollView,
@@ -13,10 +12,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ExternalLinkButton } from "@/components/ExternalLinkButton";
+import { UGCLogo } from "@/components/UGCLogo";
 import { authClient } from "@/lib/auth-client";
-
-// Local asset for logo
-const UGC_LOGO = require("@/assets/images/city_uni_club_white.png");
 
 // Type-safe menu routing
 const MENU_ROUTES = {
@@ -88,7 +85,8 @@ export default function More() {
   const user = useQuery(api.auth.getCurrentUser, isAuthenticated ? {} : "skip");
 
   // Theme colors for icons (with fallbacks)
-  const foreground = useThemeColor("foreground") || "#06273a";
+  // Fiverr-style theme colors
+  const foreground = useThemeColor("foreground") || "#222325";
   const border = useThemeColor("border") || "#e5e5e5";
 
   const handleMenuPress = (id: MenuId) => {
@@ -108,34 +106,21 @@ export default function More() {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
-          {/* Logo */}
-          <View
-            className="bg-accent"
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: 30,
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "hidden",
-            }}
-          >
-            <Image
-              resizeMode="contain"
-              source={UGC_LOGO}
-              style={{ width: 52, height: 52 }}
-            />
-          </View>
+          {/* Logo - White circle variant for primary background */}
+          <UGCLogo
+            backgroundColor="#FFFFFF"
+            size={60}
+            textColor="#1DBF73"
+          />
           <View style={{ flex: 1 }}>
             <Text
               className="text-primary-foreground"
               style={{
                 fontSize: 22,
-                fontWeight: "300",
-                fontFamily: "serif",
+                fontWeight: "600",
               }}
             >
-              User Generated Content
+              UGC Marketplace
             </Text>
             {isAuthenticated && user?.name && (
               <Text

@@ -8,14 +8,21 @@ interface ExternalLinkButtonProps {
   variant?: "primary" | "subtle";
 }
 
+// Fiverr-style theme colors
+// These match the CSS variables defined in global.css
+const THEME_COLORS = {
+  primary: "#1DBF73", // Fiverr green
+  primaryForeground: "#FFFFFF",
+};
+
 export function ExternalLinkButton({
   label,
   url,
   variant = "primary",
 }: ExternalLinkButtonProps) {
   const foreground = useThemeColor("foreground");
-  const primary = "#06273a";
-  const primaryForeground = "#fffef8";
+  const primary = THEME_COLORS.primary;
+  const primaryForeground = THEME_COLORS.primaryForeground;
 
   const handlePress = () => {
     Linking.openURL(url);

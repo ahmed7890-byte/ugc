@@ -5,17 +5,19 @@ import { View } from "react-native";
 // Import global styles for UniWind/Tailwind
 import "../global.css";
 
-// UGC Brand Colors (hex values for Storybook background)
+// Fiverr-style theme colors (hex values for Storybook background)
 const UGC_COLORS = {
   light: {
-    background: "#fffef8", // cream
-    foreground: "#06273a", // navy
-    accent: "#85b09a", // sage
+    background: "#FFFFFF", // pure white
+    foreground: "#222325", // dark gray
+    primary: "#1DBF73", // Fiverr green
+    accent: "#ffbe5b", // pro gold
   },
   dark: {
-    background: "#030d14", // very dark navy
-    foreground: "#fffef8", // cream
-    accent: "#85b09a", // sage
+    background: "#222325", // dark gray
+    foreground: "#FAFAFA", // near white
+    primary: "#1DBF73", // Fiverr green
+    accent: "#ffbe5b", // pro gold
   },
 };
 

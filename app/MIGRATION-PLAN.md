@@ -11,14 +11,14 @@ The purpose of this migration plan is to take the ~/gruckion-workdir/convexpo/ A
 - [ ] Add tailwind-merge for className deduplication
 - [ ] Port OAuth hooks (Google/Apple) from convexpo
 - [ ] Port auth UI screens (landing/signin/signup/reset)
-- [ ] Create UGC HeroUI theme from design.md colors
-- [ ] Build club app screens (home/events/dining/membership)
+- [ ] Create custom HeroUI theme
+- [ ] Build app screens
 
 ---
 
 ## Tech Stack Comparison
 
-### Your Project (convoexpo-and-nextjs-web-bun-better-auth)
+### Current Project (ugc)
 
 | Category        | Technology                                                 |
 | --------------- | ---------------------------------------------------------- |
@@ -133,7 +133,7 @@ UniWind uses pure CSS theming. You'll need to migrate the design.md colors direc
 | `app/(root)/(auth)/email/signin.tsx`    | Email signin           | Convert patterns                              |
 | `app/(root)/(auth)/email/signup.tsx`    | Email signup           | Convert patterns                              |
 | `app/(root)/(auth)/email/(reset)/*`     | Password reset flow    | Convert patterns                              |
-| `themes/pastel-themes.ts`               | HeroUI theme config    | Adapt for UGC branding                        |
+| `themes/pastel-themes.ts`               | HeroUI theme config    | Adapt for app branding                        |
 | `contexts/app-theme-context.tsx`        | Theme switching        | Already have similar                          |
 | `providers/SplashScreenProvider.tsx`    | Splash screen handling | Optional port                                 |
 
@@ -155,45 +155,5 @@ bun add expo-apple-authentication
 1. **Fix metro.config.js** - Add monorepo support
 2. **Add OAuth hooks** - Copy from convexpo, test Google/Apple sign in
 3. **Port auth UI** - Convert NativeWind patterns, wrap SafeAreaView
-4. **Create UGC theme** - Use design.md colors in HeroUI theme format
-5. **Build club features** - Home, events, dining, membership screens
-
----
-
-## Yale Club App Features (Reference)
-
-Based on App Store research, features to implement for UGC:
-
-- Digital membership card
-- Member directory
-- Dining reservations & menus
-- Event calendar & notifications
-- Account/statement management
-- Reciprocal clubs info
-- News & announcements
-
----
-
-## UGC Branding
-
-See `design.md` for full color palette and typography.
-
-### Primary Colors (Actual Visible Design)
-
-| Color      | Hex       | Usage                                    |
-| ---------- | --------- | ---------------------------------------- |
-| Dark Navy  | `#06273a` | Hero backgrounds, buttons, text on light |
-| Muted Sage | `#8fa89d` | Header/nav background, accents           |
-| Cream      | `#fffef8` | Page backgrounds, text on dark           |
-| White      | `#ffffff` | Input backgrounds, cards                 |
-
-**Note:** The browns/oranges in some Wix CSS variables are template defaults that are NOT used in the visible design. The actual brand is cool-toned (navy + sage + cream), not warm (no browns/oranges).
-
-### Typography
-
-- **Headings:** Cormorant Garamond (elegant serif)
-- **Body:** Raleway (clean sans-serif)
-
-### Brand Mood
-
-Sophisticated British private club - cool, understated, refined. Think traditional London club aesthetic, not warm/earthy hospitality.
+4. **Create custom theme** - Configure HeroUI theme
+5. **Build app features** - Implement app screens

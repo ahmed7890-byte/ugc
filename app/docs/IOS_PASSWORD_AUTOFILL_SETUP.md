@@ -2,7 +2,7 @@
 
 > **Status**: Planned - awaiting Apple Developer account setup
 > **Created**: 2025-01-14
-> **Website**: ugc.com (hosted on Wix)
+> **Website**: `<YOUR_DOMAIN>` (e.g., example.com)
 
 ## Problem Summary
 
@@ -61,7 +61,7 @@ Add `associatedDomains` to the iOS configuration:
 ios: {
   supportsTablet: true,
   bundleIdentifier: "com.ugc.app",
-  associatedDomains: ["webcredentials:ugc.com"],  // ADD THIS
+  associatedDomains: ["webcredentials:<YOUR_DOMAIN>"],  // ADD THIS - replace <YOUR_DOMAIN> with your actual domain
   config: {
     usesNonExemptEncryption: false,
   },
@@ -106,7 +106,7 @@ EAS Build configuration:
 
 ### 3. Create Apple App Site Association (AASA) File
 
-**Option A: Next.js Route Handler** (if using Next.js for the domain)
+**Option A: Next.js Route Handler** (recommended if using Next.js for the domain)
 
 Create `apps/web/src/app/.well-known/apple-app-site-association/route.ts`:
 
@@ -115,7 +115,7 @@ import { NextResponse } from "next/server";
 
 const AASA = {
   webcredentials: {
-    apps: ["YOUR_TEAM_ID.com.ugc.app"], // Replace YOUR_TEAM_ID
+    apps: ["YOUR_TEAM_ID.com.ugc.app"], // Replace YOUR_TEAM_ID with your Apple Team ID
   },
 };
 
@@ -128,11 +128,9 @@ export async function GET() {
 }
 ```
 
-**Option B: Wix Hosting** (current hosting)
+**Option B: Static File Hosting** (Vercel, Netlify, AWS S3, etc.)
 
-Since the website is hosted on Wix, you'll need to:
-
-1. Create a file named `apple-app-site-association` (no extension) with content:
+Create a file named `apple-app-site-association` (no extension) with content:
 
 ```json
 {
@@ -142,16 +140,18 @@ Since the website is hosted on Wix, you'll need to:
 }
 ```
 
-2. Upload it to Wix so it's accessible at:
-   `https://ugc.com/.well-known/apple-app-site-association`
+Upload it so it's accessible at:
+`https://<YOUR_DOMAIN>/.well-known/apple-app-site-association`
 
-3. Ensure the response has `Content-Type: application/json`
+Ensure the response has `Content-Type: application/json`.
 
-**Wix Limitations**: Wix may not support serving files from `/.well-known/` paths. You may need to:
+**Option C: If Using Wix**
+
+Wix may not support serving files from `/.well-known/` paths natively. Workarounds include:
 
 - Use Wix Velo (custom code) to create an HTTP function
-- Point a subdomain to your Next.js app for the AASA file
-- Use a reverse proxy or CDN like Cloudflare
+- Point a subdomain to a separate hosting service (e.g., Next.js, Vercel) for the AASA file
+- Use a reverse proxy or CDN like Cloudflare to intercept the `/.well-known/` path
 
 ### 4. Install Dependencies
 
@@ -181,13 +181,13 @@ Replace `YOUR_TEAM_ID` with your actual Team ID in the AASA configuration.
 Make the AASA file accessible at:
 
 ```
-https://ugc.com/.well-known/apple-app-site-association
+https://<YOUR_DOMAIN>/.well-known/apple-app-site-association
 ```
 
 Verify with:
 
 ```bash
-curl -I https://ugc.com/.well-known/apple-app-site-association
+curl -I https://<YOUR_DOMAIN>/.well-known/apple-app-site-association
 ```
 
 Should return `Content-Type: application/json` and HTTP 200.
@@ -251,15 +251,15 @@ iOS caches the AASA file aggressively. After deploying changes:
 
 - Wait 24-48 hours for cache to refresh
 - Or reinstall the app to force re-fetch
-- Use Apple's AASA validator: https://app-site-association.cdn-apple.com/a/v1/ugc.com
+- Use Apple's AASA validator: `https://app-site-association.cdn-apple.com/a/v1/<YOUR_DOMAIN>`
 
-### Wix AASA Hosting Challenge
+### AASA Hosting Challenges
 
-Wix may not support the `/.well-known/` path natively. Options:
+Some hosting providers may not support the `/.well-known/` path natively. Options include:
 
-1. **Cloudflare Workers**: Proxy the AASA request
-2. **Subdomain**: Point `api.ugc.com` to your Next.js app
-3. **Wix Velo HTTP Function**: Create a custom endpoint (if supported)
+1. **Cloudflare Workers**: Proxy the AASA request to serve the file
+2. **Subdomain**: Point `api.<YOUR_DOMAIN>` to a separate hosting service (e.g., Next.js, Vercel)
+3. **Platform-specific solutions**: Check your hosting provider's documentation for custom routing or serverless functions
 
 ### Testing on Simulator vs Device
 
@@ -274,8 +274,8 @@ Wix may not support the `/.well-known/` path natively. Options:
 ## Validation Tools
 
 - **AASA Validator**: https://branch.io/resources/aasa-validator/
-- **Apple CDN Check**: `https://app-site-association.cdn-apple.com/a/v1/ugc.com`
-- **Manual Check**: `curl https://ugc.com/.well-known/apple-app-site-association`
+- **Apple CDN Check**: `https://app-site-association.cdn-apple.com/a/v1/<YOUR_DOMAIN>`
+- **Manual Check**: `curl https://<YOUR_DOMAIN>/.well-known/apple-app-site-association`
 
 ---
 
@@ -297,7 +297,7 @@ Wix may not support the `/.well-known/` path natively. Options:
 - [ ] Update `app.config.ts` with `associatedDomains`
 - [ ] Create `eas.json` configuration
 - [ ] Install `expo-dev-client`
-- [ ] Deploy AASA file to `ugc.com/.well-known/`
+- [ ] Deploy AASA file to `<YOUR_DOMAIN>/.well-known/`
 - [ ] Verify AASA file is accessible with correct content-type
 - [ ] Run `eas build:configure`
 - [ ] Build development client for iOS

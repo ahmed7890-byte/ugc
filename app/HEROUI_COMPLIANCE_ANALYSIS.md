@@ -17,10 +17,10 @@ The recent refactoring successfully centralized brand colors into `apps/native/t
 1. **Created centralized color constants** (`apps/native/theme/colors.ts`):
 
    ```typescript
-   export const UGC_COLORS = {
-     navy: "#06273a",
-     sage: "#85b09a",
-     cream: "#fffef8",
+   export const BRAND_COLORS = {
+     primary: "<primary-color>",
+     secondary: "<secondary-color>",
+     background: "<background-color>",
      white: "#ffffff",
    } as const;
    ```
@@ -82,8 +82,8 @@ function MyComponent() {
 
 **Current Approach**:
 
-- Hardcoded `UGC_COLORS` object with brand-specific hex values
-- Direct usage: `backgroundColor: UGC_COLORS.navy`
+- Hardcoded `BRAND_COLORS` object with brand-specific hex values
+- Direct usage: `backgroundColor: BRAND_COLORS.primary`
 - No integration with HeroUI's CSS variable system
 
 **HeroUI Approach**:
@@ -100,11 +100,11 @@ function MyComponent() {
 
 **Recommendations**:
 
-| Priority | Action                                 | Impact                    | Risk   |
-| -------- | -------------------------------------- | ------------------------- | ------ |
-| Low      | Map UGC_COLORS to custom CSS variables | Enables theme switching   | Low    |
-| Low      | Consider `useThemeColor` hook adoption | Better HeroUI integration | Medium |
-| None     | No immediate changes required          | System works as-is        | None   |
+| Priority | Action                                   | Impact                    | Risk   |
+| -------- | ---------------------------------------- | ------------------------- | ------ |
+| Low      | Map BRAND_COLORS to custom CSS variables | Enables theme switching   | Low    |
+| Low      | Consider `useThemeColor` hook adoption   | Better HeroUI integration | Medium |
+| None     | No immediate changes required            | System works as-is        | None   |
 
 **If Migration Desired** (optional):
 
@@ -112,19 +112,19 @@ Add to `apps/native/global.css`:
 
 ```css
 :root {
-  /* UGC Brand Colors as CSS variables */
-  --ugc-navy: #06273a;
-  --ugc-sage: #85b09a;
-  --ugc-cream: #fffef8;
-  --ugc-white: #ffffff;
+  /* Brand Colors as CSS variables */
+  --brand-primary: <primary-color>;
+  --brand-secondary: <secondary-color>;
+  --brand-background: <background-color>;
+  --brand-white: #ffffff;
 
   /* Mapping to HeroUI semantic tokens */
-  --accent: var(--ugc-sage);
-  --accent-foreground: var(--ugc-navy);
-  --background: var(--ugc-cream);
-  --foreground: var(--ugc-navy);
-  --surface: var(--ugc-white);
-  --surface-foreground: var(--ugc-navy);
+  --accent: var(--brand-secondary);
+  --accent-foreground: var(--brand-primary);
+  --background: var(--brand-background);
+  --foreground: var(--brand-primary);
+  --surface: var(--brand-white);
+  --surface-foreground: var(--brand-primary);
 }
 ```
 
@@ -138,7 +138,7 @@ Add to `apps/native/global.css`:
 - Example from `signin.tsx`:
   ```typescript
   <Text style={{
-    color: UGC_COLORS.sage,
+    color: BRAND_COLORS.secondary,
     fontSize: 14,
     fontWeight: "500",
   }}>
@@ -161,11 +161,11 @@ Add to `apps/native/global.css`:
 
 **Recommendations**:
 
-| Priority | Action                                         | Impact             | Risk |
-| -------- | ---------------------------------------------- | ------------------ | ---- |
-| None     | Keep current inline styles                     | Working system     | None |
-| Future   | Gradually adopt className on new components    | Better consistency | Low  |
-| Future   | Create Tailwind color utilities for UGC colors | Unified approach   | Low  |
+| Priority | Action                                           | Impact             | Risk |
+| -------- | ------------------------------------------------ | ------------------ | ---- |
+| None     | Keep current inline styles                       | Working system     | None |
+| Future   | Gradually adopt className on new components      | Better consistency | Low  |
+| Future   | Create Tailwind color utilities for brand colors | Unified approach   | Low  |
 
 **If Tailwind Integration Desired** (optional):
 
@@ -176,10 +176,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        cuc: {
-          navy: "#06273a",
-          sage: "#85b09a",
-          cream: "#fffef8",
+        brand: {
+          primary: "<primary-color>",
+          secondary: "<secondary-color>",
+          background: "<background-color>",
         },
       },
     },
@@ -187,7 +187,7 @@ module.exports = {
 };
 ```
 
-Then use as: `className="bg-cuc-navy text-cuc-cream"`
+Then use as: `className="bg-brand-primary text-brand-background"`
 
 ---
 
@@ -250,13 +250,13 @@ Then use as: `className="bg-cuc-navy text-cuc-cream"`
 
 ## Risk Matrix for Potential Changes
 
-| Change                  | Benefit             | Risk   | Effort | Recommendation |
-| ----------------------- | ------------------- | ------ | ------ | -------------- |
-| Keep current UGC_COLORS | None (already done) | None   | None   | ✅ Keep        |
-| Add CSS variables       | Theme switching     | Low    | Low    | 🔄 Optional    |
-| Use `useThemeColor`     | HeroUI alignment    | Medium | Medium | ⏸️ Defer       |
-| Convert to className    | Consistency         | Medium | High   | ⏸️ Defer       |
-| Add Tailwind colors     | Better DX           | Low    | Low    | 🔄 Optional    |
+| Change                    | Benefit             | Risk   | Effort | Recommendation |
+| ------------------------- | ------------------- | ------ | ------ | -------------- |
+| Keep current BRAND_COLORS | None (already done) | None   | None   | ✅ Keep        |
+| Add CSS variables         | Theme switching     | Low    | Low    | 🔄 Optional    |
+| Use `useThemeColor`       | HeroUI alignment    | Medium | Medium | ⏸️ Defer       |
+| Convert to className      | Consistency         | Medium | High   | ⏸️ Defer       |
+| Add Tailwind colors       | Better DX           | Low    | Low    | 🔄 Optional    |
 
 ---
 
@@ -283,8 +283,8 @@ The current implementation does not conflict with HeroUI Native. It runs a paral
 
 If the team wants deeper HeroUI integration in the future:
 
-1. **Phase 1** (Low effort): Add UGC colors to `global.css` as CSS variables
-2. **Phase 2** (Medium effort): Create a custom hook `useUGCColor()` that mirrors `useThemeColor`
+1. **Phase 1** (Low effort): Add brand colors to `global.css` as CSS variables
+2. **Phase 2** (Medium effort): Create a custom hook `useBrandColor()` that mirrors `useThemeColor`
 3. **Phase 3** (High effort): Gradually migrate inline styles to className-based styling
 
 These phases are optional and should be driven by specific needs (e.g., dark mode support, design system consistency).

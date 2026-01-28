@@ -306,13 +306,13 @@ STORYBOOK=true expo start  # Test on device/simulator
 
 ## Phase 9: Expo Native App - Theme Integration
 
-**Goal:** Configure Storybook to use UGC brand colors and UniWind styles.
+**Goal:** Configure Storybook to use brand colors and UniWind styles.
 
 ### 9.1 Configure Preview with Brand Theme
 
 Update `.storybook/preview.tsx`:
 
-- Import UGC_COLORS
+- Import BRAND_COLORS (or your project's color constants)
 - Set background values
 - Configure decorators for consistent styling
 
@@ -333,15 +333,17 @@ bun biome check --write .
 
 **Goal:** Document all form-related components.
 
-### Components to Document
+### Components to Document (Examples - Replace with Your Components)
 
-| Component           | Location    | Features                              |
-| ------------------- | ----------- | ------------------------------------- |
-| `StyledButton`      | `form.tsx`  | primary, secondary, tertiary, loading |
-| `StyledTextInput`   | `form.tsx`  | text, email, password, with label     |
-| `FormContainer`     | `form.tsx`  | layout wrapper                        |
-| `FormHeader`        | `form.tsx`  | title, subtitle                       |
-| `KeyboardAwareForm` | `keyboard/` | platform-specific behavior            |
+| Component           | Location         | Features                              |
+| ------------------- | ---------------- | ------------------------------------- |
+| `Button`            | `components/ui/` | primary, secondary, tertiary, loading |
+| `TextInput`         | `components/ui/` | text, email, password, with label     |
+| `FormContainer`     | `components/`    | layout wrapper                        |
+| `FormHeader`        | `components/`    | title, subtitle                       |
+| `KeyboardAwareForm` | `components/`    | platform-specific behavior            |
+
+> **Note:** The table above shows example form components. Replace these with your actual form component names and locations. Common form components include styled buttons, text inputs, form wrappers, and keyboard-aware containers.
 
 ### 10.1 Create Form Stories
 
@@ -360,16 +362,18 @@ bun biome check --write .
 
 **Goal:** Document remaining UI components.
 
-### Components to Document
+### Components to Document (Examples - Replace with Your Components)
 
-| Component                | Features                                    |
-| ------------------------ | ------------------------------------------- |
-| `CategoryFilter.tsx`     | Animated chips, selection state, Reanimated |
-| `MembershipCard.tsx`     | Card layout, user data display              |
-| `ExternalLinkButton.tsx` | Link handling                               |
-| `LastUsedIndicator.tsx`  | Status indicator                            |
-| `container.tsx`          | Layout wrapper                              |
-| `theme-toggle.tsx`       | Theme switching                             |
+| Component         | Features                                    |
+| ----------------- | ------------------------------------------- |
+| `FilterChips`     | Animated chips, selection state, Reanimated |
+| `Card`            | Card layout, data display                   |
+| `ExternalLink`    | Link handling                               |
+| `StatusIndicator` | Status/state indicator                      |
+| `Container`       | Layout wrapper                              |
+| `ThemeToggle`     | Theme switching                             |
+
+> **Note:** The table above shows example UI components. Replace these with your actual component names. Common UI components include filter/chip selectors, cards, external link handlers, status indicators, layout containers, and theme toggles.
 
 ### 11.1 Create UI Stories
 

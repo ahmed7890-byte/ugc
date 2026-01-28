@@ -1,16 +1,34 @@
-# UGC Creator Platform - Data Model Specification
+# Marketplace Platform - Data Model Specification
 
 ## Executive Summary
 
-This document specifies the complete data model for the UGC Creator Platform using Convex as the backend database with real-time synchronization capabilities. The model is designed to support:
+This document specifies a complete data model for a two-sided marketplace platform using Convex as the backend database with real-time synchronization capabilities. The model provides **generic, reusable patterns** that can be adapted to various marketplace domains.
 
-- Entity-based brand identity (reputation cannot be reset with new emails)
-- Script-first workflow with locked deliverables
-- Escrow payment system with auto-approval
-- Order state machine with fair timelines
-- Trust scoring for both brands and creators
-- BetterAuth integration for authentication
-- Polar integration for payments and subscriptions
+### Generic Marketplace Patterns (Reusable)
+
+The following patterns are domain-agnostic and can be used in any two-sided marketplace:
+
+- **Authentication System**: User accounts, sessions, and OAuth provider integration (BetterAuth)
+- **Entity-Based Identity**: Prevents reputation reset - organizations persist separately from users
+- **Order State Machine**: Flexible workflow states with full audit trail
+- **Escrow Payment System**: Secure funds handling with auto-approval timelines
+- **Messaging System**: Real-time conversations between parties
+- **Notifications System**: Multi-channel notification delivery
+- **Trust & Reputation System**: Two-way reviews and scoring
+- **Dispute Resolution**: Structured conflict handling
+- **Audit Logging**: Complete action history for compliance
+
+### Domain Configuration Required
+
+When implementing for a specific domain, you will need to customize:
+
+- Service provider profile fields (skills, equipment, availability)
+- Job/Brief specifications (deliverables, requirements)
+- Domain-specific badge definitions
+- Content submission requirements
+- Usage tracking rules (if applicable)
+
+See "Domain-Specific Extensions (Example)" section for a UGC creator marketplace implementation example.
 
 ---
 
@@ -217,14 +235,14 @@ brandMembers: defineTable({
 
 ---
 
-## 3. Creator System
+## 3. Service Provider Profiles (Generic Pattern)
 
-### 3.1 `creatorProfiles`
+### 3.1 `serviceProviderProfiles`
 
-Extended profile information for creators.
+Generic profile for service providers in the marketplace. This table contains common fields that apply to any service provider, regardless of domain.
 
 ```typescript
-creatorProfiles: defineTable({
+serviceProviderProfiles: defineTable({
   userId: v.id("users"),
 
   // Display info
@@ -232,19 +250,7 @@ creatorProfiles: defineTable({
   bio: v.optional(v.string()),
   avatarStorageId: v.optional(v.id("_storage")),
 
-  // Professional details
-  niches: v.array(v.string()), // ["beauty", "tech", "fitness"]
-  contentStyles: v.array(
-    v.union(
-      v.literal("talking_head"),
-      v.literal("voiceover"),
-      v.literal("product_demo"),
-      v.literal("lifestyle"),
-      v.literal("tutorial"),
-      v.literal("unboxing"),
-      v.literal("testimonial"),
-    ),
-  ),
+  // Languages (common across domains)
   languages: v.array(
     v.object({
       language: v.string(),
@@ -257,16 +263,16 @@ creatorProfiles: defineTable({
     }),
   ),
 
-  // Availability
+  // Availability (generic)
   typicalTurnaroundDays: v.number(),
   isAvailable: v.boolean(),
   availabilityNote: v.optional(v.string()),
 
-  // Rates
-  baseRatePerVideo: v.number(), // in cents
+  // Rates (generic - customize unit for your domain)
+  baseRate: v.number(), // in cents - per unit varies by domain
   rushFeePercentage: v.optional(v.number()),
 
-  // Location (for product shipping)
+  // Location (for physical goods/services)
   shippingAddress: v.optional(
     v.object({
       country: v.string(),
@@ -278,16 +284,6 @@ creatorProfiles: defineTable({
     }),
   ),
   locationVerified: v.boolean(),
-
-  // Equipment
-  equipment: v.optional(
-    v.object({
-      camera: v.optional(v.string()),
-      lighting: v.optional(v.string()),
-      audio: v.optional(v.string()),
-      editing: v.optional(v.string()),
-    }),
-  ),
 
   // Verification
   identityVerified: v.boolean(),
@@ -301,10 +297,10 @@ creatorProfiles: defineTable({
   averageDeliveryDaysEarly: v.number(), // negative = late
   revisionRate: v.number(), // percentage of orders requiring revisions
 
-  // Badges (earned through behavior)
+  // Badges (earned through behavior - badge types are domain-specific)
   badges: v.array(
     v.object({
-      type: v.string(), // "on_time_pro", "ad_ready", "fast_turnaround", "low_revision"
+      type: v.string(), // Domain-specific badge types
       earnedAt: v.number(),
       expiresAt: v.optional(v.number()),
     }),
@@ -323,6 +319,10 @@ creatorProfiles: defineTable({
   ),
   suspensionReason: v.optional(v.string()),
 
+  // Domain-specific extensions stored as JSON
+  // Each domain should define their own extension schema
+  domainExtensions: v.optional(v.any()),
+
   createdAt: v.number(),
   updatedAt: v.number(),
 })
@@ -331,21 +331,26 @@ creatorProfiles: defineTable({
   .index("by_trustLevel", ["trustLevel"])
   .index("by_reliabilityScore", ["reliabilityScore"])
   .index("by_isAvailable", ["isAvailable"])
-  .searchIndex("search_creator", {
+  .searchIndex("search_provider", {
     searchField: "displayName",
     filterFields: ["profileStatus", "trustLevel", "isAvailable"],
   });
 ```
 
-### 3.2 `creatorPortfolio`
+### 3.2 `providerPortfolio`
 
-Portfolio items/samples for creators.
+Portfolio items/samples for service providers.
 
 ```typescript
-creatorPortfolio: defineTable({
-  creatorProfileId: v.id("creatorProfiles"),
+providerPortfolio: defineTable({
+  providerProfileId: v.id("serviceProviderProfiles"),
 
-  type: v.union(v.literal("video"), v.literal("image"), v.literal("link")),
+  type: v.union(
+    v.literal("video"),
+    v.literal("image"),
+    v.literal("link"),
+    v.literal("document"),
+  ),
 
   // For uploaded content
   storageId: v.optional(v.id("_storage")),
@@ -356,8 +361,7 @@ creatorPortfolio: defineTable({
   // Metadata
   title: v.optional(v.string()),
   description: v.optional(v.string()),
-  niche: v.optional(v.string()),
-  contentStyle: v.optional(v.string()),
+  category: v.optional(v.string()), // Domain-specific categorization
 
   // Ordering
   sortOrder: v.number(),
@@ -368,125 +372,61 @@ creatorPortfolio: defineTable({
   createdAt: v.number(),
   updatedAt: v.number(),
 })
-  .index("by_creatorProfileId", ["creatorProfileId"])
-  .index("by_creatorProfileId_sortOrder", ["creatorProfileId", "sortOrder"]);
+  .index("by_providerProfileId", ["providerProfileId"])
+  .index("by_providerProfileId_sortOrder", ["providerProfileId", "sortOrder"]);
 ```
 
 ---
 
-## 4. Brief System
+## 4. Job/Brief System (Generic Pattern)
 
-### 4.1 `briefs`
+### 4.1 `jobs`
 
-The core brief entity containing all job specifications.
+Generic job/brief entity for service requests. Customize the `requirements` and `deliverables` fields for your domain.
 
 ```typescript
-briefs: defineTable({
-  brandEntityId: v.id("brandEntities"),
+jobs: defineTable({
+  clientEntityId: v.id("brandEntities"), // The requesting organization
   createdByUserId: v.id("users"),
 
   // Basic info
   title: v.string(),
-  internalReference: v.optional(v.string()), // Brand's internal ID
+  internalReference: v.optional(v.string()), // Client's internal ID
+  description: v.string(),
 
-  // Product details
-  product: v.object({
-    name: v.string(),
-    description: v.string(),
-    usp: v.string(), // Unique selling proposition
-    websiteUrl: v.optional(v.string()),
-    category: v.string(),
-  }),
+  // Requirements (domain-specific - store as structured JSON)
+  requirements: v.any(), // Define schema per domain
 
-  // Target audience
-  targetAudience: v.object({
-    demographics: v.string(),
-    painPoints: v.optional(v.string()),
-    desiredOutcome: v.string(),
-  }),
+  // Deliverables (domain-specific - store as structured JSON)
+  deliverables: v.any(), // Define schema per domain
 
-  // Deliverables
-  deliverables: v.array(
-    v.object({
-      format: v.union(
-        v.literal("vertical_9_16"),
-        v.literal("horizontal_16_9"),
-        v.literal("square_1_1"),
-      ),
-      duration: v.object({
-        min: v.number(), // seconds
-        max: v.number(),
-      }),
-      platform: v.union(
-        v.literal("tiktok"),
-        v.literal("instagram_reels"),
-        v.literal("instagram_stories"),
-        v.literal("youtube_shorts"),
-        v.literal("facebook"),
-        v.literal("other"),
-      ),
-      quantity: v.number(),
-    }),
-  ),
-
-  // Content requirements
-  contentStyle: v.union(
-    v.literal("talking_head"),
-    v.literal("voiceover"),
-    v.literal("product_demo"),
-    v.literal("lifestyle"),
-    v.literal("tutorial"),
-    v.literal("unboxing"),
-    v.literal("testimonial"),
-  ),
-
-  // Usage rights
-  usageRights: v.object({
-    type: v.union(v.literal("organic"), v.literal("paid"), v.literal("both")),
-    platforms: v.array(v.string()),
-    duration: v.union(
-      v.literal("30_days"),
-      v.literal("90_days"),
-      v.literal("1_year"),
-      v.literal("perpetual"),
-    ),
-    exclusivity: v.boolean(),
-    whitelisting: v.boolean(), // Can brand run as ads from creator's account
-  }),
-
-  // Physical product
-  requiresPhysicalProduct: v.boolean(),
-  productShippingNotes: v.optional(v.string()),
+  // Physical goods (if applicable)
+  requiresPhysicalItems: v.boolean(),
+  physicalItemNotes: v.optional(v.string()),
 
   // Budget
-  budgetPerVideo: v.number(), // in cents
+  budgetPerUnit: v.number(), // in cents
   totalBudget: v.number(), // in cents
-  creatorsNeeded: v.number(),
+  providersNeeded: v.number(),
 
   // Timeline
   applicationDeadline: v.optional(v.number()),
-  deliveryDeadlineDays: v.number(), // Days after production starts
+  deliveryDeadlineDays: v.number(), // Days after work starts
 
   // Revision policy
   revisionsIncluded: v.number(),
 
-  // Script (locked after approval)
-  scriptId: v.optional(v.id("scripts")),
-  scriptApprovedAt: v.optional(v.number()),
-  scriptApprovedByUserId: v.optional(v.id("users")),
-
   // Sourcing
   sourcingType: v.union(
     v.literal("open"), // Open to marketplace
-    v.literal("invite_only"), // Only invited creators
-    v.literal("matched"), // Platform-matched creators
+    v.literal("invite_only"), // Only invited providers
+    v.literal("matched"), // Platform-matched providers
   ),
 
   // Status
   status: v.union(
     v.literal("draft"),
-    v.literal("pending_script"),
-    v.literal("script_review"),
+    v.literal("pending_approval"),
     v.literal("active"), // Open for applications
     v.literal("in_progress"), // Has active orders
     v.literal("completed"),
@@ -497,73 +437,25 @@ briefs: defineTable({
   updatedAt: v.number(),
   publishedAt: v.optional(v.number()),
 })
-  .index("by_brandEntityId", ["brandEntityId"])
+  .index("by_clientEntityId", ["clientEntityId"])
   .index("by_status", ["status"])
-  .index("by_brandEntityId_status", ["brandEntityId", "status"])
+  .index("by_clientEntityId_status", ["clientEntityId", "status"])
   .index("by_createdAt", ["createdAt"])
   .index("by_sourcingType_status", ["sourcingType", "status"])
-  .searchIndex("search_briefs", {
+  .searchIndex("search_jobs", {
     searchField: "title",
     filterFields: ["status", "sourcingType"],
   });
 ```
 
-### 4.2 `scripts`
+### 4.2 `jobInvitations`
 
-AI-generated and approved scripts.
-
-```typescript
-scripts: defineTable({
-  briefId: v.id("briefs"),
-
-  // Version tracking
-  version: v.number(),
-  isApproved: v.boolean(),
-
-  // Script content
-  hook: v.string(),
-  body: v.string(), // AIDA format
-  cta: v.string(),
-
-  // Optional enhancements
-  shotList: v.optional(
-    v.array(
-      v.object({
-        shotNumber: v.number(),
-        description: v.string(),
-        duration: v.optional(v.string()),
-        notes: v.optional(v.string()),
-      }),
-    ),
-  ),
-  bRollSuggestions: v.optional(v.array(v.string())),
-  onScreenText: v.optional(v.array(v.string())),
-  complianceNotes: v.optional(v.array(v.string())),
-
-  // Generation metadata
-  generatedByAI: v.boolean(),
-  aiModel: v.optional(v.string()),
-  aiPrompt: v.optional(v.string()),
-
-  // Editing history
-  editedByUserId: v.optional(v.id("users")),
-  editedAt: v.optional(v.number()),
-
-  createdAt: v.number(),
-})
-  .index("by_briefId", ["briefId"])
-  .index("by_briefId_version", ["briefId", "version"])
-  .index("by_briefId_isApproved", ["briefId", "isApproved"]);
-```
-
-### 4.3 `briefInvitations`
-
-Invitations sent to specific creators.
+Invitations sent to specific service providers.
 
 ```typescript
-briefInvitations: defineTable({
-  briefId: v.id("briefs"),
-  creatorProfileId: v.id("creatorProfiles"),
+jobInvitations: defineTable({
+  jobId: v.id("jobs"),
+  providerProfileId: v.id("serviceProviderProfiles"),
   invitedByUserId: v.id("users"),
 
   status: v.union(
@@ -582,9 +474,9 @@ briefInvitations: defineTable({
 
   createdAt: v.number(),
 })
-  .index("by_briefId", ["briefId"])
-  .index("by_creatorProfileId", ["creatorProfileId"])
-  .index("by_briefId_creatorProfileId", ["briefId", "creatorProfileId"])
+  .index("by_jobId", ["jobId"])
+  .index("by_providerProfileId", ["providerProfileId"])
+  .index("by_jobId_providerProfileId", ["jobId", "providerProfileId"])
   .index("by_status", ["status"]);
 ```
 
@@ -594,52 +486,33 @@ briefInvitations: defineTable({
 
 ### 5.1 `orders`
 
-The core order entity with state machine.
+The core order entity with state machine. This is a generic pattern that works across marketplace domains.
 
 ```typescript
 orders: defineTable({
   // References
-  briefId: v.id("briefs"),
-  brandEntityId: v.id("brandEntities"),
-  creatorProfileId: v.id("creatorProfiles"),
+  jobId: v.id("jobs"),
+  clientEntityId: v.id("brandEntities"),
+  providerProfileId: v.id("serviceProviderProfiles"),
 
   // Booking
-  bookedByUserId: v.id("users"), // Brand user who accepted
+  bookedByUserId: v.id("users"), // Client user who accepted
   bookedAt: v.number(),
   wasAutoAccepted: v.boolean(),
 
-  // Locked terms (snapshot from brief at booking time)
-  lockedTerms: v.object({
-    budgetPerVideo: v.number(),
-    deliverables: v.array(
-      v.object({
-        format: v.string(),
-        duration: v.object({ min: v.number(), max: v.number() }),
-        platform: v.string(),
-        quantity: v.number(),
-      }),
-    ),
-    usageRights: v.object({
-      type: v.string(),
-      platforms: v.array(v.string()),
-      duration: v.string(),
-      exclusivity: v.boolean(),
-      whitelisting: v.boolean(),
-    }),
-    revisionsIncluded: v.number(),
-    deliveryDeadlineDays: v.number(),
-    scriptVersion: v.number(),
-  }),
+  // Locked terms (snapshot from job at booking time)
+  // Store as JSON - schema varies by domain
+  lockedTerms: v.any(),
 
-  // Order state machine
+  // Order state machine (generic states)
   status: v.union(
     v.literal("pending_payment"), // Awaiting escrow
-    v.literal("awaiting_product"), // Product needs shipping
-    v.literal("product_shipped"), // In transit
-    v.literal("in_production"), // Creator working
-    v.literal("submitted"), // Awaiting brand review
-    v.literal("revision_requested"), // Brand requested changes
-    v.literal("approved"), // Brand approved
+    v.literal("awaiting_materials"), // Materials/products need shipping (optional)
+    v.literal("materials_shipped"), // In transit (optional)
+    v.literal("in_progress"), // Provider working
+    v.literal("submitted"), // Awaiting client review
+    v.literal("revision_requested"), // Client requested changes
+    v.literal("approved"), // Client approved
     v.literal("auto_approved"), // System auto-approved
     v.literal("completed"), // Payout complete
     v.literal("disputed"), // In dispute
@@ -647,13 +520,13 @@ orders: defineTable({
   ),
 
   // Timeline tracking
-  productShippedAt: v.optional(v.number()),
-  productDeliveredAt: v.optional(v.number()),
-  productDeliveryConfirmedBy: v.optional(
-    v.union(v.literal("creator"), v.literal("tracking"), v.literal("timeout")),
+  materialsShippedAt: v.optional(v.number()),
+  materialsDeliveredAt: v.optional(v.number()),
+  materialsDeliveryConfirmedBy: v.optional(
+    v.union(v.literal("provider"), v.literal("tracking"), v.literal("timeout")),
   ),
-  productionStartedAt: v.optional(v.number()),
-  deliveryDeadline: v.optional(v.number()), // Calculated after production starts
+  workStartedAt: v.optional(v.number()),
+  deliveryDeadline: v.optional(v.number()), // Calculated after work starts
   submittedAt: v.optional(v.number()),
   approvedAt: v.optional(v.number()),
   completedAt: v.optional(v.number()),
@@ -675,12 +548,12 @@ orders: defineTable({
   createdAt: v.number(),
   updatedAt: v.number(),
 })
-  .index("by_briefId", ["briefId"])
-  .index("by_brandEntityId", ["brandEntityId"])
-  .index("by_creatorProfileId", ["creatorProfileId"])
+  .index("by_jobId", ["jobId"])
+  .index("by_clientEntityId", ["clientEntityId"])
+  .index("by_providerProfileId", ["providerProfileId"])
   .index("by_status", ["status"])
-  .index("by_brandEntityId_status", ["brandEntityId", "status"])
-  .index("by_creatorProfileId_status", ["creatorProfileId", "status"])
+  .index("by_clientEntityId_status", ["clientEntityId", "status"])
+  .index("by_providerProfileId_status", ["providerProfileId", "status"])
   .index("by_deliveryDeadline", ["deliveryDeadline"])
   .index("by_autoApprovalDeadline", ["autoApprovalDeadline"]);
 ```
@@ -710,18 +583,18 @@ orderStatusHistory: defineTable({
 
 ### 5.3 `orderShipping`
 
-Product shipping details.
+Shipping details for physical goods (when applicable).
 
 ```typescript
 orderShipping: defineTable({
   orderId: v.id("orders"),
 
-  // Shipping details (entered by brand)
+  // Shipping details (entered by client)
   courier: v.string(),
   trackingNumber: v.string(),
   trackingUrl: v.optional(v.string()),
 
-  // Destination (from creator profile)
+  // Destination (from provider profile)
   destinationCountry: v.string(),
   destinationCity: v.optional(v.string()),
 
@@ -733,7 +606,7 @@ orderShipping: defineTable({
   deliveryConfirmed: v.boolean(),
   deliveryConfirmedAt: v.optional(v.number()),
   deliveryConfirmedBy: v.optional(
-    v.union(v.literal("creator"), v.literal("tracking"), v.literal("timeout")),
+    v.union(v.literal("provider"), v.literal("tracking"), v.literal("timeout")),
   ),
 
   createdAt: v.number(),
@@ -749,12 +622,12 @@ orderShipping: defineTable({
 
 ### 6.1 `submissions`
 
-Creator deliverable submissions.
+Provider deliverable submissions.
 
 ```typescript
 submissions: defineTable({
   orderId: v.id("orders"),
-  creatorProfileId: v.id("creatorProfiles"),
+  providerProfileId: v.id("serviceProviderProfiles"),
 
   // Submission number (1 = initial, 2+ = revisions)
   submissionNumber: v.number(),
@@ -770,8 +643,8 @@ submissions: defineTable({
     }),
   ),
 
-  // Creator notes
-  creatorNotes: v.optional(v.string()),
+  // Provider notes
+  providerNotes: v.optional(v.string()),
 
   // Review status
   reviewStatus: v.union(
@@ -791,7 +664,7 @@ submissions: defineTable({
 
 ### 6.2 `revisionRequests`
 
-Revision requests from brands.
+Revision requests from clients.
 
 ```typescript
 revisionRequests: defineTable({
@@ -805,24 +678,16 @@ revisionRequests: defineTable({
   // Categorization
   isInScope: v.boolean(), // Determined by system/admin
 
-  // Request content
+  // Request content - categories are domain-specific
   requestedChanges: v.array(
     v.object({
-      category: v.union(
-        v.literal("script_adherence"),
-        v.literal("audio_quality"),
-        v.literal("video_quality"),
-        v.literal("delivery_style"),
-        v.literal("timing"),
-        v.literal("other"),
-      ),
+      category: v.string(), // Domain-specific categories
       description: v.string(),
-      timestampStart: v.optional(v.number()), // seconds
-      timestampEnd: v.optional(v.number()),
+      referencePoint: v.optional(v.string()), // Could be timestamp, page number, etc.
     }),
   ),
 
-  brandNotes: v.optional(v.string()),
+  clientNotes: v.optional(v.string()),
 
   // Resolution
   status: v.union(
@@ -846,13 +711,13 @@ revisionRequests: defineTable({
 
 ### 7.1 `escrowTransactions`
 
-Tracks funds held in escrow via Polar.
+Tracks funds held in escrow via Polar. This is a generic pattern for secure marketplace payments.
 
 ```typescript
 escrowTransactions: defineTable({
   orderId: v.id("orders"),
-  brandEntityId: v.id("brandEntities"),
-  creatorProfileId: v.id("creatorProfiles"),
+  clientEntityId: v.id("brandEntities"),
+  providerProfileId: v.id("serviceProviderProfiles"),
 
   // Amounts (all in cents)
   grossAmount: v.number(), // Total paid by brand
@@ -887,19 +752,19 @@ escrowTransactions: defineTable({
   updatedAt: v.number(),
 })
   .index("by_orderId", ["orderId"])
-  .index("by_brandEntityId", ["brandEntityId"])
-  .index("by_creatorProfileId", ["creatorProfileId"])
+  .index("by_clientEntityId", ["clientEntityId"])
+  .index("by_providerProfileId", ["providerProfileId"])
   .index("by_status", ["status"])
   .index("by_polarCheckoutId", ["polarCheckoutId"]);
 ```
 
-### 7.2 `creatorWallet`
+### 7.2 `providerWallet`
 
-Creator earnings and balance.
+Provider earnings and balance.
 
 ```typescript
-creatorWallet: defineTable({
-  creatorProfileId: v.id("creatorProfiles"),
+providerWallet: defineTable({
+  providerProfileId: v.id("serviceProviderProfiles"),
 
   // Balance (in cents)
   availableBalance: v.number(),
@@ -916,16 +781,16 @@ creatorWallet: defineTable({
 
   createdAt: v.number(),
   updatedAt: v.number(),
-}).index("by_creatorProfileId", ["creatorProfileId"]);
+}).index("by_providerProfileId", ["providerProfileId"]);
 ```
 
 ### 7.3 `walletTransactions`
 
-Transaction history for creator wallet.
+Transaction history for provider wallet.
 
 ```typescript
 walletTransactions: defineTable({
-  creatorProfileId: v.id("creatorProfiles"),
+  providerProfileId: v.id("serviceProviderProfiles"),
 
   type: v.union(
     v.literal("earning"), // Order payout
@@ -952,15 +817,15 @@ walletTransactions: defineTable({
 
   createdAt: v.number(),
 })
-  .index("by_creatorProfileId", ["creatorProfileId"])
-  .index("by_creatorProfileId_createdAt", ["creatorProfileId", "createdAt"])
+  .index("by_providerProfileId", ["providerProfileId"])
+  .index("by_providerProfileId_createdAt", ["providerProfileId", "createdAt"])
   .index("by_orderId", ["orderId"])
   .index("by_type", ["type"]);
 ```
 
 ### 7.4 `subscriptions`
 
-Brand subscription tracking (Polar).
+Client/organization subscription tracking (Polar).
 
 ```typescript
 subscriptions: defineTable({
@@ -1005,13 +870,13 @@ subscriptions: defineTable({
 
 ### 8.1 `trustScoreHistory`
 
-Historical tracking of trust score changes.
+Historical tracking of trust score changes. Generic pattern for two-sided marketplace reputation.
 
 ```typescript
 trustScoreHistory: defineTable({
-  // Either brand or creator
-  entityType: v.union(v.literal("brand"), v.literal("creator")),
-  entityId: v.string(), // brandEntityId or creatorProfileId
+  // Either client organization or service provider
+  entityType: v.union(v.literal("client"), v.literal("provider")),
+  entityId: v.string(), // clientEntityId or providerProfileId
 
   // Score snapshot
   previousScore: v.number(),
@@ -1049,43 +914,29 @@ trustScoreHistory: defineTable({
 
 ### 8.2 `reviews`
 
-Two-way review system.
+Two-way review system. Generic pattern - rating categories should be customized per domain.
 
 ```typescript
 reviews: defineTable({
   orderId: v.id("orders"),
 
   // Reviewer
-  reviewerType: v.union(v.literal("brand"), v.literal("creator")),
+  reviewerType: v.union(v.literal("client"), v.literal("provider")),
   reviewerUserId: v.id("users"),
 
   // Reviewee
-  revieweeType: v.union(v.literal("brand"), v.literal("creator")),
-  revieweeId: v.string(), // brandEntityId or creatorProfileId
+  revieweeType: v.union(v.literal("client"), v.literal("provider")),
+  revieweeId: v.string(), // clientEntityId or providerProfileId
 
   // Ratings (1-5)
   overallRating: v.number(),
 
-  // Brand reviewing creator
-  creatorRatings: v.optional(
-    v.object({
-      contentQuality: v.number(),
-      communication: v.number(),
-      professionalism: v.number(),
-      timeliness: v.number(),
-      scriptAdherence: v.number(),
-    }),
-  ),
+  // Domain-specific ratings - structure varies by marketplace type
+  // Client reviewing provider (quality, timeliness, communication, etc.)
+  providerRatings: v.optional(v.any()),
 
-  // Creator reviewing brand
-  brandRatings: v.optional(
-    v.object({
-      briefClarity: v.number(),
-      communication: v.number(),
-      paymentSpeed: v.number(),
-      fairness: v.number(),
-    }),
-  ),
+  // Provider reviewing client (clarity, communication, payment, fairness, etc.)
+  clientRatings: v.optional(v.any()),
 
   // Written review
   comment: v.optional(v.string()),
@@ -1108,16 +959,16 @@ reviews: defineTable({
 
 ### 8.3 `badges`
 
-Badge tracking for users.
+Badge tracking for users. Badge types should be defined per domain.
 
 ```typescript
 badges: defineTable({
   // Owner
-  entityType: v.union(v.literal("brand"), v.literal("creator")),
-  entityId: v.string(), // brandEntityId or creatorProfileId
+  entityType: v.union(v.literal("client"), v.literal("provider")),
+  entityId: v.string(), // clientEntityId or providerProfileId
 
-  // Badge details
-  badgeType: v.string(), // "on_time_pro", "ad_ready", "high_integrity", etc.
+  // Badge details - types are domain-specific
+  badgeType: v.string(), // e.g., "on_time_pro", "fast_payer", "top_rated", etc.
 
   // Status
   status: v.union(
@@ -1142,84 +993,29 @@ badges: defineTable({
 
 ---
 
-## 9. Usage Compliance
+## 9. Disputes
 
-### 9.1 `usageTracking`
+### 9.1 `disputes`
 
-Tracks ad usage against agreed terms.
-
-```typescript
-usageTracking: defineTable({
-  orderId: v.id("orders"),
-  brandEntityId: v.id("brandEntities"),
-
-  // Usage terms from order
-  allowedUsageType: v.string(),
-  allowedPlatforms: v.array(v.string()),
-  usageStartDate: v.number(),
-  usageEndDate: v.number(),
-
-  // Detected usage
-  detectedUsages: v.array(
-    v.object({
-      platform: v.string(),
-      adAccountId: v.string(),
-      adId: v.string(),
-      firstDetectedAt: v.number(),
-      lastDetectedAt: v.number(),
-      isActive: v.boolean(),
-    }),
-  ),
-
-  // Compliance status
-  complianceStatus: v.union(
-    v.literal("compliant"),
-    v.literal("approaching_limit"),
-    v.literal("exceeded"),
-    v.literal("extension_offered"),
-    v.literal("extension_purchased"),
-  ),
-
-  // Extension
-  extensionOfferedAt: v.optional(v.number()),
-  extensionPurchasedAt: v.optional(v.number()),
-  newUsageEndDate: v.optional(v.number()),
-
-  createdAt: v.number(),
-  updatedAt: v.number(),
-})
-  .index("by_orderId", ["orderId"])
-  .index("by_brandEntityId", ["brandEntityId"])
-  .index("by_complianceStatus", ["complianceStatus"])
-  .index("by_usageEndDate", ["usageEndDate"]);
-```
-
----
-
-## 10. Disputes
-
-### 10.1 `disputes`
-
-Dispute tracking and resolution.
+Dispute tracking and resolution. Generic pattern for marketplace conflict handling.
 
 ```typescript
 disputes: defineTable({
   orderId: v.id("orders"),
 
   // Parties
-  initiatedByType: v.union(v.literal("brand"), v.literal("creator")),
+  initiatedByType: v.union(v.literal("client"), v.literal("provider")),
   initiatedByUserId: v.id("users"),
-  brandEntityId: v.id("brandEntities"),
-  creatorProfileId: v.id("creatorProfiles"),
+  clientEntityId: v.id("brandEntities"),
+  providerProfileId: v.id("serviceProviderProfiles"),
 
-  // Dispute details
+  // Dispute details - categories can be extended per domain
   category: v.union(
     v.literal("quality"),
     v.literal("delivery"),
     v.literal("scope"),
     v.literal("payment"),
     v.literal("communication"),
-    v.literal("usage_rights"),
     v.literal("other"),
   ),
 
@@ -1269,8 +1065,8 @@ disputes: defineTable({
   updatedAt: v.number(),
 })
   .index("by_orderId", ["orderId"])
-  .index("by_brandEntityId", ["brandEntityId"])
-  .index("by_creatorProfileId", ["creatorProfileId"])
+  .index("by_clientEntityId", ["clientEntityId"])
+  .index("by_providerProfileId", ["providerProfileId"])
   .index("by_status", ["status"])
   .index("by_assignedAdminId", ["assignedAdminId"])
   .index("by_category", ["category"]);
@@ -1278,17 +1074,17 @@ disputes: defineTable({
 
 ---
 
-## 11. Messaging System
+## 10. Messaging System
 
-### 11.1 `conversations`
+### 10.1 `conversations`
 
-Conversation threads between parties.
+Conversation threads between parties. Generic pattern for marketplace communication.
 
 ```typescript
 conversations: defineTable({
   orderId: v.id("orders"),
-  brandEntityId: v.id("brandEntities"),
-  creatorProfileId: v.id("creatorProfiles"),
+  clientEntityId: v.id("brandEntities"),
+  providerProfileId: v.id("serviceProviderProfiles"),
 
   // Participants (user IDs who can access)
   participantUserIds: v.array(v.id("users")),
@@ -1309,12 +1105,12 @@ conversations: defineTable({
   updatedAt: v.number(),
 })
   .index("by_orderId", ["orderId"])
-  .index("by_brandEntityId", ["brandEntityId"])
-  .index("by_creatorProfileId", ["creatorProfileId"])
+  .index("by_clientEntityId", ["clientEntityId"])
+  .index("by_providerProfileId", ["providerProfileId"])
   .index("by_lastMessageAt", ["lastMessageAt"]);
 ```
 
-### 11.2 `messages`
+### 10.2 `messages`
 
 Individual messages in conversations.
 
@@ -1366,36 +1162,36 @@ messages: defineTable({
 
 ---
 
-## 12. Notifications
+## 11. Notifications
 
-### 12.1 `notifications`
+### 11.1 `notifications`
 
-User notifications.
+User notifications. Generic notification types - extend with domain-specific types as needed.
 
 ```typescript
 notifications: defineTable({
   userId: v.id("users"),
 
+  // Generic notification types - extend per domain
   type: v.union(
     v.literal("order_booked"),
-    v.literal("product_shipped"),
-    v.literal("production_started"),
+    v.literal("materials_shipped"),
+    v.literal("work_started"),
     v.literal("submission_received"),
     v.literal("revision_requested"),
     v.literal("order_approved"),
     v.literal("payment_released"),
     v.literal("new_message"),
-    v.literal("brief_invitation"),
+    v.literal("job_invitation"),
     v.literal("dispute_update"),
     v.literal("trust_level_change"),
     v.literal("badge_earned"),
-    v.literal("usage_warning"),
     v.literal("auto_approval_pending"),
   ),
 
   // Reference
   orderId: v.optional(v.id("orders")),
-  briefId: v.optional(v.id("briefs")),
+  jobId: v.optional(v.id("jobs")),
   conversationId: v.optional(v.id("conversations")),
 
   // Content
@@ -1419,7 +1215,7 @@ notifications: defineTable({
   .index("by_type", ["type"]);
 ```
 
-### 12.2 `pushTokens`
+### 11.2 `pushTokens`
 
 Push notification tokens.
 
@@ -1438,9 +1234,9 @@ pushTokens: defineTable({
 
 ---
 
-## 13. Admin and Audit
+## 12. Admin and Audit
 
-### 13.1 `auditLog`
+### 12.1 `auditLog`
 
 Platform-wide audit trail.
 
@@ -1477,7 +1273,7 @@ auditLog: defineTable({
   .index("by_createdAt", ["createdAt"]);
 ```
 
-### 13.2 `adminActions`
+### 12.2 `adminActions`
 
 Admin-specific actions for trust/safety.
 
@@ -1486,8 +1282,8 @@ adminActions: defineTable({
   adminUserId: v.id("users"),
 
   actionType: v.union(
-    v.literal("brand_suspension"),
-    v.literal("creator_suspension"),
+    v.literal("client_suspension"),
+    v.literal("provider_suspension"),
     v.literal("entity_link"),
     v.literal("entity_merge"),
     v.literal("dispute_resolution"),
@@ -1526,12 +1322,12 @@ adminActions: defineTable({
 These queries should leverage Convex's real-time capabilities:
 
 1. **Order Status Updates**
-   - Creators need instant notification when orders move through states
-   - Brands need real-time updates on submission status
-   - Query: `orders` by `creatorProfileId_status` or `brandEntityId_status`
+   - Providers need instant notification when orders move through states
+   - Clients need real-time updates on submission status
+   - Query: `orders` by `providerProfileId_status` or `clientEntityId_status`
 
 2. **Messaging**
-   - Real-time chat between brands and creators
+   - Real-time chat between clients and providers
    - Query: `messages` by `conversationId_createdAt`
    - Optimized with `conversations.lastMessageAt` for list views
 
@@ -1539,9 +1335,9 @@ These queries should leverage Convex's real-time capabilities:
    - Instant notification delivery
    - Query: `notifications` by `userId_isRead`
 
-4. **Brief Applications**
-   - Brands see applications as they arrive
-   - Query: `briefInvitations` by `briefId_status`
+4. **Job Applications**
+   - Clients see applications as they arrive
+   - Query: `jobInvitations` by `jobId_status`
 
 5. **Escrow Status**
    - Both parties need real-time payment status
@@ -1551,9 +1347,9 @@ These queries should leverage Convex's real-time capabilities:
 
 ## Key Design Decisions
 
-### 1. Entity-Based Brand Identity
+### 1. Entity-Based Organization Identity
 
-- `brandEntities` is separate from `users` to ensure reputation persists
+- `brandEntities` (client organizations) is separate from `users` to ensure reputation persists
 - `brandMembers` enables multi-user access with role-based permissions
 - `linkedEntityIds` supports admin entity merging for fraud prevention
 
@@ -1562,24 +1358,24 @@ These queries should leverage Convex's real-time capabilities:
 The `orders.status` field enforces the workflow:
 
 ```text
-pending_payment -> awaiting_product -> product_shipped ->
-in_production -> submitted -> revision_requested (loop) ->
+pending_payment -> awaiting_materials -> materials_shipped ->
+in_progress -> submitted -> revision_requested (loop) ->
 approved/auto_approved -> completed
 ```
 
 ### 3. Escrow Flow (Polar)
 
 ```text
-Brand pays -> escrowTransactions.status = "captured" ->
+Client pays -> escrowTransactions.status = "captured" ->
 Work completed -> Order approved ->
 escrowTransactions.status = "released" ->
-walletTransactions created -> creatorWallet.availableBalance updated
+walletTransactions created -> providerWallet.availableBalance updated
 ```
 
 ### 4. Trust Score Components
 
-- **Brand Integrity**: approval time, dispute rate, payment reliability
-- **Creator Reliability**: delivery time, revision rate, script adherence
+- **Client Integrity**: approval time, dispute rate, payment reliability
+- **Provider Reliability**: delivery time, revision rate, requirements adherence
 - Scores are 0-100, levels are 1-5
 - Historical tracking enables decay and trend analysis
 
@@ -1589,3 +1385,232 @@ walletTransactions created -> creatorWallet.availableBalance updated
 - Status-based indexes for dashboard filtering
 - Timestamp indexes for ordered pagination
 - Search indexes for discovery features
+
+---
+
+## Domain-Specific Extensions (Example)
+
+> **Note:** The tables in this section are examples from a UGC (User-Generated Content) creator marketplace implementation. When implementing for your domain, replace these with tables that match your specific business requirements.
+
+The following demonstrates how to extend the generic patterns above for a UGC creator marketplace where brands hire content creators to produce video advertisements.
+
+### UGC-Specific: `creatorProfiles` Extension
+
+For a UGC marketplace, the `serviceProviderProfiles.domainExtensions` field would store:
+
+```typescript
+// Example domain extensions for UGC creators
+domainExtensions: {
+  // Professional details specific to content creation
+  niches: string[], // ["beauty", "tech", "fitness"]
+  contentStyles: ("talking_head" | "voiceover" | "product_demo" | "lifestyle" | "tutorial" | "unboxing" | "testimonial")[],
+
+  // Equipment (important for video quality)
+  equipment: {
+    camera: string,
+    lighting: string,
+    audio: string,
+    editing: string,
+  },
+
+  // Rate is per video for UGC
+  baseRatePerVideo: number, // in cents
+}
+```
+
+### UGC-Specific: `briefs` Table
+
+Replaces the generic `jobs` table with UGC-specific fields:
+
+```typescript
+// Example: UGC Brief structure
+briefs: defineTable({
+  brandEntityId: v.id("brandEntities"),
+  createdByUserId: v.id("users"),
+
+  title: v.string(),
+  internalReference: v.optional(v.string()),
+
+  // Product details (UGC-specific)
+  product: v.object({
+    name: v.string(),
+    description: v.string(),
+    usp: v.string(), // Unique selling proposition
+    websiteUrl: v.optional(v.string()),
+    category: v.string(),
+  }),
+
+  // Target audience (UGC-specific)
+  targetAudience: v.object({
+    demographics: v.string(),
+    painPoints: v.optional(v.string()),
+    desiredOutcome: v.string(),
+  }),
+
+  // Video deliverables (UGC-specific)
+  deliverables: v.array(
+    v.object({
+      format: v.union(
+        v.literal("vertical_9_16"),
+        v.literal("horizontal_16_9"),
+        v.literal("square_1_1"),
+      ),
+      duration: v.object({ min: v.number(), max: v.number() }),
+      platform: v.string(),
+      quantity: v.number(),
+    }),
+  ),
+
+  // Content style (UGC-specific)
+  contentStyle: v.string(),
+
+  // Usage rights (UGC-specific - critical for ad content)
+  usageRights: v.object({
+    type: v.union(v.literal("organic"), v.literal("paid"), v.literal("both")),
+    platforms: v.array(v.string()),
+    duration: v.string(),
+    exclusivity: v.boolean(),
+    whitelisting: v.boolean(), // Can brand run ads from creator's account
+  }),
+
+  // Script workflow (UGC-specific)
+  scriptId: v.optional(v.id("scripts")),
+  scriptApprovedAt: v.optional(v.number()),
+
+  // ... standard job fields ...
+});
+```
+
+### UGC-Specific: `scripts` Table
+
+AI-generated and approved scripts for video content:
+
+```typescript
+// Example: UGC Script structure
+scripts: defineTable({
+  briefId: v.id("briefs"),
+  version: v.number(),
+  isApproved: v.boolean(),
+
+  // Script content (AIDA format)
+  hook: v.string(),
+  body: v.string(),
+  cta: v.string(),
+
+  // Production guidance
+  shotList: v.optional(
+    v.array(
+      v.object({
+        shotNumber: v.number(),
+        description: v.string(),
+        duration: v.optional(v.string()),
+        notes: v.optional(v.string()),
+      }),
+    ),
+  ),
+  bRollSuggestions: v.optional(v.array(v.string())),
+  onScreenText: v.optional(v.array(v.string())),
+  complianceNotes: v.optional(v.array(v.string())),
+
+  // AI generation metadata
+  generatedByAI: v.boolean(),
+  aiModel: v.optional(v.string()),
+
+  createdAt: v.number(),
+});
+```
+
+### UGC-Specific: `usageTracking` Table
+
+Tracks ad usage against agreed terms (specific to advertising content):
+
+```typescript
+// Example: UGC Usage Tracking
+usageTracking: defineTable({
+  orderId: v.id("orders"),
+  brandEntityId: v.id("brandEntities"),
+
+  // Usage terms from order
+  allowedUsageType: v.string(),
+  allowedPlatforms: v.array(v.string()),
+  usageStartDate: v.number(),
+  usageEndDate: v.number(),
+
+  // Detected ad usage
+  detectedUsages: v.array(
+    v.object({
+      platform: v.string(),
+      adAccountId: v.string(),
+      adId: v.string(),
+      firstDetectedAt: v.number(),
+      lastDetectedAt: v.number(),
+      isActive: v.boolean(),
+    }),
+  ),
+
+  // Compliance status
+  complianceStatus: v.union(
+    v.literal("compliant"),
+    v.literal("approaching_limit"),
+    v.literal("exceeded"),
+    v.literal("extension_offered"),
+    v.literal("extension_purchased"),
+  ),
+
+  createdAt: v.number(),
+  updatedAt: v.number(),
+});
+```
+
+### UGC-Specific: Badge Types
+
+Example badge definitions for UGC creators:
+
+- `on_time_pro` - Consistently delivers before deadline
+- `ad_ready` - Content meets ad platform requirements
+- `fast_turnaround` - Completes work significantly faster than average
+- `low_revision` - Rarely requires revisions
+- `script_adherent` - Closely follows approved scripts
+
+### UGC-Specific: Review Categories
+
+When a brand reviews a creator:
+
+- `contentQuality` - Video/audio production quality
+- `communication` - Responsiveness and clarity
+- `professionalism` - Professional conduct
+- `timeliness` - Delivery against deadlines
+- `scriptAdherence` - How well they followed the script
+
+When a creator reviews a brand:
+
+- `briefClarity` - How clear the requirements were
+- `communication` - Responsiveness and feedback quality
+- `paymentSpeed` - How quickly payments were released
+- `fairness` - Fair treatment regarding revisions
+
+### UGC-Specific: Revision Categories
+
+Categories for revision requests in video content:
+
+- `script_adherence` - Didn't follow the approved script
+- `audio_quality` - Audio issues
+- `video_quality` - Video quality issues
+- `delivery_style` - Performance/delivery concerns
+- `timing` - Duration or pacing issues
+
+---
+
+## Configuration Notes
+
+When deploying this data model:
+
+1. **Convex Deployment**: Replace `<YOUR_CONVEX_DEPLOYMENT>` in any configuration files with your actual Convex deployment name
+
+2. **Payment Provider**: The model assumes Polar for payments. Update `polar*` field references if using a different provider
+
+3. **Domain Extensions**: For non-UGC marketplaces, modify or replace the domain-specific tables with your own requirements
+
+4. **Badge Definitions**: Define badge types that make sense for your marketplace's quality signals
+
+5. **Review Categories**: Customize rating categories based on what matters most in your domain

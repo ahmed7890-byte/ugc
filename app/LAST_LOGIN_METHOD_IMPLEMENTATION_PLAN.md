@@ -38,16 +38,17 @@ The `lastLoginMethodClient` plugin was imported from `better-auth/client/plugins
 
 ### Key Documentation Sources
 
-| Source | Key Finding |
-|--------|-------------|
-| [Better Auth Expo Docs](https://www.better-auth.com/docs/integrations/expo) | Expo supports both native and web apps |
-| [Convex Better Auth Expo Guide](https://labs.convex.dev/better-auth/framework-guides/expo) | Platform-specific plugin loading required |
-| [GitHub Issue #6409](https://github.com/better-auth/better-auth/issues/6409) | lastLoginMethod incompatible with Expo native (fixed in PR #6413) |
-| [@better-auth/expo npm](https://www.npmjs.com/package/@better-auth/expo) | Dedicated Expo plugins available |
+| Source                                                                                     | Key Finding                                                       |
+| ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| [Better Auth Expo Docs](https://www.better-auth.com/docs/integrations/expo)                | Expo supports both native and web apps                            |
+| [Convex Better Auth Expo Guide](https://labs.convex.dev/better-auth/framework-guides/expo) | Platform-specific plugin loading required                         |
+| [GitHub Issue #6409](https://github.com/better-auth/better-auth/issues/6409)               | lastLoginMethod incompatible with Expo native (fixed in PR #6413) |
+| [@better-auth/expo npm](https://www.npmjs.com/package/@better-auth/expo)                   | Dedicated Expo plugins available                                  |
 
 ### Critical Constraints
 
 1. **Plugin Exclusivity**: From the Convex docs:
+
    > "Note that the expoClient and crossDomainClient plugins cannot both be included in the client instance at the same time."
 
 2. **Platform Detection**: Must use `Platform.OS` from `react-native` to conditionally load plugins
@@ -64,22 +65,22 @@ The `lastLoginMethodClient` plugin was imported from `better-auth/client/plugins
 
 ### Plugin Matrix
 
-| Plugin | Native (iOS/Android) | Web | Import Path |
-|--------|---------------------|-----|-------------|
-| `convexClient` | ✅ | ✅ | `@convex-dev/better-auth/client/plugins` |
-| `expoClient` | ✅ | ❌ | `@better-auth/expo/client` |
-| `crossDomainClient` | ❌ | ✅ | `@convex-dev/better-auth/client/plugins` |
-| `lastLoginMethodClient` (Expo) | ✅ | ❌ | `@better-auth/expo/plugins` |
-| `lastLoginMethodClient` (Web) | ❌ | ✅ | `better-auth/client/plugins` |
+| Plugin                         | Native (iOS/Android) | Web | Import Path                              |
+| ------------------------------ | -------------------- | --- | ---------------------------------------- |
+| `convexClient`                 | ✅                   | ✅  | `@convex-dev/better-auth/client/plugins` |
+| `expoClient`                   | ✅                   | ❌  | `@better-auth/expo/client`               |
+| `crossDomainClient`            | ❌                   | ✅  | `@convex-dev/better-auth/client/plugins` |
+| `lastLoginMethodClient` (Expo) | ✅                   | ❌  | `@better-auth/expo/plugins`              |
+| `lastLoginMethodClient` (Web)  | ❌                   | ✅  | `better-auth/client/plugins`             |
 
 ### Server Plugin Matrix
 
-| Plugin | Purpose | Import Path |
-|--------|---------|-------------|
-| `expo()` | Native OAuth/deep links | `@better-auth/expo` |
-| `convex()` | Convex database adapter | `@convex-dev/better-auth/plugins` |
-| `crossDomain()` | Web cross-origin support | `@convex-dev/better-auth/plugins` |
-| `lastLoginMethod()` | Track auth method (cookies) | `better-auth/plugins` |
+| Plugin              | Purpose                     | Import Path                       |
+| ------------------- | --------------------------- | --------------------------------- |
+| `expo()`            | Native OAuth/deep links     | `@better-auth/expo`               |
+| `convex()`          | Convex database adapter     | `@convex-dev/better-auth/plugins` |
+| `crossDomain()`     | Web cross-origin support    | `@convex-dev/better-auth/plugins` |
+| `lastLoginMethod()` | Track auth method (cookies) | `better-auth/plugins`             |
 
 ---
 
@@ -90,6 +91,7 @@ The `lastLoginMethodClient` plugin was imported from `better-auth/client/plugins
 #### 1. `packages/backend/convex/auth.ts`
 
 **Current state:**
+
 ```typescript
 plugins: [
   expo(),
@@ -102,6 +104,7 @@ plugins: [
 ```
 
 **Required changes:**
+
 ```typescript
 import { crossDomain } from "@convex-dev/better-auth/plugins";
 
@@ -123,11 +126,13 @@ plugins: [
 #### 2. `packages/backend/convex/http.ts`
 
 **Current state:**
+
 ```typescript
 authComponent.registerRoutes(http, createAuth, { cors: false });
 ```
 
 **Required change:**
+
 ```typescript
 authComponent.registerRoutes(http, createAuth, { cors: true });
 ```
@@ -139,6 +144,7 @@ authComponent.registerRoutes(http, createAuth, { cors: true });
 #### 3. `apps/native/lib/auth-client.ts`
 
 **Current state (broken):**
+
 ```typescript
 import { lastLoginMethodClient } from "better-auth/client/plugins"; // WRONG for native
 
@@ -153,12 +159,13 @@ export const authClient = createAuthClient({
 ```
 
 **Required change (complete rewrite):**
+
 ```typescript
 import { Platform } from "react-native";
 import { createAuthClient } from "better-auth/react";
 import { convexClient } from "@convex-dev/better-auth/client/plugins";
 import Constants from "expo-constants";
-import { env } from "@convoexpo-and-nextjs-web-bun-better-auth/env/native";
+import { env } from "@ugc/env/native";
 
 // Platform-specific imports are handled conditionally to avoid
 // bundling native modules in web builds
@@ -168,14 +175,12 @@ function getPlugins() {
 
   if (isWeb) {
     // Web: Use crossDomainClient and cookie-based lastLoginMethod
-    const { crossDomainClient } = require("@convex-dev/better-auth/client/plugins");
+    const {
+      crossDomainClient,
+    } = require("@convex-dev/better-auth/client/plugins");
     const { lastLoginMethodClient } = require("better-auth/client/plugins");
 
-    return [
-      convexClient(),
-      crossDomainClient(),
-      lastLoginMethodClient(),
-    ];
+    return [convexClient(), crossDomainClient(), lastLoginMethodClient()];
   } else {
     // Native: Use expoClient and SecureStore-based lastLoginMethod
     const { expoClient } = require("@better-auth/expo/client");
@@ -204,6 +209,7 @@ export const authClient = createAuthClient({
 ```
 
 **Rationale**:
+
 1. Uses `require()` instead of top-level imports to prevent webpack from bundling native modules in web builds
 2. Conditionally loads the appropriate plugins based on platform
 3. Uses consistent `storagePrefix` across expoClient and lastLoginMethodClient
@@ -214,6 +220,7 @@ export const authClient = createAuthClient({
 #### 4. `apps/native/app/(auth)/landing.tsx`
 
 **Current state:**
+
 ```typescript
 {authClient.isLastUsedLoginMethod("google") && (
   <LastUsedIndicator />
@@ -221,6 +228,7 @@ export const authClient = createAuthClient({
 ```
 
 **Recommended enhancement:**
+
 ```typescript
 import { useState, useEffect } from "react";
 
@@ -244,12 +252,12 @@ export default function Landing() {
 
 ## Files to Modify
 
-| File | Change Type | Priority |
-|------|-------------|----------|
-| `packages/backend/convex/auth.ts` | Add crossDomain plugin | 1 (Server) |
-| `packages/backend/convex/http.ts` | Enable CORS | 1 (Server) |
-| `apps/native/lib/auth-client.ts` | Complete rewrite with platform detection | 2 (Client) |
-| `apps/native/app/(auth)/landing.tsx` | Add useEffect for lastMethod | 3 (UI) |
+| File                                 | Change Type                              | Priority   |
+| ------------------------------------ | ---------------------------------------- | ---------- |
+| `packages/backend/convex/auth.ts`    | Add crossDomain plugin                   | 1 (Server) |
+| `packages/backend/convex/http.ts`    | Enable CORS                              | 1 (Server) |
+| `apps/native/lib/auth-client.ts`     | Complete rewrite with platform detection | 2 (Client) |
+| `apps/native/app/(auth)/landing.tsx` | Add useEffect for lastMethod             | 3 (UI)     |
 
 ---
 
@@ -289,6 +297,7 @@ authComponent.registerRoutes(http, createAuth, { cors: true });
 Replace the entire file with the platform-aware implementation shown above.
 
 Key points:
+
 - Use `Platform.OS === "web"` for detection
 - Use `require()` for conditional imports
 - Keep `convexClient()` in both paths
@@ -325,6 +334,7 @@ Add `useState` and `useEffect` for the last method reading.
 ### Web Testing (Expo Web)
 
 1. **Start the app in web mode**:
+
    ```bash
    cd apps/native && bun run web
    ```
@@ -371,7 +381,9 @@ interface LastLoginMethodClientConfig {
     deleteItemAsync: (key: string) => Awaitable<void>;
   };
   storagePrefix?: string;
-  customResolveMethod?: (url: string | URL) => Awaitable<string | undefined | null>;
+  customResolveMethod?: (
+    url: string | URL,
+  ) => Awaitable<string | undefined | null>;
 }
 ```
 
