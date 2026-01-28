@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
+import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
 
@@ -68,7 +69,12 @@ function BrowseCard({
   isMobile: boolean;
 }) {
   return (
-    <View style={{ flex: isMobile ? undefined : 1, width: isMobile ? "100%" : undefined }}>
+    <View
+      style={{
+        flex: isMobile ? undefined : 1,
+        width: isMobile ? "100%" : undefined,
+      }}
+    >
       <Link asChild href={option.href as any}>
         <Pressable
           style={({ hovered }) => ({
@@ -85,174 +91,185 @@ function BrowseCard({
             transform: hovered ? [{ translateY: -2 }] : [],
           })}
         >
-        {/* Header row */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 16,
-          }}
-        >
+          {/* Header row */}
           <View
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 10,
-              backgroundColor: THEME_COLORS.successSubtle,
+              flexDirection: "row",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "space-between",
+              marginBottom: 16,
             }}
           >
-            <Ionicons color={THEME_COLORS.primary} name={option.icon} size={20} />
+            <View
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                backgroundColor: THEME_COLORS.successSubtle,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Ionicons
+                color={THEME_COLORS.primary}
+                name={option.icon}
+                size={20}
+              />
+            </View>
+            <View
+              style={{
+                backgroundColor: THEME_COLORS.sectionBackground,
+                paddingHorizontal: 10,
+                paddingVertical: 4,
+                borderRadius: 6,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "500",
+                  color: THEME_COLORS.muted,
+                }}
+              >
+                {option.subtitle}
+              </Text>
+            </View>
           </View>
+
+          {/* Title */}
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "600",
+              color: THEME_COLORS.foreground,
+              marginBottom: 8,
+              letterSpacing: -0.3,
+            }}
+          >
+            {option.title}
+          </Text>
+
+          {/* Description */}
+          <Text
+            style={{
+              fontSize: 14,
+              color: THEME_COLORS.muted,
+              lineHeight: 21,
+              marginBottom: 20,
+            }}
+          >
+            {option.description}
+          </Text>
+
+          {/* Stats row */}
           <View
             style={{
-              backgroundColor: THEME_COLORS.sectionBackground,
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 6,
+              flexDirection: "row",
+              gap: 24,
+              paddingTop: 16,
+              borderTopWidth: 1,
+              borderTopColor: THEME_COLORS.border,
+            }}
+          >
+            {option.stats.map((stat) => (
+              <View key={stat.label}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "600",
+                    color: THEME_COLORS.foreground,
+                    marginBottom: 2,
+                  }}
+                >
+                  {stat.value}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: THEME_COLORS.muted,
+                  }}
+                >
+                  {stat.label}
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          {/* CTA */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 6,
+              marginTop: 20,
             }}
           >
             <Text
               style={{
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: "500",
-                color: THEME_COLORS.muted,
+                color: THEME_COLORS.primary,
               }}
             >
-              {option.subtitle}
+              Browse {option.id}
             </Text>
+            <Ionicons
+              color={THEME_COLORS.primary}
+              name="arrow-forward"
+              size={16}
+            />
           </View>
-        </View>
-
-        {/* Title */}
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "600",
-            color: THEME_COLORS.foreground,
-            marginBottom: 8,
-            letterSpacing: -0.3,
-          }}
-        >
-          {option.title}
-        </Text>
-
-        {/* Description */}
-        <Text
-          style={{
-            fontSize: 14,
-            color: THEME_COLORS.muted,
-            lineHeight: 21,
-            marginBottom: 20,
-          }}
-        >
-          {option.description}
-        </Text>
-
-        {/* Stats row */}
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 24,
-            paddingTop: 16,
-            borderTopWidth: 1,
-            borderTopColor: THEME_COLORS.border,
-          }}
-        >
-          {option.stats.map((stat) => (
-            <View key={stat.label}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: "600",
-                  color: THEME_COLORS.foreground,
-                  marginBottom: 2,
-                }}
-              >
-                {stat.value}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 12,
-                  color: THEME_COLORS.muted,
-                }}
-              >
-                {stat.label}
-              </Text>
-            </View>
-          ))}
-        </View>
-
-        {/* CTA */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 6,
-            marginTop: 20,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "500",
-              color: THEME_COLORS.primary,
-            }}
-          >
-            Browse {option.id}
-          </Text>
-          <Ionicons color={THEME_COLORS.primary} name="arrow-forward" size={16} />
-        </View>
-      </Pressable>
-    </Link>
+        </Pressable>
+      </Link>
     </View>
   );
 }
 
-// Category pill component
+// Category pill component - uses useState for reliable hover tracking
 function CategoryPill({ category }: { category: (typeof CATEGORIES)[0] }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <Link
-      asChild
-      href={`/browse/creators?category=${category.id}` as any}
-    >
+    <Link asChild href={`/browse/creators?category=${category.id}` as any}>
       <Pressable
-        style={({ hovered }) => ({
+        onHoverIn={() => setIsHovered(true)}
+        onHoverOut={() => setIsHovered(false)}
+        style={{
           flexDirection: "row",
           alignItems: "center",
           gap: 8,
           paddingHorizontal: 16,
           paddingVertical: 10,
           borderRadius: 8,
-          backgroundColor: hovered ? THEME_COLORS.primary : THEME_COLORS.background,
+          backgroundColor: isHovered
+            ? THEME_COLORS.primary
+            : THEME_COLORS.background,
           borderWidth: 1,
-          borderColor: hovered ? THEME_COLORS.primary : THEME_COLORS.border,
+          borderColor: isHovered ? THEME_COLORS.primary : THEME_COLORS.border,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: hovered ? 0 : 0.04,
+          shadowOpacity: isHovered ? 0 : 0.04,
           shadowRadius: 2,
-        })}
+        }}
       >
-        {({ hovered }) => (
-          <>
-            <Ionicons
-              color={hovered ? THEME_COLORS.primaryForeground : THEME_COLORS.muted}
-              name={category.icon}
-              size={16}
-            />
-            <Text
-              style={{
-                fontSize: 13,
-                fontWeight: "500",
-                color: hovered ? THEME_COLORS.primaryForeground : THEME_COLORS.foreground,
-              }}
-            >
-              {category.label}
-            </Text>
-          </>
-        )}
+        <Ionicons
+          color={
+            isHovered ? THEME_COLORS.primaryForeground : THEME_COLORS.muted
+          }
+          name={category.icon}
+          size={16}
+        />
+        <Text
+          style={{
+            fontSize: 13,
+            fontWeight: "500",
+            color: isHovered
+              ? THEME_COLORS.primaryForeground
+              : THEME_COLORS.foreground,
+          }}
+        >
+          {category.label}
+        </Text>
       </Pressable>
     </Link>
   );
