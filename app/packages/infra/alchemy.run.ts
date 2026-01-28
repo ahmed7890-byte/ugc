@@ -7,6 +7,7 @@ config({ path: "./.env" });
 config({ path: "../../apps/web/.env" });
 
 const app = await alchemy("convoexpo-and-nextjs-web-bun-better-auth", {
+  stage: process.env.ALCHEMY_STAGE || "production",
   stateStore: (scope) => new CloudflareStateStore(scope),
 });
 

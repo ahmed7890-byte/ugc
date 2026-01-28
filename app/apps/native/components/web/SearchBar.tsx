@@ -71,18 +71,23 @@ export function SearchBar({
 
   return (
     <View
+      className="search-bar-container"
       style={{
         flexDirection: "row",
         alignItems: "stretch",
         backgroundColor: THEME_COLORS.background,
-        borderRadius: 8,
+        borderRadius: 12,
         borderWidth: 2,
-        borderColor: THEME_COLORS.border,
-        overflow: "hidden",
+        borderColor: "transparent",
         maxWidth: 700,
         width: "100%",
       }}
     >
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `.search-bar-container:focus-within { border-color: ${THEME_COLORS.primary} !important; }`,
+        }}
+      />
       {/* Category Dropdown */}
       {!isMobile && (
         <View style={{ position: "relative" }}>
@@ -208,12 +213,16 @@ export function SearchBar({
           placeholder={placeholder}
           placeholderTextColor={THEME_COLORS.muted}
           returnKeyType="search"
-          style={{
-            flex: 1,
-            fontSize: 15,
-            color: THEME_COLORS.foreground,
-            paddingVertical: 14,
-          }}
+          style={[
+            {
+              flex: 1,
+              fontSize: 15,
+              color: THEME_COLORS.foreground,
+              paddingVertical: 14,
+            },
+            // Remove native focus outline since container has custom focus indicator
+            { outline: "none" } as any,
+          ]}
           value={query}
         />
       </View>

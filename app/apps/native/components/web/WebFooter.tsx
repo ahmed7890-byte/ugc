@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { UGCLogo } from "@/components/UGCLogo";
+import { useScrollContext } from "@/contexts/scroll-context";
 import { useResponsive } from "@/hooks/useResponsive";
 
 // Fiverr-style theme colors
@@ -83,12 +84,19 @@ const SOCIAL_LINKS: SocialLink[] = [
 export function WebFooter() {
   const { isMobile, isTablet } = useResponsive();
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const router = useRouter();
+  const { scrollToTop } = useScrollContext();
 
   const showAccordion = isMobile;
   const columns = isTablet ? 2 : 4;
 
   const toggleSection = (title: string) => {
     setExpandedSection(expandedSection === title ? null : title);
+  };
+
+  const navigateWithScroll = (href: string) => {
+    scrollToTop();
+    router.push(href as any);
   };
 
   return (
@@ -151,18 +159,19 @@ export function WebFooter() {
                 {expandedSection === column.title && (
                   <View style={{ paddingBottom: 16, gap: 12 }}>
                     {column.links.map((link) => (
-                      <Link asChild href={link.href as any} key={link.label}>
-                        <Pressable>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              color: THEME_COLORS.footerText,
-                            }}
-                          >
-                            {link.label}
-                          </Text>
-                        </Pressable>
-                      </Link>
+                      <Pressable
+                        key={link.label}
+                        onPress={() => navigateWithScroll(link.href)}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: THEME_COLORS.footerText,
+                          }}
+                        >
+                          {link.label}
+                        </Text>
+                      </Pressable>
                     ))}
                   </View>
                 )}
@@ -199,22 +208,23 @@ export function WebFooter() {
                 </Text>
                 <View style={{ gap: 12 }}>
                   {column.links.map((link) => (
-                    <Link asChild href={link.href as any} key={link.label}>
-                      <Pressable>
-                        {({ hovered }) => (
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              color: hovered
-                                ? THEME_COLORS.footerHeading
-                                : THEME_COLORS.footerText,
-                            }}
-                          >
-                            {link.label}
-                          </Text>
-                        )}
-                      </Pressable>
-                    </Link>
+                    <Pressable
+                      key={link.label}
+                      onPress={() => navigateWithScroll(link.href)}
+                    >
+                      {({ hovered }) => (
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: hovered
+                              ? THEME_COLORS.footerHeading
+                              : THEME_COLORS.footerText,
+                          }}
+                        >
+                          {link.label}
+                        </Text>
+                      )}
+                    </Pressable>
                   ))}
                 </View>
               </View>
@@ -307,38 +317,34 @@ export function WebFooter() {
                 gap: 24,
               }}
             >
-              <Link asChild href={"/about" as any}>
-                <Pressable>
-                  {({ hovered }) => (
-                    <Text
-                      style={{
-                        fontSize: 13,
-                        color: hovered
-                          ? THEME_COLORS.footerHeading
-                          : THEME_COLORS.footerText,
-                      }}
-                    >
-                      Privacy Policy
-                    </Text>
-                  )}
-                </Pressable>
-              </Link>
-              <Link asChild href={"/about" as any}>
-                <Pressable>
-                  {({ hovered }) => (
-                    <Text
-                      style={{
-                        fontSize: 13,
-                        color: hovered
-                          ? THEME_COLORS.footerHeading
-                          : THEME_COLORS.footerText,
-                      }}
-                    >
-                      Terms of Service
-                    </Text>
-                  )}
-                </Pressable>
-              </Link>
+              <Pressable onPress={() => navigateWithScroll("/about")}>
+                {({ hovered }) => (
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      color: hovered
+                        ? THEME_COLORS.footerHeading
+                        : THEME_COLORS.footerText,
+                    }}
+                  >
+                    Privacy Policy
+                  </Text>
+                )}
+              </Pressable>
+              <Pressable onPress={() => navigateWithScroll("/about")}>
+                {({ hovered }) => (
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      color: hovered
+                        ? THEME_COLORS.footerHeading
+                        : THEME_COLORS.footerText,
+                    }}
+                  >
+                    Terms of Service
+                  </Text>
+                )}
+              </Pressable>
             </View>
           </View>
         </View>

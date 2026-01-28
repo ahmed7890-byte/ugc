@@ -3,271 +3,470 @@ import { Link } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
 
-// Fiverr-style theme colors
-const THEME_COLORS = {
-  primary: "#1DBF73",
-  primaryForeground: "#FFFFFF",
-  foreground: "#222325",
-  muted: "#62646a",
-  border: "#e4e5e7",
-  background: "#FFFFFF",
-  sectionBackground: "#fafafa",
+// Sophisticated color foundation - cool tones for trust
+const COLORS = {
+  // Foreground hierarchy
+  foreground: "#0f172a",
+  secondary: "#475569",
+  muted: "#94a3b8",
+  faint: "#cbd5e1",
+
+  // Backgrounds
+  background: "#ffffff",
+  surfaceSubtle: "#f8fafc",
+  surfaceElevated: "#ffffff",
+
+  // Borders
+  border: "rgba(15, 23, 42, 0.08)",
+  borderStrong: "rgba(15, 23, 42, 0.12)",
+
+  // Accent - indigo for modern feel
+  accent: "#6366f1",
+  accentSubtle: "rgba(99, 102, 241, 0.08)",
+  accentForeground: "#ffffff",
+
+  // Semantic
+  success: "#10b981",
+  successSubtle: "rgba(16, 185, 129, 0.08)",
 };
 
-// Browse category cards
+// Browse options data
 const BROWSE_OPTIONS = [
   {
     id: "creators",
     title: "Find Creators",
-    description: "Browse talented UGC creators ready to work on your brand",
-    icon: "people-outline" as const,
+    subtitle: "For Brands",
+    description:
+      "Browse vetted UGC creators with proven track records. Filter by niche, engagement rate, and starting price.",
+    icon: "people" as const,
     href: "/browse/creators",
-    color: "#1DBF73",
+    stats: [
+      { label: "Active creators", value: "2,400+" },
+      { label: "Avg. response", value: "< 4hrs" },
+    ],
   },
   {
     id: "briefs",
     title: "Find Briefs",
-    description: "Discover execution-ready briefs with secured payment",
-    icon: "document-text-outline" as const,
+    subtitle: "For Creators",
+    description:
+      "Discover paid opportunities from brands. Every brief has secured payment held in escrow.",
+    icon: "document-text" as const,
     href: "/browse/briefs",
-    color: "#3b82f6",
+    stats: [
+      { label: "Open briefs", value: "180+" },
+      { label: "Avg. budget", value: "$350" },
+    ],
   },
 ];
 
-// Category tags
+// Category data
 const CATEGORIES = [
   { id: "lifestyle", label: "Lifestyle", icon: "heart-outline" as const },
-  {
-    id: "tech",
-    label: "Tech & Gadgets",
-    icon: "phone-portrait-outline" as const,
-  },
+  { id: "tech", label: "Tech", icon: "phone-portrait-outline" as const },
   { id: "beauty", label: "Beauty", icon: "sparkles-outline" as const },
-  { id: "food", label: "Food & Beverage", icon: "restaurant-outline" as const },
+  { id: "food", label: "Food", icon: "restaurant-outline" as const },
   { id: "fitness", label: "Fitness", icon: "barbell-outline" as const },
   { id: "fashion", label: "Fashion", icon: "shirt-outline" as const },
   { id: "travel", label: "Travel", icon: "airplane-outline" as const },
   { id: "gaming", label: "Gaming", icon: "game-controller-outline" as const },
 ];
 
+// Card component for browse options
+function BrowseCard({
+  option,
+  isMobile,
+}: {
+  option: (typeof BROWSE_OPTIONS)[0];
+  isMobile: boolean;
+}) {
+  return (
+    <Link asChild href={option.href as any}>
+      <Pressable
+        style={({ hovered }) => ({
+          flex: isMobile ? undefined : 1,
+          width: isMobile ? "100%" : undefined,
+          backgroundColor: COLORS.surfaceElevated,
+          borderRadius: 12,
+          padding: 24,
+          borderWidth: 1,
+          borderColor: hovered ? COLORS.accent : COLORS.border,
+          boxShadow: hovered
+            ? "0 4px 12px rgba(15, 23, 42, 0.08)"
+            : "0 1px 3px rgba(15, 23, 42, 0.04)",
+        })}
+      >
+        {/* Header row */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 16,
+          }}
+        >
+          <View
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 10,
+              backgroundColor: COLORS.accentSubtle,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Ionicons color={COLORS.accent} name={option.icon} size={20} />
+          </View>
+          <View
+            style={{
+              backgroundColor: COLORS.surfaceSubtle,
+              paddingHorizontal: 10,
+              paddingVertical: 4,
+              borderRadius: 6,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "500",
+                color: COLORS.secondary,
+              }}
+            >
+              {option.subtitle}
+            </Text>
+          </View>
+        </View>
+
+        {/* Title */}
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "600",
+            color: COLORS.foreground,
+            marginBottom: 8,
+            letterSpacing: -0.3,
+          }}
+        >
+          {option.title}
+        </Text>
+
+        {/* Description */}
+        <Text
+          style={{
+            fontSize: 14,
+            color: COLORS.secondary,
+            lineHeight: 21,
+            marginBottom: 20,
+          }}
+        >
+          {option.description}
+        </Text>
+
+        {/* Stats row */}
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 24,
+            paddingTop: 16,
+            borderTopWidth: 1,
+            borderTopColor: COLORS.border,
+          }}
+        >
+          {option.stats.map((stat) => (
+            <View key={stat.label}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "600",
+                  color: COLORS.foreground,
+                  marginBottom: 2,
+                }}
+              >
+                {stat.value}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: COLORS.muted,
+                }}
+              >
+                {stat.label}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        {/* CTA */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 6,
+            marginTop: 20,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "500",
+              color: COLORS.accent,
+            }}
+          >
+            Browse {option.id}
+          </Text>
+          <Ionicons color={COLORS.accent} name="arrow-forward" size={16} />
+        </View>
+      </Pressable>
+    </Link>
+  );
+}
+
+// Category pill component
+function CategoryPill({ category }: { category: (typeof CATEGORIES)[0] }) {
+  return (
+    <Link
+      asChild
+      href={`/browse/creators?category=${category.id}` as any}
+    >
+      <Pressable
+        style={({ hovered }) => ({
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 8,
+          paddingHorizontal: 16,
+          paddingVertical: 10,
+          borderRadius: 8,
+          backgroundColor: hovered ? COLORS.accent : COLORS.surfaceElevated,
+          borderWidth: 1,
+          borderColor: hovered ? COLORS.accent : COLORS.border,
+          boxShadow: hovered ? "none" : "0 1px 2px rgba(15, 23, 42, 0.04)",
+        })}
+      >
+        {({ hovered }) => (
+          <>
+            <Ionicons
+              color={hovered ? COLORS.accentForeground : COLORS.muted}
+              name={category.icon}
+              size={16}
+            />
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: "500",
+                color: hovered ? COLORS.accentForeground : COLORS.foreground,
+              }}
+            >
+              {category.label}
+            </Text>
+          </>
+        )}
+      </Pressable>
+    </Link>
+  );
+}
+
+// Trust indicator component
+function TrustIndicator({
+  icon,
+  text,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  text: string;
+}) {
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+      <View
+        style={{
+          width: 28,
+          height: 28,
+          borderRadius: 14,
+          backgroundColor: COLORS.successSubtle,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Ionicons color={COLORS.success} name={icon} size={14} />
+      </View>
+      <Text style={{ fontSize: 13, color: COLORS.secondary }}>{text}</Text>
+    </View>
+  );
+}
+
 export default function BrowseLandingPage() {
-  const { isMobile } = useResponsive();
+  const { width } = useResponsive();
+  // Force desktop layout for widths >= 768px to fix React Native Web dimension issues
+  const isMobileLayout = width > 0 && width < 768;
 
   return (
-    <View style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
-      {/* Hero Section */}
+    <View style={{ flex: 1, backgroundColor: COLORS.background }}>
+      {/* Header Section */}
       <View
         style={{
           paddingTop: 48,
-          paddingBottom: 64,
+          paddingBottom: 48,
           paddingHorizontal: 24,
-          backgroundColor: THEME_COLORS.sectionBackground,
+          backgroundColor: COLORS.surfaceSubtle,
         }}
       >
         <View
           style={{
-            maxWidth: 1200,
+            maxWidth: 1000,
             marginHorizontal: "auto",
             width: "100%",
           }}
         >
           <Text
             style={{
-              fontSize: isMobile ? 32 : 40,
-              fontWeight: "700",
-              color: THEME_COLORS.foreground,
+              fontSize: 13,
+              fontWeight: "500",
+              color: COLORS.accent,
+              letterSpacing: 0.5,
+              textTransform: "uppercase",
+              marginBottom: 12,
               textAlign: "center",
-              marginBottom: 16,
             }}
           >
-            Browse the Marketplace
+            Marketplace
           </Text>
           <Text
             style={{
-              fontSize: 18,
-              color: THEME_COLORS.muted,
+              fontSize: isMobileLayout ? 28 : 36,
+              fontWeight: "600",
+              color: COLORS.foreground,
               textAlign: "center",
-              maxWidth: 600,
-              marginHorizontal: "auto",
+              marginBottom: 12,
+              letterSpacing: -0.5,
             }}
           >
-            Find talented creators or discover execution-ready briefs with
-            secured payment
+            Start exploring
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              color: COLORS.secondary,
+              textAlign: "center",
+              maxWidth: 480,
+              marginHorizontal: "auto",
+              lineHeight: 24,
+            }}
+          >
+            Connect with creators or discover paid opportunities. Every
+            transaction is protected by escrow.
           </Text>
         </View>
       </View>
 
-      {/* Browse Options */}
+      {/* Main Content */}
       <View
         style={{
-          paddingVertical: 64,
+          paddingVertical: 48,
           paddingHorizontal: 24,
         }}
       >
         <View
           style={{
-            maxWidth: 1200,
+            maxWidth: 1000,
             marginHorizontal: "auto",
             width: "100%",
           }}
         >
+          {/* Cards Grid */}
           <View
             style={{
-              flexDirection: isMobile ? "column" : "row",
-              gap: 24,
-              marginBottom: 64,
+              flexDirection: isMobileLayout ? "column" : "row",
+              gap: 20,
+              marginBottom: 48,
             }}
           >
             {BROWSE_OPTIONS.map((option) => (
-              <Link asChild href={option.href as any} key={option.id}>
-                <Pressable
-                  style={({ hovered }) => ({
-                    flex: 1,
-                    backgroundColor: THEME_COLORS.background,
-                    borderRadius: 16,
-                    padding: 32,
-                    borderWidth: 2,
-                    borderColor: hovered ? option.color : THEME_COLORS.border,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: hovered ? 8 : 4 },
-                    shadowOpacity: hovered ? 0.1 : 0.05,
-                    shadowRadius: hovered ? 16 : 8,
-                    transform: [{ translateY: hovered ? -4 : 0 }],
-                  })}
-                >
-                  <View
-                    style={{
-                      width: 64,
-                      height: 64,
-                      borderRadius: 32,
-                      backgroundColor: `${option.color}15`,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: 20,
-                    }}
-                  >
-                    <Ionicons
-                      color={option.color}
-                      name={option.icon}
-                      size={28}
-                    />
-                  </View>
-                  <Text
-                    style={{
-                      fontSize: 24,
-                      fontWeight: "700",
-                      color: THEME_COLORS.foreground,
-                      marginBottom: 8,
-                    }}
-                  >
-                    {option.title}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: THEME_COLORS.muted,
-                      lineHeight: 24,
-                    }}
-                  >
-                    {option.description}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 8,
-                      marginTop: 20,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "600",
-                        color: option.color,
-                      }}
-                    >
-                      Browse now
-                    </Text>
-                    <Ionicons
-                      color={option.color}
-                      name="arrow-forward"
-                      size={18}
-                    />
-                  </View>
-                </Pressable>
-              </Link>
+              <BrowseCard
+                isMobile={isMobileLayout}
+                key={option.id}
+                option={option}
+              />
             ))}
           </View>
 
           {/* Categories Section */}
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "700",
-              color: THEME_COLORS.foreground,
-              marginBottom: 24,
-            }}
-          >
-            Browse by Category
-          </Text>
           <View
             style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              gap: 12,
+              backgroundColor: COLORS.surfaceSubtle,
+              borderRadius: 12,
+              padding: 24,
+              borderWidth: 1,
+              borderColor: COLORS.border,
             }}
           >
-            {CATEGORIES.map((category) => (
-              <Link
-                asChild
-                href={`/browse/creators?category=${category.id}` as any}
-                key={category.id}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 20,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "600",
+                  color: COLORS.foreground,
+                }}
               >
-                <Pressable
-                  style={({ hovered }) => ({
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                    paddingHorizontal: 20,
-                    paddingVertical: 12,
-                    borderRadius: 24,
-                    borderWidth: 1,
-                    borderColor: hovered
-                      ? THEME_COLORS.primary
-                      : THEME_COLORS.border,
-                    backgroundColor: hovered
-                      ? THEME_COLORS.primary
-                      : THEME_COLORS.background,
-                  })}
-                >
-                  {({ hovered }) => (
-                    <>
-                      <Ionicons
-                        color={
-                          hovered
-                            ? THEME_COLORS.primaryForeground
-                            : THEME_COLORS.muted
-                        }
-                        name={category.icon}
-                        size={18}
-                      />
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "500",
-                          color: hovered
-                            ? THEME_COLORS.primaryForeground
-                            : THEME_COLORS.foreground,
-                        }}
-                      >
-                        {category.label}
-                      </Text>
-                    </>
-                  )}
-                </Pressable>
-              </Link>
-            ))}
+                Browse by category
+              </Text>
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: COLORS.muted,
+                }}
+              >
+                {CATEGORIES.length} categories
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: 10,
+              }}
+            >
+              {CATEGORIES.map((category) => (
+                <CategoryPill category={category} key={category.id} />
+              ))}
+            </View>
           </View>
+        </View>
+      </View>
+
+      {/* Trust Indicators */}
+      <View
+        style={{
+          paddingVertical: 32,
+          paddingHorizontal: 24,
+          borderTopWidth: 1,
+          borderTopColor: COLORS.border,
+        }}
+      >
+        <View
+          style={{
+            maxWidth: 1000,
+            marginHorizontal: "auto",
+            width: "100%",
+            flexDirection: isMobileLayout ? "column" : "row",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: isMobileLayout ? 16 : 48,
+          }}
+        >
+          <TrustIndicator
+            icon="shield-checkmark"
+            text="Payment protection on every brief"
+          />
+          <TrustIndicator
+            icon="checkmark-circle"
+            text="All creators verified"
+          />
+          <TrustIndicator icon="time" text="Average 48hr delivery" />
         </View>
       </View>
     </View>
