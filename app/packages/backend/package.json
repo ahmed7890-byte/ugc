@@ -1,0 +1,28 @@
+{
+  "name": "@convoexpo-and-nextjs-web-bun-better-auth/backend",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "convex dev",
+    "dev:setup": "convex dev --configure --until-success"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "typescript": "catalog:",
+    "@convoexpo-and-nextjs-web-bun-better-auth/config": "workspace:*"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^2.0.52",
+    "@better-auth/expo": "catalog:",
+    "@convex-dev/agent": "catalog:",
+    "@convex-dev/better-auth": "catalog:",
+    "@convex-dev/resend": "^0.2.3",
+    "ai": "^5.0.117",
+    "better-auth": "catalog:",
+    "convex": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  }
+}
