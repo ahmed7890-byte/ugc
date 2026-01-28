@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
 
 // Fiverr-style theme colors
@@ -181,6 +182,7 @@ const BRAND_STATS = [
 
 export default function BrandFAQPage() {
 	const { isMobile } = useResponsive();
+	const { open: openAuthModal } = useAuthModal();
 	const [expandedCategory, setExpandedCategory] = useState<string | null>(
 		FAQ_CATEGORIES[0].title,
 	);
@@ -693,28 +695,27 @@ export default function BrandFAQPage() {
 							>
 								Post your first brief and connect with top creators today.
 							</Text>
-							<Link asChild href={"/landing" as any}>
-								<Pressable
-									style={({ hovered }) => ({
-										padding: 14,
-										borderRadius: 8,
-										backgroundColor: hovered
-											? "rgba(255,255,255,0.95)"
-											: THEME_COLORS.primaryForeground,
-										alignItems: "center",
-									})}
+							<Pressable
+								onPress={() => openAuthModal("signup")}
+								style={({ hovered }) => ({
+									padding: 14,
+									borderRadius: 8,
+									backgroundColor: hovered
+										? "rgba(255,255,255,0.95)"
+										: THEME_COLORS.primaryForeground,
+									alignItems: "center",
+								})}
+							>
+								<Text
+									style={{
+										fontSize: 15,
+										fontWeight: "600",
+										color: THEME_COLORS.accent,
+									}}
 								>
-									<Text
-										style={{
-											fontSize: 15,
-											fontWeight: "600",
-											color: THEME_COLORS.accent,
-										}}
-									>
-										Post a Brief
-									</Text>
-								</Pressable>
-							</Link>
+									Post a Brief
+								</Text>
+							</Pressable>
 						</View>
 					</View>
 				</View>

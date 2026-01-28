@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
 
 // Fiverr-style theme colors
@@ -118,6 +119,7 @@ const FAQ_ITEMS = [
 
 export default function PricingPage() {
   const { isMobile } = useResponsive();
+  const { open: openAuthModal } = useAuthModal();
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
@@ -347,40 +349,43 @@ export default function PricingPage() {
                   ))}
                 </View>
 
-                <Link asChild href={"/landing" as any}>
-                  <Pressable
-                    style={({ hovered }) => ({
-                      paddingVertical: 14,
-                      borderRadius: 8,
-                      backgroundColor: tier.highlighted
-                        ? hovered
-                          ? "#19a864"
-                          : THEME_COLORS.primary
-                        : hovered
-                          ? THEME_COLORS.foreground
-                          : "transparent",
-                      borderWidth: tier.highlighted ? 0 : 1,
-                      borderColor: tier.highlighted
-                        ? undefined
-                        : hovered
-                          ? THEME_COLORS.foreground
-                          : THEME_COLORS.border,
-                    })}
-                  >
+                <Pressable
+                  onPress={() => openAuthModal("signup")}
+                  style={({ hovered }) => ({
+                    paddingVertical: 14,
+                    borderRadius: 8,
+                    backgroundColor: tier.highlighted
+                      ? hovered
+                        ? "#19a864"
+                        : THEME_COLORS.primary
+                      : hovered
+                        ? THEME_COLORS.foreground
+                        : "transparent",
+                    borderWidth: tier.highlighted ? 0 : 1,
+                    borderColor: tier.highlighted
+                      ? undefined
+                      : hovered
+                        ? THEME_COLORS.foreground
+                        : THEME_COLORS.border,
+                  })}
+                >
+                  {({ hovered }) => (
                     <Text
                       style={{
                         fontSize: 16,
                         fontWeight: "600",
                         color: tier.highlighted
                           ? THEME_COLORS.primaryForeground
-                          : THEME_COLORS.foreground,
+                          : hovered
+                            ? THEME_COLORS.primaryForeground
+                            : THEME_COLORS.foreground,
                         textAlign: "center",
                       }}
                     >
                       {tier.cta}
                     </Text>
-                  </Pressable>
-                </Link>
+                  )}
+                </Pressable>
               </View>
             ))}
           </View>
@@ -511,26 +516,25 @@ export default function PricingPage() {
             </View>
 
             <View style={{ alignItems: "center", marginTop: 32 }}>
-              <Link asChild href={"/landing" as any}>
-                <Pressable
-                  style={({ hovered }) => ({
-                    paddingHorizontal: 48,
-                    paddingVertical: 14,
-                    backgroundColor: hovered ? "#19a864" : THEME_COLORS.primary,
-                    borderRadius: 8,
-                  })}
+              <Pressable
+                onPress={() => openAuthModal("signup")}
+                style={({ hovered }) => ({
+                  paddingHorizontal: 48,
+                  paddingVertical: 14,
+                  backgroundColor: hovered ? "#19a864" : THEME_COLORS.primary,
+                  borderRadius: 8,
+                })}
+              >
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "600",
+                    color: THEME_COLORS.primaryForeground,
+                  }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "600",
-                      color: THEME_COLORS.primaryForeground,
-                    }}
-                  >
-                    Start Creating
-                  </Text>
-                </Pressable>
-              </Link>
+                  Start Creating
+                </Text>
+              </Pressable>
             </View>
           </View>
         </View>

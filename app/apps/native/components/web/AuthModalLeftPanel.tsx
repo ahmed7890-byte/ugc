@@ -6,9 +6,24 @@ const THEME_COLORS = {
 };
 
 const VALUE_PROPS = [
-  "Over 700 categories",
-  "Quality work done faster",
-  "Access to talent and businesses across the globe",
+  {
+    icon: "checkmark-circle-outline" as const,
+    title: "Execution-ready briefs",
+    description:
+      "Every brief has approved scripts, locked scope, and secured payment before you see it.",
+  },
+  {
+    icon: "shield-checkmark-outline" as const,
+    title: "Payment protection",
+    description:
+      "Full payment secured in escrow before work begins. Auto-release if brands go silent.",
+  },
+  {
+    icon: "star-outline" as const,
+    title: "Build your reputation",
+    description:
+      "Trust scores based on real behavior, not just reviews. Quality over price.",
+  },
 ];
 
 export function AuthModalLeftPanel() {
@@ -31,45 +46,45 @@ export function AuthModalLeftPanel() {
 
       {/* Content overlaid on top */}
       <View style={{ padding: 40, zIndex: 1 }}>
-        {/* Title */}
-        <Text
-          style={{
-            fontSize: 32,
-            fontWeight: "700",
-            color: THEME_COLORS.primaryForeground,
-            marginBottom: 24,
-            lineHeight: 40,
-          }}
-        >
-          Success starts here
-        </Text>
-
         {/* Value Props */}
-        <View style={{ gap: 12 }}>
+        <View style={{ gap: 20 }}>
           {VALUE_PROPS.map((prop) => (
             <View
-              key={prop}
+              key={prop.title}
               style={{
                 flexDirection: "row",
-                alignItems: "center",
                 gap: 12,
               }}
             >
               <Ionicons
                 color={THEME_COLORS.primaryForeground}
-                name="checkmark"
-                size={20}
+                name={prop.icon}
+                size={24}
+                style={{ marginTop: 2 }}
               />
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: "500",
-                  color: THEME_COLORS.primaryForeground,
-                  flex: 1,
-                }}
-              >
-                {prop}
-              </Text>
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "700",
+                    color: THEME_COLORS.primaryForeground,
+                    marginBottom: 4,
+                  }}
+                >
+                  {prop.title}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "400",
+                    color: THEME_COLORS.primaryForeground,
+                    opacity: 0.9,
+                    lineHeight: 20,
+                  }}
+                >
+                  {prop.description}
+                </Text>
+              </View>
             </View>
           ))}
         </View>

@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
 
 // Fiverr-style theme colors
@@ -173,6 +174,7 @@ const RELATED_RESOURCES = [
 
 export default function CreatorFAQPage() {
 	const { isMobile } = useResponsive();
+	const { open: openAuthModal } = useAuthModal();
 	const [expandedCategory, setExpandedCategory] = useState<string | null>(
 		FAQ_CATEGORIES[0].title,
 	);
@@ -640,26 +642,25 @@ export default function CreatorFAQPage() {
 							>
 								Join thousands of creators earning on our platform.
 							</Text>
-							<Link asChild href={"/landing" as any}>
-								<Pressable
-									style={({ hovered }) => ({
-										padding: 14,
-										borderRadius: 8,
-										backgroundColor: hovered ? "#19a864" : THEME_COLORS.primary,
-										alignItems: "center",
-									})}
+							<Pressable
+								onPress={() => openAuthModal("signup")}
+								style={({ hovered }) => ({
+									padding: 14,
+									borderRadius: 8,
+									backgroundColor: hovered ? "#19a864" : THEME_COLORS.primary,
+									alignItems: "center",
+								})}
+							>
+								<Text
+									style={{
+										fontSize: 15,
+										fontWeight: "600",
+										color: THEME_COLORS.primaryForeground,
+									}}
 								>
-									<Text
-										style={{
-											fontSize: 15,
-											fontWeight: "600",
-											color: THEME_COLORS.primaryForeground,
-										}}
-									>
-										Become a Creator
-									</Text>
-								</Pressable>
-							</Link>
+									Become a Creator
+								</Text>
+							</Pressable>
 						</View>
 					</View>
 				</View>

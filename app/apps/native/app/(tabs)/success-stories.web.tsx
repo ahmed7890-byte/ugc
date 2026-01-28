@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
 
 // Fiverr-style theme colors
@@ -141,6 +141,7 @@ const SUCCESS_STORIES = [
 
 export default function SuccessStoriesPage() {
 	const { isMobile, isTablet } = useResponsive();
+	const { open: openAuthModal } = useAuthModal();
 	const [selectedFilter, setSelectedFilter] = useState("all");
 	const [selectedIndustry, setSelectedIndustry] = useState("All Industries");
 
@@ -763,54 +764,52 @@ export default function SuccessStoriesPage() {
 							gap: 16,
 						}}
 					>
-						<Link asChild href={"/landing" as any}>
-							<Pressable
-								style={({ hovered }) => ({
-									paddingHorizontal: 32,
-									paddingVertical: 14,
-									backgroundColor: hovered
-										? "rgba(255,255,255,0.95)"
-										: THEME_COLORS.primaryForeground,
-									borderRadius: 8,
-								})}
+						<Pressable
+							onPress={() => openAuthModal("signup")}
+							style={({ hovered }) => ({
+								paddingHorizontal: 32,
+								paddingVertical: 14,
+								backgroundColor: hovered
+									? "rgba(255,255,255,0.95)"
+									: THEME_COLORS.primaryForeground,
+								borderRadius: 8,
+							})}
+						>
+							<Text
+								style={{
+									fontSize: 16,
+									fontWeight: "600",
+									color: THEME_COLORS.primary,
+									textAlign: "center",
+								}}
 							>
-								<Text
-									style={{
-										fontSize: 16,
-										fontWeight: "600",
-										color: THEME_COLORS.primary,
-										textAlign: "center",
-									}}
-								>
-									Start as a Creator
-								</Text>
-							</Pressable>
-						</Link>
-						<Link asChild href={"/landing" as any}>
-							<Pressable
-								style={({ hovered }) => ({
-									paddingHorizontal: 32,
-									paddingVertical: 14,
-									backgroundColor: "transparent",
-									borderRadius: 8,
-									borderWidth: 2,
-									borderColor: hovered
-										? THEME_COLORS.primaryForeground
-										: "rgba(255,255,255,0.5)",
-								})}
+								Start as a Creator
+							</Text>
+						</Pressable>
+						<Pressable
+							onPress={() => openAuthModal("signup")}
+							style={({ hovered }) => ({
+								paddingHorizontal: 32,
+								paddingVertical: 14,
+								backgroundColor: "transparent",
+								borderRadius: 8,
+								borderWidth: 2,
+								borderColor: hovered
+									? THEME_COLORS.primaryForeground
+									: "rgba(255,255,255,0.5)",
+							})}
+						>
+							<Text
+								style={{
+									fontSize: 16,
+									fontWeight: "600",
+									color: THEME_COLORS.primaryForeground,
+									textAlign: "center",
+								}}
 							>
-								<Text
-									style={{
-										fontSize: 16,
-										fontWeight: "600",
-										color: THEME_COLORS.primaryForeground,
-										textAlign: "center",
-									}}
-								>
-									Post a Brief
-								</Text>
-							</Pressable>
-						</Link>
+								Post a Brief
+							</Text>
+						</Pressable>
 					</View>
 				</View>
 			</View>

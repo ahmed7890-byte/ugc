@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
 
 // Fiverr-style theme colors
@@ -119,6 +120,7 @@ const PLATFORM_BENEFITS = [
 
 export default function HowItWorksPage() {
   const { isMobile } = useResponsive();
+  const { open: openAuthModal } = useAuthModal();
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
@@ -654,27 +656,26 @@ export default function HowItWorksPage() {
               gap: 16,
             }}
           >
-            <Link asChild href={"/landing" as any}>
-              <Pressable
-                style={({ hovered }) => ({
-                  paddingHorizontal: 32,
-                  paddingVertical: 14,
-                  backgroundColor: hovered ? "#19a864" : THEME_COLORS.primary,
-                  borderRadius: 8,
-                })}
+            <Pressable
+              onPress={() => openAuthModal("signup")}
+              style={({ hovered }) => ({
+                paddingHorizontal: 32,
+                paddingVertical: 14,
+                backgroundColor: hovered ? "#19a864" : THEME_COLORS.primary,
+                borderRadius: 8,
+              })}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "600",
+                  color: THEME_COLORS.primaryForeground,
+                  textAlign: "center",
+                }}
               >
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontWeight: "600",
-                    color: THEME_COLORS.primaryForeground,
-                    textAlign: "center",
-                  }}
-                >
-                  Sign Up Free
-                </Text>
-              </Pressable>
-            </Link>
+                Sign Up Free
+              </Text>
+            </Pressable>
             <Link asChild href={"/browse" as any}>
               <Pressable
                 style={({ hovered }) => ({
