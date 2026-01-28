@@ -2,6 +2,7 @@ import { Link } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
 import { GuideCard } from "@/components/web/GuideCard";
+import { SEO, createWebPageJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -133,8 +134,27 @@ export default function GuidesPage() {
 	const { isMobile, isTablet } = useResponsive();
 	const isCompact = isMobile || isTablet;
 
+	const guidesPageJsonLd = createWebPageJsonLd(
+		"Guides - UGC Marketplace",
+		"Learn how to create great UGC content with our comprehensive guides.",
+		"/guides"
+	);
+
 	return (
 		<View style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+			<SEO
+				title="Guides"
+				description="Master UGC creation with our comprehensive guides. Learn video production, photography, copywriting, marketing, and more. Free resources for creators and brands."
+				path="/guides"
+				keywords={[
+					"UGC guides",
+					"content creation tutorials",
+					"creator resources",
+					"video production guide",
+					"UGC tips",
+				]}
+				jsonLd={guidesPageJsonLd}
+			/>
 			<ScrollView>
 				<View
 					style={{

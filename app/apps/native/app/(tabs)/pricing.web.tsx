@@ -3,6 +3,7 @@ import { Link } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd, createFAQPageJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -121,8 +122,36 @@ export default function PricingPage() {
   const { isMobile } = useResponsive();
   const { open: openAuthModal } = useAuthModal();
 
+  // Create FAQ JSON-LD from the FAQ items
+  const pricingFaqJsonLd = createFAQPageJsonLd(
+    FAQ_ITEMS.map((item) => ({
+      question: item.question,
+      answer: item.answer,
+    }))
+  );
+
+  const pricingPageJsonLd = createWebPageJsonLd(
+    "Pricing - UGC Marketplace",
+    "Simple, transparent pricing for brands and creators. No hidden fees.",
+    "/pricing"
+  );
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+      <SEO
+        title="Pricing"
+        description="Simple, transparent pricing for UGC Marketplace. Free for creators with 10% commission. Brand plans starting free. No hidden fees - see what works best for you."
+        path="/pricing"
+        keywords={[
+          "UGC pricing",
+          "creator marketplace pricing",
+          "content creation costs",
+          "brand marketing pricing",
+          "UGC rates",
+        ]}
+        jsonLd={[pricingPageJsonLd, pricingFaqJsonLd]}
+      />
+
       {/* Hero Section */}
       <View
         style={{

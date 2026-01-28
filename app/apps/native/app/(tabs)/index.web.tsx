@@ -9,6 +9,12 @@ import { MadeOnUGPGallery } from "@/components/web/MadeOnUGPGallery";
 import { GuidesSection } from "@/components/web/GuidesSection";
 import { JoinCTASection } from "@/components/web/JoinCTASection";
 import { useResponsive } from "@/hooks/useResponsive";
+import {
+  SEO,
+  organizationJsonLd,
+  websiteJsonLd,
+  serviceJsonLd,
+} from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -468,8 +474,27 @@ export default function WebHomePage() {
     router.push("/browse/creators" as any);
   };
 
+  // Combined JSON-LD for homepage
+  const homepageJsonLd = [organizationJsonLd, websiteJsonLd, serviceJsonLd];
+
   return (
     <View style={{ flex: 1 }}>
+      <SEO
+        title="UGC Marketplace - Connect Brands with Creators"
+        description="Find authentic user-generated content for your brand. Connect with talented creators and get high-quality UGC that converts. Browse briefs, discover creators, and start creating today."
+        path="/"
+        keywords={[
+          "UGC marketplace",
+          "find UGC creators",
+          "brand content",
+          "creator marketplace",
+          "authentic content",
+          "video content creators",
+          "social media content",
+        ]}
+        jsonLd={homepageJsonLd}
+      />
+
       {/* Hero Section */}
       <WebHero onSearch={handleSearch} />
 

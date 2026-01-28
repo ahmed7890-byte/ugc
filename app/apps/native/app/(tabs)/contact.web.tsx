@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -86,8 +87,27 @@ export default function ContactPage() {
     setSubmitted(true);
   };
 
+  const contactPageJsonLd = createWebPageJsonLd(
+    "Contact Us - UGC Marketplace",
+    "Get in touch with our team for support, partnerships, or inquiries.",
+    "/contact"
+  );
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+      <SEO
+        title="Contact Us"
+        description="Get in touch with UGC Marketplace. Contact our support team for help, brand partnerships, creator support, or press inquiries. We're here to help."
+        path="/contact"
+        keywords={[
+          "contact UGC marketplace",
+          "customer support",
+          "brand partnerships",
+          "creator support",
+        ]}
+        jsonLd={contactPageJsonLd}
+      />
+
       {/* Hero Section */}
       <View
         style={{

@@ -3,6 +3,7 @@ import { Link } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd, createBreadcrumbJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -122,8 +123,33 @@ export default function HowItWorksPage() {
   const { isMobile } = useResponsive();
   const { open: openAuthModal } = useAuthModal();
 
+  const howItWorksJsonLd = createWebPageJsonLd(
+    "How It Works - UGC Marketplace",
+    "Learn how UGC Marketplace connects brands with creators for authentic content.",
+    "/how-it-works"
+  );
+
+  const breadcrumbJsonLd = createBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "How It Works", path: "/how-it-works" },
+  ]);
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+      <SEO
+        title="How It Works"
+        description="Learn how UGC Marketplace works for brands and creators. Post briefs, find creators, get authentic content with secure payments. Simple 4-step process."
+        path="/how-it-works"
+        keywords={[
+          "how UGC works",
+          "creator marketplace process",
+          "brand content workflow",
+          "UGC platform guide",
+          "content creation process",
+        ]}
+        jsonLd={[howItWorksJsonLd, breadcrumbJsonLd]}
+      />
+
       {/* Hero Section */}
       <View
         style={{

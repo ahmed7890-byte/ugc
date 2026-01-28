@@ -3,6 +3,7 @@ import { Link } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -119,8 +120,28 @@ export default function HelpCenterPage() {
 
 	const columns = isMobile ? 1 : isTablet ? 2 : 3;
 
+	const helpCenterJsonLd = createWebPageJsonLd(
+		"Help Center - UGC Marketplace",
+		"Find answers to common questions and get support.",
+		"/help-center"
+	);
+
 	return (
 		<ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+			<SEO
+				title="Help Center"
+				description="Find answers to your questions about UGC Marketplace. Browse help topics, FAQs, and get support for accounts, payments, content creation, and more."
+				path="/help-center"
+				keywords={[
+					"UGC help",
+					"support center",
+					"FAQ",
+					"getting started",
+					"platform help",
+				]}
+				jsonLd={helpCenterJsonLd}
+			/>
+
 			{/* Hero Section with Search */}
 			<View
 				style={{

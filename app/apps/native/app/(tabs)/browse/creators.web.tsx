@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { CreatorCard } from "@/components/web/CreatorCard";
 import { getResponsiveValue, useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd, createBreadcrumbJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -133,7 +134,19 @@ export default function BrowseCreatorsPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedSort, setSelectedSort] = useState("trust");
 
-  const columns = getResponsiveValue(width, {
+  const creatorsJsonLd = createWebPageJsonLd(
+    "Browse Creators - UGC Marketplace",
+    "Find and hire talented UGC creators for your brand.",
+    "/browse/creators"
+  );
+
+  const breadcrumbJsonLd = createBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Browse", path: "/browse" },
+    { name: "Creators", path: "/browse/creators" },
+  ]);
+
+  const _columns = getResponsiveValue(width, {
     mobile: 1,
     tablet: 2,
     desktop: 3,
@@ -162,6 +175,20 @@ export default function BrowseCreatorsPage() {
 
   return (
     <View style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+      <SEO
+        title="Browse Creators"
+        description="Find and hire talented UGC creators on our marketplace. Filter by niche, rating, and price. Connect with verified creators for authentic brand content."
+        path="/browse/creators"
+        keywords={[
+          "hire UGC creators",
+          "find content creators",
+          "UGC talent",
+          "creator marketplace",
+          "brand content creators",
+        ]}
+        jsonLd={[creatorsJsonLd, breadcrumbJsonLd]}
+      />
+
       {/* Header */}
       <View
         style={{

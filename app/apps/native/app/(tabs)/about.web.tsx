@@ -3,6 +3,7 @@ import { Link } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -79,8 +80,28 @@ export default function AboutPage() {
   const { isMobile } = useResponsive();
   const { open: openAuthModal } = useAuthModal();
 
+  const aboutPageJsonLd = createWebPageJsonLd(
+    "About UGC Marketplace",
+    "Learn about UGC Marketplace, our mission, values, and the team behind the platform connecting brands with creators.",
+    "/about"
+  );
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+      <SEO
+        title="About Us"
+        description="Learn about UGC Marketplace and our mission to connect brands with talented creators. Discover our story, values, and the team building the future of authentic content creation."
+        path="/about"
+        keywords={[
+          "about UGC marketplace",
+          "creator economy",
+          "brand collaboration",
+          "content creation platform",
+          "our story",
+        ]}
+        jsonLd={aboutPageJsonLd}
+      />
+
       {/* Hero Section */}
       <View
         style={{

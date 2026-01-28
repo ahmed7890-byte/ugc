@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -117,8 +118,28 @@ export default function BlogPage() {
 			? ARTICLES
 			: ARTICLES.filter((a) => a.category === selectedCategory);
 
+	const blogPageJsonLd = createWebPageJsonLd(
+		"Blog - UGC Marketplace",
+		"Insights, tips, and news for UGC creators and brands.",
+		"/blog"
+	);
+
 	return (
 		<ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+			<SEO
+				title="Blog"
+				description="Stay updated with the latest UGC trends, creator tips, brand insights, and industry news. Learn how to create better content and grow your business."
+				path="/blog"
+				keywords={[
+					"UGC blog",
+					"creator tips",
+					"content marketing",
+					"brand insights",
+					"UGC trends",
+				]}
+				jsonLd={blogPageJsonLd}
+			/>
+
 			{/* Hero Section */}
 			<View
 				style={{

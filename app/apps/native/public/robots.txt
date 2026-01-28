@@ -1,0 +1,22 @@
+# robots.txt for UGC Marketplace
+# https://ugp.gruckion.com
+
+# Allow all search engine crawlers
+User-agent: *
+Allow: /
+
+# Block authentication routes from indexing
+Disallow: /(auth)/
+Disallow: /signin
+Disallow: /signup
+Disallow: /password-reset
+
+# Block internal/admin routes
+Disallow: /_sitemap
+Disallow: /_expo/
+
+# Sitemap location
+Sitemap: https://ugp.gruckion.com/sitemap.xml
+
+# Crawl-delay for polite crawling (optional, most modern bots ignore this)
+# Crawl-delay: 1

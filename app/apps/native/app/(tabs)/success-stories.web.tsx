@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -154,8 +155,27 @@ export default function SuccessStoriesPage() {
 		return typeMatch && industryMatch;
 	});
 
+	const successStoriesJsonLd = createWebPageJsonLd(
+		"Success Stories - UGC Marketplace",
+		"Real stories from creators and brands succeeding on UGC Marketplace.",
+		"/success-stories"
+	);
+
 	return (
 		<ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+			<SEO
+				title="Success Stories"
+				description="Discover how creators and brands are succeeding on UGC Marketplace. Read real stories of growth, increased revenue, and successful collaborations."
+				path="/success-stories"
+				keywords={[
+					"UGC success stories",
+					"creator testimonials",
+					"brand case studies",
+					"content marketing results",
+				]}
+				jsonLd={successStoriesJsonLd}
+			/>
+
 			{/* Hero Section */}
 			<View
 				style={{

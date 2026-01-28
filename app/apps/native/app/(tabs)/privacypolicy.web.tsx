@@ -1,5 +1,6 @@
 import { ScrollView, Text, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd } from "@/components/web/SEO";
 
 const THEME_COLORS = {
   primary: "#1DBF73",
@@ -14,8 +15,22 @@ const THEME_COLORS = {
 export default function PrivacyPolicyPage() {
   const { isMobile } = useResponsive();
 
+  const privacyJsonLd = createWebPageJsonLd(
+    "Privacy Policy - UGC Marketplace",
+    "Privacy Policy explaining how UGC Marketplace handles your data.",
+    "/privacypolicy"
+  );
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+      <SEO
+        title="Privacy Policy"
+        description="Read the Privacy Policy for UGC Marketplace. Learn how we collect, use, and protect your personal information and data."
+        path="/privacypolicy"
+        keywords={["privacy policy", "data protection", "personal information"]}
+        jsonLd={privacyJsonLd}
+      />
+
       {/* Header */}
       <View
         style={{

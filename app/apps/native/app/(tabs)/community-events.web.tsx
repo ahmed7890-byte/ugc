@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -159,8 +160,28 @@ export default function CommunityEventsPage() {
 			? UPCOMING_EVENTS
 			: UPCOMING_EVENTS.filter((e) => e.type === selectedFilter);
 
+	const eventsJsonLd = createWebPageJsonLd(
+		"Community Events - UGC Marketplace",
+		"Join webinars, workshops, and conferences for UGC creators and brands.",
+		"/community-events"
+	);
+
 	return (
 		<ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+			<SEO
+				title="Community Events"
+				description="Join UGC Marketplace community events. Attend webinars, workshops, conferences, and meetups for creators and brands. Learn, network, and grow your career."
+				path="/community-events"
+				keywords={[
+					"UGC events",
+					"creator workshops",
+					"content marketing webinars",
+					"creator conferences",
+					"networking events",
+				]}
+				jsonLd={eventsJsonLd}
+			/>
+
 			{/* Hero Section */}
 			<View
 				style={{

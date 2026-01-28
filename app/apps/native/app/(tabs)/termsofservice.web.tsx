@@ -1,5 +1,6 @@
 import { ScrollView, Text, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd } from "@/components/web/SEO";
 
 const THEME_COLORS = {
   primary: "#1DBF73",
@@ -14,8 +15,22 @@ const THEME_COLORS = {
 export default function TermsOfServicePage() {
   const { isMobile } = useResponsive();
 
+  const tosJsonLd = createWebPageJsonLd(
+    "Terms of Service - UGC Marketplace",
+    "Terms of Service and user agreement for UGC Marketplace.",
+    "/termsofservice"
+  );
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+      <SEO
+        title="Terms of Service"
+        description="Read the Terms of Service for UGC Marketplace. Understand our user agreement, platform rules, and legal terms for creators and brands."
+        path="/termsofservice"
+        keywords={["terms of service", "user agreement", "legal terms"]}
+        jsonLd={tosJsonLd}
+      />
+
       {/* Header */}
       <View
         style={{

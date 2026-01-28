@@ -3,6 +3,7 @@ import { Link } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd, createBreadcrumbJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors (consistent with rest of app)
 const THEME_COLORS = {
@@ -307,8 +308,33 @@ export default function BrowseLandingPage() {
   // Force desktop layout for widths >= 768px to fix React Native Web dimension issues
   const isMobileLayout = width > 0 && width < 768;
 
+  const browseJsonLd = createWebPageJsonLd(
+    "Browse Marketplace - UGC Marketplace",
+    "Browse UGC creators and brand briefs on our marketplace.",
+    "/browse"
+  );
+
+  const breadcrumbJsonLd = createBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Browse", path: "/browse" },
+  ]);
+
   return (
     <View style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+      <SEO
+        title="Browse Marketplace"
+        description="Browse the UGC Marketplace. Find talented creators for your brand or discover paid briefs as a creator. Connect, collaborate, and create authentic content."
+        path="/browse"
+        keywords={[
+          "browse UGC",
+          "find creators",
+          "brand briefs",
+          "content marketplace",
+          "UGC opportunities",
+        ]}
+        jsonLd={[browseJsonLd, breadcrumbJsonLd]}
+      />
+
       {/* Header Section */}
       <View
         style={{

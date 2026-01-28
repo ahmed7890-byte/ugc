@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createFAQPageJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -196,8 +197,27 @@ export default function CreatorFAQPage() {
 		setExpandedQuestions(newExpanded);
 	};
 
+	// Extract all FAQs for JSON-LD
+	const allFaqs = FAQ_CATEGORIES.flatMap((cat) =>
+		cat.questions.map((q) => ({ question: q.question, answer: q.answer }))
+	);
+	const creatorFaqJsonLd = createFAQPageJsonLd(allFaqs);
+
 	return (
 		<ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+			<SEO
+				title="Creator FAQ"
+				description="Frequently asked questions for creators on UGC Marketplace. Learn about getting started, building your profile, payments, working with brands, and growing your career."
+				path="/creator-faq"
+				keywords={[
+					"creator FAQ",
+					"UGC creator questions",
+					"content creator help",
+					"creator earnings",
+					"creator tips",
+				]}
+				jsonLd={creatorFaqJsonLd}
+			/>
 			{/* Hero Section */}
 			<View
 				style={{

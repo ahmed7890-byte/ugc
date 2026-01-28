@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
+import { SEO, createFAQPageJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -204,8 +205,27 @@ export default function BrandFAQPage() {
 		setExpandedQuestions(newExpanded);
 	};
 
+	// Extract all FAQs for JSON-LD
+	const allFaqs = FAQ_CATEGORIES.flatMap((cat) =>
+		cat.questions.map((q) => ({ question: q.question, answer: q.answer }))
+	);
+	const brandFaqJsonLd = createFAQPageJsonLd(allFaqs);
+
 	return (
 		<ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+			<SEO
+				title="Brand FAQ"
+				description="Frequently asked questions for brands using UGC Marketplace. Learn about finding creators, managing projects, payments, content rights, and more."
+				path="/brand-faq"
+				keywords={[
+					"brand FAQ",
+					"UGC for brands",
+					"hiring creators",
+					"content marketing FAQ",
+					"brand questions",
+				]}
+				jsonLd={brandFaqJsonLd}
+			/>
 			{/* Hero Section */}
 			<View
 				style={{

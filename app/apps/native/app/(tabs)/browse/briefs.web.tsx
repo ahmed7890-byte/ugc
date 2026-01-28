@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { BriefCard } from "@/components/web/BriefCard";
 import { getResponsiveValue, useResponsive } from "@/hooks/useResponsive";
+import { SEO, createWebPageJsonLd, createBreadcrumbJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -128,6 +129,18 @@ export default function BrowseBriefsPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedBudget, setSelectedBudget] = useState("all");
 
+  const briefsJsonLd = createWebPageJsonLd(
+    "Browse Briefs - UGC Marketplace",
+    "Find paid UGC opportunities and brand briefs.",
+    "/browse/briefs"
+  );
+
+  const breadcrumbJsonLd = createBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Browse", path: "/browse" },
+    { name: "Briefs", path: "/browse/briefs" },
+  ]);
+
   // Grid columns calculated but using flex-wrap for responsiveness
   const _columns = getResponsiveValue(width, {
     mobile: 1,
@@ -155,6 +168,20 @@ export default function BrowseBriefsPage() {
 
   return (
     <View style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
+      <SEO
+        title="Browse Briefs"
+        description="Find paid UGC opportunities on our marketplace. Browse brand briefs with secure payment, filter by category and budget, and start creating authentic content."
+        path="/browse/briefs"
+        keywords={[
+          "UGC briefs",
+          "paid creator opportunities",
+          "brand briefs",
+          "content creator jobs",
+          "UGC jobs",
+        ]}
+        jsonLd={[briefsJsonLd, breadcrumbJsonLd]}
+      />
+
       {/* Header */}
       <View
         style={{
