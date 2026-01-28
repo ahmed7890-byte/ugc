@@ -170,9 +170,9 @@
     --star: oklch(82% 0.16 85);
 
     /* Highlighted / featured card surface */
-    --surface-highlight: oklch(30% 0.01 240);
-    --surface-highlight-foreground: oklch(95% 0 0);
-    --surface-highlight-muted: oklch(95% 0 0 / 70%);
+    --surface-highlight: oklch(40% 0.01 240);
+    --surface-highlight-foreground: oklch(98% 0 0);
+    --surface-highlight-muted: oklch(98% 0 0 / 70%);
 
     /* Skeleton loading */
     --skeleton: oklch(28% 0.01 240);
