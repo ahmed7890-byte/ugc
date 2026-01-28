@@ -127,7 +127,7 @@ const GALLERY_ITEMS: GalleryItemData[] = [
 	},
 ];
 
-export function MadeOnUGPGallery() {
+export function MadeOnUGCGallery() {
 	const { isMobile, isTablet } = useResponsive();
 
 	// Determine number of columns based on screen size
@@ -170,7 +170,7 @@ export function MadeOnUGPGallery() {
 						marginBottom: 32,
 					}}
 				>
-					Made on UGP
+					Made on UGC
 				</Text>
 
 				{/* Masonry Grid */}
@@ -206,4 +206,4 @@ export function MadeOnUGPGallery() {
 	);
 }
 
-export default MadeOnUGPGallery;
+export default MadeOnUGCGallery;

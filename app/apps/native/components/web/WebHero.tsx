@@ -1,5 +1,4 @@
 import { ScrollView, Text, View } from "react-native";
-import { useResponsive } from "@/hooks/useResponsive";
 import { CategoryTag } from "./CategoryTag";
 import { type CategoryOption, SearchBar } from "./SearchBar";
 
@@ -54,17 +53,10 @@ export function WebHero({
   popularTags = DEFAULT_POPULAR_TAGS,
   onSearch,
 }: WebHeroProps) {
-  const { isMobile, isTablet } = useResponsive();
-
   return (
     <View
-      style={{
-        position: "relative",
-        overflow: "hidden",
-        backgroundColor: THEME_COLORS.heroBackground,
-        // Mobile-first: let content determine height, only set minHeight on larger screens
-        minHeight: isMobile ? undefined : isTablet ? 500 : 600,
-      }}
+      className="relative overflow-hidden md:min-h-[500px] lg:min-h-[600px]"
+      style={{ backgroundColor: THEME_COLORS.heroBackground }}
     >
       {/* Background Video - Web only */}
       <video
@@ -100,14 +92,7 @@ export function WebHero({
 
       {/* Content */}
       <View
-        style={{
-          position: "relative",
-          zIndex: 2,
-          // Mobile-first padding: compact on mobile, more spacious on larger screens
-          paddingTop: isMobile ? 60 : isTablet ? 100 : 140,
-          paddingBottom: isMobile ? 32 : isTablet ? 48 : 80,
-          paddingHorizontal: isMobile ? 16 : 24,
-        }}
+        className="relative z-[2] pt-[60px] md:pt-[100px] lg:pt-[140px] pb-8 md:pb-12 lg:pb-20 px-4 md:px-6"
       >
         <View
           style={{
@@ -119,14 +104,9 @@ export function WebHero({
         >
           {/* Headline */}
           <Text
+            className="text-[28px] md:text-[42px] lg:text-[56px] font-bold text-center mb-3 md:mb-4 leading-[36px] md:leading-[50px] lg:leading-[66px]"
             style={{
-              // Mobile-first: smaller font that scales up
-              fontSize: isMobile ? 28 : isTablet ? 42 : 56,
-              fontWeight: "700",
               color: THEME_COLORS.foreground,
-              textAlign: "center",
-              marginBottom: isMobile ? 12 : 16,
-              lineHeight: isMobile ? 36 : isTablet ? 50 : 66,
               textShadowColor: "rgba(0, 0, 0, 0.3)",
               textShadowOffset: { width: 0, height: 2 },
               textShadowRadius: 4,
@@ -137,13 +117,9 @@ export function WebHero({
 
           {/* Subheadline */}
           <Text
+            className="text-sm md:text-lg text-center leading-[22px] md:leading-7 max-w-full md:max-w-[600px] mb-6 md:mb-8"
             style={{
-              fontSize: isMobile ? 14 : 18,
               color: THEME_COLORS.muted,
-              textAlign: "center",
-              lineHeight: isMobile ? 22 : 28,
-              maxWidth: isMobile ? "100%" : 600,
-              marginBottom: isMobile ? 24 : 32,
               textShadowColor: "rgba(0, 0, 0, 0.3)",
               textShadowOffset: { width: 0, height: 1 },
               textShadowRadius: 2,
@@ -153,68 +129,47 @@ export function WebHero({
           </Text>
 
           {/* Search Bar */}
-          <View
-            style={{
-              width: "100%",
-              alignItems: "center",
-              marginBottom: isMobile ? 16 : 24,
-            }}
-          >
-            <SearchBar
-              categories={categories}
-              onSearch={onSearch}
-              placeholder="Search for creators or briefs..."
-            />
+          <View className="w-full items-center mb-4 md:mb-6">
+            <SearchBar categories={categories} onSearch={onSearch} />
           </View>
 
-          {/* Popular Tags */}
+          {/* Popular Tags - always horizontal scroll on mobile, wrap on desktop */}
           <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 8,
-              flexWrap: isMobile ? "nowrap" : "wrap",
-              justifyContent: "center",
-            }}
+            className="flex-row items-center gap-2 flex-nowrap md:flex-wrap justify-center"
+            style={{ width: "100%" }}
           >
             <Text
+              className="hidden xs:inline"
               style={{
                 fontSize: 14,
                 color: THEME_COLORS.muted,
                 marginRight: 4,
+                flexShrink: 0,
               }}
             >
               Popular:
             </Text>
-            {isMobile ? (
-              <ScrollView
-                contentContainerStyle={{ gap: 8, paddingRight: 24 }}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              >
-                {popularTags.map((tag) => (
-                  <CategoryTag
-                    href={tag.href}
-                    key={tag.label}
-                    label={tag.label}
-                    size="small"
-                    variant="light"
-                  />
-                ))}
-              </ScrollView>
-            ) : (
-              <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
-                {popularTags.map((tag) => (
-                  <CategoryTag
-                    href={tag.href}
-                    key={tag.label}
-                    label={tag.label}
-                    size="small"
-                    variant="light"
-                  />
-                ))}
-              </View>
-            )}
+            <ScrollView
+              className="flex-1 md:flex-none"
+              contentContainerStyle={{
+                gap: 8,
+                paddingRight: 24,
+                flexWrap: "wrap",
+                justifyContent: "center",
+              }}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
+              {popularTags.map((tag) => (
+                <CategoryTag
+                  href={tag.href}
+                  key={tag.label}
+                  label={tag.label}
+                  size="small"
+                  variant="light"
+                />
+              ))}
+            </ScrollView>
           </View>
         </View>
       </View>

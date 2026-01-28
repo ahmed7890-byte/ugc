@@ -26,7 +26,7 @@ export { ServiceCard, type ServiceCardProps } from "./ServiceCard";
 export { PopularServicesCarousel } from "./PopularServicesCarousel";
 export { PromoBanner, type PromoBannerProps } from "./PromoBanner";
 export { GalleryItem, type GalleryItemProps } from "./GalleryItem";
-export { MadeOnUGPGallery } from "./MadeOnUGPGallery";
+export { MadeOnUGCGallery } from "./MadeOnUGCGallery";
 export { GuideCard, type GuideCardProps } from "./GuideCard";
 export { GuidesSection } from "./GuidesSection";
 export { JoinCTASection } from "./JoinCTASection";

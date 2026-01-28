@@ -1,11 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
+import { Card } from "heroui-native";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { WebHero } from "@/components/web/WebHero";
 import { CategoryCardsSection } from "@/components/web/CategoryCardsSection";
 import { PopularServicesCarousel } from "@/components/web/PopularServicesCarousel";
 import { PromoBanner } from "@/components/web/PromoBanner";
-import { MadeOnUGPGallery } from "@/components/web/MadeOnUGPGallery";
+import { MadeOnUGCGallery } from "@/components/web/MadeOnUGCGallery";
 import { GuidesSection } from "@/components/web/GuidesSection";
 import { JoinCTASection } from "@/components/web/JoinCTASection";
 import { useResponsive } from "@/hooks/useResponsive";
@@ -16,16 +17,10 @@ import {
   serviceJsonLd,
 } from "@/components/web/SEO";
 
-// Fiverr-style theme colors
-const THEME_COLORS = {
-  primary: "#1DBF73",
-  primaryForeground: "#FFFFFF",
-  foreground: "#222325",
-  muted: "#62646a",
-  border: "#e4e5e7",
-  background: "#FFFFFF",
-  sectionBackground: "#fafafa",
-};
+// Theme colors are now defined in global.css and accessed via Tailwind classes:
+// - text-foreground, text-muted, text-primary, text-primary-foreground
+// - bg-background, bg-surface, bg-primary
+// - border-border
 
 // Mock data for briefs
 const MOCK_BRIEFS = [
@@ -114,105 +109,32 @@ function BriefCardSimple({
   daysRemaining: number;
 }) {
   return (
-    <Pressable
-      style={({ hovered }) => ({
-        backgroundColor: THEME_COLORS.background,
-        borderRadius: 12,
-        padding: 20,
-        width: 280,
-        borderWidth: 1,
-        borderColor: THEME_COLORS.border,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: hovered ? 4 : 2 },
-        shadowOpacity: hovered ? 0.1 : 0.05,
-        shadowRadius: hovered ? 8 : 4,
-        transform: [{ translateY: hovered ? -2 : 0 }],
-      })}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginBottom: 12,
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "#f0fdf4",
-            paddingHorizontal: 10,
-            paddingVertical: 4,
-            borderRadius: 12,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 12,
-              color: THEME_COLORS.primary,
-              fontWeight: "600",
-            }}
-          >
-            {category}
-          </Text>
+    <Card className="w-[280px] p-5 rounded-xl bg-background border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+      <View className="flex-row justify-between mb-3">
+        <View className="bg-green-50 px-2.5 py-1 rounded-xl">
+          <Text className="text-xs text-primary font-semibold">{category}</Text>
         </View>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-          <Ionicons
-            color={THEME_COLORS.primary}
-            name="checkmark-circle"
-            size={14}
-          />
-          <Text
-            style={{
-              fontSize: 11,
-              color: THEME_COLORS.primary,
-              fontWeight: "500",
-            }}
-          >
+        <View className="flex-row items-center gap-1">
+          <Ionicons color="#1DBF73" name="checkmark-circle" size={14} />
+          <Text className="text-xs text-primary font-medium">
             Payment Secured
           </Text>
         </View>
       </View>
 
-      <Text
-        numberOfLines={2}
-        style={{
-          fontSize: 16,
-          fontWeight: "600",
-          color: THEME_COLORS.foreground,
-          marginBottom: 4,
-        }}
-      >
+      <Text className="text-base font-semibold text-foreground mb-1" numberOfLines={2}>
         {title}
       </Text>
-      <Text
-        style={{ fontSize: 13, color: THEME_COLORS.muted, marginBottom: 16 }}
-      >
-        by {brandName}
-      </Text>
+      <Text className="text-sm text-muted mb-4">by {brandName}</Text>
 
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: "700",
-            color: THEME_COLORS.foreground,
-          }}
-        >
-          ${budget}
-        </Text>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-          <Ionicons color={THEME_COLORS.muted} name="time-outline" size={14} />
-          <Text style={{ fontSize: 13, color: THEME_COLORS.muted }}>
-            {daysRemaining} days left
-          </Text>
+      <View className="flex-row justify-between items-center">
+        <Text className="text-lg font-bold text-foreground">${budget}</Text>
+        <View className="flex-row items-center gap-1">
+          <Ionicons color="#62646a" name="time-outline" size={14} />
+          <Text className="text-sm text-muted">{daysRemaining} days left</Text>
         </View>
       </View>
-    </Pressable>
+    </Card>
   );
 }
 
@@ -231,114 +153,38 @@ function CreatorCardSimple({
   startingRate: number;
 }) {
   return (
-    <Pressable
-      style={({ hovered }) => ({
-        backgroundColor: THEME_COLORS.background,
-        borderRadius: 12,
-        padding: 20,
-        width: 280,
-        borderWidth: 1,
-        borderColor: THEME_COLORS.border,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: hovered ? 4 : 2 },
-        shadowOpacity: hovered ? 0.1 : 0.05,
-        shadowRadius: hovered ? 8 : 4,
-        transform: [{ translateY: hovered ? -2 : 0 }],
-      })}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 12,
-          marginBottom: 12,
-        }}
-      >
-        <View
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            backgroundColor: THEME_COLORS.primary,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text
-            style={{
-              color: THEME_COLORS.primaryForeground,
-              fontSize: 18,
-              fontWeight: "600",
-            }}
-          >
+    <Card className="w-[280px] p-5 rounded-xl bg-background border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+      <View className="flex-row items-center gap-3 mb-3">
+        <View className="w-12 h-12 rounded-full bg-primary items-center justify-center">
+          <Text className="text-lg font-semibold text-primary-foreground">
             {name.charAt(0)}
           </Text>
         </View>
-        <View style={{ flex: 1 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "600",
-              color: THEME_COLORS.foreground,
-            }}
-          >
-            {name}
-          </Text>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+        <View className="flex-1">
+          <Text className="text-base font-semibold text-foreground">{name}</Text>
+          <View className="flex-row items-center gap-1">
             <Ionicons color="#fbbf24" name="star" size={12} />
-            <Text style={{ fontSize: 13, color: THEME_COLORS.muted }}>
-              {trustScore} Trust Score
-            </Text>
+            <Text className="text-sm text-muted">{trustScore} Trust Score</Text>
           </View>
         </View>
       </View>
 
-      <Text
-        numberOfLines={2}
-        style={{
-          fontSize: 14,
-          color: THEME_COLORS.muted,
-          marginBottom: 12,
-          lineHeight: 20,
-        }}
-      >
+      <Text className="text-sm text-muted mb-3 leading-5" numberOfLines={2}>
         {tagline}
       </Text>
 
-      <View style={{ flexDirection: "row", gap: 6, marginBottom: 16 }}>
+      <View className="flex-row gap-1.5 mb-4">
         {niches.map((niche) => (
-          <View
-            key={niche}
-            style={{
-              backgroundColor: "#f5f5f5",
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 12,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 12,
-                color: THEME_COLORS.foreground,
-              }}
-            >
-              {niche}
-            </Text>
+          <View key={niche} className="bg-gray-100 px-2.5 py-1 rounded-xl">
+            <Text className="text-xs text-foreground">{niche}</Text>
           </View>
         ))}
       </View>
 
-      <Text
-        style={{
-          fontSize: 14,
-          color: THEME_COLORS.foreground,
-        }}
-      >
-        From{" "}
-        <Text style={{ fontWeight: "700", fontSize: 16 }}>${startingRate}</Text>
-        /brief
+      <Text className="text-sm text-foreground">
+        From <Text className="font-bold text-base">${startingRate}</Text>/brief
       </Text>
-    </Pressable>
+    </Card>
   );
 }
 
@@ -353,45 +199,20 @@ function SectionHeader({
   linkHref?: string;
 }) {
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 24,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 28,
-          fontWeight: "700",
-          color: THEME_COLORS.foreground,
-        }}
-      >
-        {title}
-      </Text>
+    <View className="flex-row justify-between items-center mb-6">
+      <Text className="text-2xl font-bold text-foreground">{title}</Text>
       {linkText && linkHref && (
         <Link asChild href={linkHref as any}>
-          <Pressable
-            style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
-          >
+          <Pressable className="flex-row items-center gap-1">
             {({ hovered }) => (
               <>
                 <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: "500",
-                    color: hovered
-                      ? THEME_COLORS.primary
-                      : THEME_COLORS.foreground,
-                  }}
+                  className={`text-base font-medium ${hovered ? "text-primary" : "text-foreground"}`}
                 >
                   {linkText}
                 </Text>
                 <Ionicons
-                  color={
-                    hovered ? THEME_COLORS.primary : THEME_COLORS.foreground
-                  }
+                  color={hovered ? "#1DBF73" : "#222325"}
                   name="arrow-forward"
                   size={18}
                 />
@@ -417,49 +238,17 @@ function HowItWorksStep({
   icon: keyof typeof Ionicons.glyphMap;
 }) {
   return (
-    <View style={{ alignItems: "center", flex: 1, paddingHorizontal: 16 }}>
-      <View
-        style={{
-          width: 64,
-          height: 64,
-          borderRadius: 32,
-          backgroundColor: "#f0fdf4",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: 16,
-        }}
-      >
-        <Ionicons color={THEME_COLORS.primary} name={icon} size={28} />
+    <View className="items-center flex-1 px-4">
+      <View className="w-16 h-16 rounded-full bg-green-50 items-center justify-center mb-4">
+        <Ionicons color="#1DBF73" name={icon} size={28} />
       </View>
-      <Text
-        style={{
-          fontSize: 12,
-          fontWeight: "600",
-          color: THEME_COLORS.primary,
-          marginBottom: 8,
-        }}
-      >
+      <Text className="text-xs font-semibold text-primary mb-2">
         STEP {number}
       </Text>
-      <Text
-        style={{
-          fontSize: 18,
-          fontWeight: "600",
-          color: THEME_COLORS.foreground,
-          textAlign: "center",
-          marginBottom: 8,
-        }}
-      >
+      <Text className="text-lg font-semibold text-foreground text-center mb-2">
         {title}
       </Text>
-      <Text
-        style={{
-          fontSize: 14,
-          color: THEME_COLORS.muted,
-          textAlign: "center",
-          lineHeight: 20,
-        }}
-      >
+      <Text className="text-sm text-muted text-center leading-5">
         {description}
       </Text>
     </View>
@@ -515,16 +304,8 @@ export default function WebHomePage() {
       />
 
       {/* Ready Briefs Section */}
-      <View
-        style={{
-          paddingVertical: 64,
-          paddingHorizontal: 24,
-          backgroundColor: THEME_COLORS.background,
-        }}
-      >
-        <View
-          style={{ maxWidth: 1200, marginHorizontal: "auto", width: "100%" }}
-        >
+      <View className="py-16 px-6 bg-background">
+        <View className="max-w-[1200px] mx-auto w-full">
           <SectionHeader
             linkHref="/browse/briefs"
             linkText="See All Briefs"
@@ -550,16 +331,8 @@ export default function WebHomePage() {
       </View>
 
       {/* Top Creators Section */}
-      <View
-        style={{
-          paddingVertical: 64,
-          paddingHorizontal: 24,
-          backgroundColor: THEME_COLORS.sectionBackground,
-        }}
-      >
-        <View
-          style={{ maxWidth: 1200, marginHorizontal: "auto", width: "100%" }}
-        >
+      <View className="py-16 px-6 bg-surface">
+        <View className="max-w-[1200px] mx-auto w-full">
           <SectionHeader
             linkHref="/browse/creators"
             linkText="See All Creators"
@@ -584,52 +357,31 @@ export default function WebHomePage() {
         </View>
       </View>
 
-      {/* Second Promo Banner - UGP Pro */}
+      {/* Second Promo Banner - UGC Pro */}
       <PromoBanner
         backgroundColor="#faf5e4"
         badge="pro"
         ctaText="Learn More"
         ctaHref="/pro"
         heading="Get matched with vetted creators"
-        subheading="UGP Pro connects you with our top-tier creators for premium content that elevates your brand."
+        subheading="UGC Pro connects you with our top-tier creators for premium content that elevates your brand."
         variant="pro"
         videoSrc="/videos/ugp-pro-banner.mp4"
       />
 
-      {/* Made on UGP Gallery */}
-      <MadeOnUGPGallery />
+      {/* Made on UGC Gallery */}
+      <MadeOnUGCGallery />
 
       {/* Guides Section */}
       <GuidesSection />
 
       {/* How It Works Section */}
-      <View
-        style={{
-          paddingVertical: 64,
-          paddingHorizontal: 24,
-          backgroundColor: THEME_COLORS.background,
-        }}
-      >
-        <View
-          style={{ maxWidth: 1200, marginHorizontal: "auto", width: "100%" }}
-        >
-          <Text
-            style={{
-              fontSize: 28,
-              fontWeight: "700",
-              color: THEME_COLORS.foreground,
-              textAlign: "center",
-              marginBottom: 48,
-            }}
-          >
+      <View className="py-16 px-6 bg-background">
+        <View className="max-w-[1200px] mx-auto w-full">
+          <Text className="text-2xl font-bold text-foreground text-center mb-12">
             How It Works
           </Text>
-          <View
-            style={{
-              flexDirection: isMobile ? "column" : "row",
-              gap: isMobile ? 40 : 0,
-            }}
-          >
+          <View className={isMobile ? "flex-col gap-10" : "flex-row"}>
             <HowItWorksStep
               description="Define your product, audience, and deliverables with our guided form"
               icon="create-outline"
@@ -659,258 +411,116 @@ export default function WebHomePage() {
       </View>
 
       {/* Testimonials Section */}
-      <View
-        style={{
-          paddingVertical: 80,
-          paddingHorizontal: 24,
-          backgroundColor: THEME_COLORS.background,
-        }}
-      >
-        <View
-          style={{
-            maxWidth: 1200,
-            marginHorizontal: "auto",
-            width: "100%",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 28,
-              fontWeight: "700",
-              color: THEME_COLORS.foreground,
-              textAlign: "center",
-              marginBottom: 16,
-            }}
-          >
+      <View className="py-20 px-6 bg-background">
+        <View className="max-w-[1200px] mx-auto w-full">
+          <Text className="text-2xl font-bold text-foreground text-center mb-4">
             Trusted by Brands & Creators
           </Text>
-          <Text
-            style={{
-              fontSize: 16,
-              color: THEME_COLORS.muted,
-              textAlign: "center",
-              marginBottom: 48,
-              maxWidth: 600,
-              marginHorizontal: "auto",
-            }}
-          >
+          <Text className="text-base text-muted text-center mb-12 max-w-[600px] mx-auto">
             See what our community has to say about their experience
           </Text>
 
-          <View
-            style={{
-              flexDirection: isMobile ? "column" : "row",
-              gap: 24,
-            }}
-          >
+          <View className={`gap-6 ${isMobile ? "flex-col" : "flex-row"}`}>
             {/* Testimonial 1 */}
-            <View
-              style={{
-                flex: 1,
-                padding: 32,
-                borderRadius: 16,
-                backgroundColor: THEME_COLORS.sectionBackground,
-                borderWidth: 1,
-                borderColor: THEME_COLORS.border,
-              }}
-            >
-              <View style={{ flexDirection: "row", gap: 4, marginBottom: 16 }}>
+            <Card className="flex-1 p-8 rounded-2xl bg-surface border border-border">
+              <View className="flex-row gap-1 mb-4">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Ionicons color="#ffbe5b" key={star} name="star" size={18} />
                 ))}
               </View>
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: THEME_COLORS.foreground,
-                  lineHeight: 24,
-                  marginBottom: 24,
-                }}
-              >
+              <Card.Description className="text-base text-foreground leading-6 mb-6">
                 "The quality of creators on this platform is incredible. We've
                 cut our content production time in half while getting more
                 authentic results than ever before."
-              </Text>
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
-              >
-                <View
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 22,
-                    backgroundColor: THEME_COLORS.primary,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "600",
-                      color: THEME_COLORS.primaryForeground,
-                    }}
-                  >
+              </Card.Description>
+              <View className="flex-row items-center gap-3">
+                <View className="w-11 h-11 rounded-full bg-primary items-center justify-center">
+                  <Text className="text-base font-semibold text-primary-foreground">
                     JT
                   </Text>
                 </View>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "600",
-                      color: THEME_COLORS.foreground,
-                    }}
+                <View className="flex-1 min-w-0">
+                  <Card.Title
+                    className="text-base font-semibold text-foreground"
+                    numberOfLines={1}
                   >
                     Jennifer Thompson
-                  </Text>
-                  <Text style={{ fontSize: 13, color: THEME_COLORS.muted }}>
+                  </Card.Title>
+                  <Card.Description className="text-sm text-muted" numberOfLines={1}>
                     Marketing Director, GlowUp Beauty
-                  </Text>
+                  </Card.Description>
                 </View>
               </View>
-            </View>
+            </Card>
 
             {/* Testimonial 2 */}
-            <View
-              style={{
-                flex: 1,
-                padding: 32,
-                borderRadius: 16,
-                backgroundColor: THEME_COLORS.sectionBackground,
-                borderWidth: 1,
-                borderColor: THEME_COLORS.border,
-              }}
-            >
-              <View style={{ flexDirection: "row", gap: 4, marginBottom: 16 }}>
+            <Card className="flex-1 p-8 rounded-2xl bg-surface border border-border">
+              <View className="flex-row gap-1 mb-4">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Ionicons color="#ffbe5b" key={star} name="star" size={18} />
                 ))}
               </View>
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: THEME_COLORS.foreground,
-                  lineHeight: 24,
-                  marginBottom: 24,
-                }}
-              >
+              <Card.Description className="text-base text-foreground leading-6 mb-6">
                 "As a creator, this platform has been a game-changer. The briefs
                 are clear, payment is always on time, and I've built amazing
                 brand relationships."
-              </Text>
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
-              >
-                <View
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 22,
-                    backgroundColor: "#3b82f6",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "600",
-                      color: THEME_COLORS.primaryForeground,
-                    }}
-                  >
+              </Card.Description>
+              <View className="flex-row items-center gap-3">
+                <View className="w-11 h-11 rounded-full bg-blue-500 items-center justify-center">
+                  <Text className="text-base font-semibold text-white">
                     MC
                   </Text>
                 </View>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "600",
-                      color: THEME_COLORS.foreground,
-                    }}
+                <View className="flex-1 min-w-0">
+                  <Card.Title
+                    className="text-base font-semibold text-foreground"
+                    numberOfLines={1}
                   >
                     Maria Chen
-                  </Text>
-                  <Text style={{ fontSize: 13, color: THEME_COLORS.muted }}>
+                  </Card.Title>
+                  <Card.Description className="text-sm text-muted" numberOfLines={1}>
                     Lifestyle Creator, 150K Followers
-                  </Text>
+                  </Card.Description>
                 </View>
               </View>
-            </View>
+            </Card>
 
             {/* Testimonial 3 */}
-            <View
-              style={{
-                flex: 1,
-                padding: 32,
-                borderRadius: 16,
-                backgroundColor: THEME_COLORS.sectionBackground,
-                borderWidth: 1,
-                borderColor: THEME_COLORS.border,
-              }}
-            >
-              <View style={{ flexDirection: "row", gap: 4, marginBottom: 16 }}>
+            <Card className="flex-1 p-8 rounded-2xl bg-surface border border-border">
+              <View className="flex-row gap-1 mb-4">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Ionicons color="#ffbe5b" key={star} name="star" size={18} />
                 ))}
               </View>
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: THEME_COLORS.foreground,
-                  lineHeight: 24,
-                  marginBottom: 24,
-                }}
-              >
+              <Card.Description className="text-base text-foreground leading-6 mb-6">
                 "The escrow system gives us complete peace of mind. We know our
                 budget is protected and creators are motivated to deliver their
                 best work."
-              </Text>
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
-              >
-                <View
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 22,
-                    backgroundColor: "#8b5cf6",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "600",
-                      color: THEME_COLORS.primaryForeground,
-                    }}
-                  >
+              </Card.Description>
+              <View className="flex-row items-center gap-3">
+                <View className="w-11 h-11 rounded-full bg-violet-500 items-center justify-center">
+                  <Text className="text-base font-semibold text-white">
                     DP
                   </Text>
                 </View>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "600",
-                      color: THEME_COLORS.foreground,
-                    }}
+                <View className="flex-1 min-w-0">
+                  <Card.Title
+                    className="text-base font-semibold text-foreground"
+                    numberOfLines={1}
                   >
                     David Park
-                  </Text>
-                  <Text style={{ fontSize: 13, color: THEME_COLORS.muted }}>
+                  </Card.Title>
+                  <Card.Description className="text-sm text-muted" numberOfLines={1}>
                     Founder, TechStart Inc
-                  </Text>
+                  </Card.Description>
                 </View>
               </View>
-            </View>
+            </Card>
           </View>
         </View>
       </View>
 
-      {/* Join UGP CTA Section */}
+      {/* Join UGC CTA Section */}
       <JoinCTASection />
     </View>
   );

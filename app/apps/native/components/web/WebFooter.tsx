@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { XIcon } from "@/components/icons/XIcon";
 import { UGCLogo } from "@/components/UGCLogo";
 import { useScrollContext } from "@/contexts/scroll-context";
 import { useResponsive } from "@/hooks/useResponsive";
@@ -70,15 +71,27 @@ const FOOTER_COLUMNS: FooterColumn[] = [
 
 interface SocialLink {
   platform: string;
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: keyof typeof Ionicons.glyphMap | "x";
   href: string;
 }
 
 const SOCIAL_LINKS: SocialLink[] = [
-  { platform: "Twitter", icon: "logo-twitter", href: "#" },
-  { platform: "Facebook", icon: "logo-facebook", href: "#" },
-  { platform: "LinkedIn", icon: "logo-linkedin", href: "#" },
-  { platform: "Instagram", icon: "logo-instagram", href: "#" },
+  { platform: "X", icon: "x", href: "https://x.com/idoads" },
+  {
+    platform: "Facebook",
+    icon: "logo-facebook",
+    href: "https://facebook.com/idoads",
+  },
+  {
+    platform: "LinkedIn",
+    icon: "logo-linkedin",
+    href: "https://linkedin.com/company/idoads",
+  },
+  {
+    platform: "Instagram",
+    icon: "logo-instagram",
+    href: "https://instagram.com/idoads",
+  },
 ];
 
 export function WebFooter() {
@@ -276,18 +289,36 @@ export function WebFooter() {
               }}
             >
               {SOCIAL_LINKS.map((social) => (
-                <Pressable key={social.platform}>
-                  {({ hovered }) => (
-                    <Ionicons
-                      color={
-                        hovered
-                          ? THEME_COLORS.footerHeading
-                          : THEME_COLORS.footerText
-                      }
-                      name={social.icon}
-                      size={22}
-                    />
-                  )}
+                <Pressable
+                  key={social.platform}
+                  onPress={() => {
+                    if (typeof window !== "undefined") {
+                      window.open(social.href, "_blank", "noopener,noreferrer");
+                    }
+                  }}
+                >
+                  {({ hovered }) =>
+                    social.icon === "x" ? (
+                      <XIcon
+                        color={
+                          hovered
+                            ? THEME_COLORS.footerHeading
+                            : THEME_COLORS.footerText
+                        }
+                        size={22}
+                      />
+                    ) : (
+                      <Ionicons
+                        color={
+                          hovered
+                            ? THEME_COLORS.footerHeading
+                            : THEME_COLORS.footerText
+                        }
+                        name={social.icon as keyof typeof Ionicons.glyphMap}
+                        size={22}
+                      />
+                    )
+                  }
                 </Pressable>
               ))}
             </View>

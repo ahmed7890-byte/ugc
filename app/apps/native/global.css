@@ -70,3 +70,9 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
 }
+
+/* Custom breakpoints for mobile-first responsive design */
+@theme {
+  /* Extra small screens (narrow phones) */
+  --breakpoint-xs: 480px;
+}

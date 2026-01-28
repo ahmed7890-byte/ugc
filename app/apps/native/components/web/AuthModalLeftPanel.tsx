@@ -41,6 +41,7 @@ export function AuthModalLeftPanel() {
           bottom: 0,
           width: 400,
           height: "100%",
+          backgroundColor: "#883748",
         }}
       />
 

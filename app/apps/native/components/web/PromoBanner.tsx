@@ -102,7 +102,7 @@ export function PromoBanner({
 									color: textColor,
 								}}
 							>
-								<Text style={{ fontWeight: "800" }}>UGP</Text>
+								<Text style={{ fontWeight: "800" }}>UGC</Text>
 								<Text style={{ fontWeight: "300" }}> pro.</Text>
 							</Text>
 						</View>

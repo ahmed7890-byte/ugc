@@ -79,7 +79,7 @@ export function JoinCTASection() {
 							color: THEME_COLORS.foreground,
 						}}
 					>
-						Join UGP
+						Join UGC
 					</Text>
 				</Pressable>
 			</View>

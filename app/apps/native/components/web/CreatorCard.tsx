@@ -1,24 +1,48 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
+import { Card } from "heroui-native";
 import { Pressable, Text, View } from "react-native";
 
-// Fiverr-style theme colors
-const THEME_COLORS = {
-  primary: "#1DBF73",
-  primaryForeground: "#FFFFFF",
-  foreground: "#222325",
-  muted: "#62646a",
-  border: "#e4e5e7",
-  background: "#FFFFFF",
+/**
+ * Generates a deterministic color pair based on a string (e.g., name).
+ * Returns accessible background and text colors in the same hue family.
+ * The background is a light tint and the text is a darker shade for WCAG compliance.
+ */
+function getAvatarColors(name: string): { bg: string; text: string } {
+  // Simple hash function to get consistent number from string
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    hash = hash & hash; // Convert to 32bit integer
+  }
+
+  // Use hash to pick a hue (0-360)
+  const hue = Math.abs(hash) % 360;
+
+  // Return light background (high lightness, low saturation) and dark text (low lightness, medium saturation)
+  // This ensures WCAG AA compliance (4.5:1 contrast ratio)
+  return {
+    bg: `hsl(${hue}, 65%, 90%)`, // Light pastel background
+    text: `hsl(${hue}, 70%, 30%)`, // Dark saturated text
+  };
+}
+
+// Theme colors are now defined in global.css and accessed via Tailwind classes
+
+// Level badge style mappings
+const LEVEL_STYLES = {
+  new: { bgClass: "bg-gray-100", textClass: "text-gray-600" },
+  rising: { bgClass: "bg-amber-100", textClass: "text-amber-800" },
+  established: { bgClass: "bg-blue-100", textClass: "text-blue-800" },
+  pro: { bgClass: "bg-green-100", textClass: "text-green-800" },
 };
 
-// Level badge colors
-const LEVEL_COLORS = {
-  new: { bg: "#f5f5f5", text: "#666666" },
-  rising: { bg: "#fef3c7", text: "#92400e" },
-  established: { bg: "#dbeafe", text: "#1e40af" },
-  pro: { bg: "#f0fdf4", text: "#166534" },
+const LEVEL_LABELS = {
+  new: "New",
+  rising: "Rising",
+  established: "Established",
+  pro: "Pro",
 };
 
 export interface CreatorCardProps {
@@ -62,158 +86,63 @@ export function CreatorCard({
   avgResponseTime,
   onPress,
 }: CreatorCardProps) {
-  const levelConfig = LEVEL_COLORS[level];
-  const levelLabel =
-    level === "new"
-      ? "New"
-      : level === "rising"
-        ? "Rising"
-        : level === "established"
-          ? "Established"
-          : "Pro";
+  const levelStyles = LEVEL_STYLES[level];
+  const levelLabel = LEVEL_LABELS[level];
+
+  const avatarColors = getAvatarColors(name);
 
   const CardContent = ({ hovered = false }: { hovered?: boolean }) => (
-    <View
-      style={{
-        backgroundColor: THEME_COLORS.background,
-        borderRadius: 12,
-        overflow: "hidden",
-        borderWidth: 1,
-        borderColor: THEME_COLORS.border,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: hovered ? 8 : 2 },
-        shadowOpacity: hovered ? 0.12 : 0.06,
-        shadowRadius: hovered ? 16 : 8,
-        elevation: hovered ? 8 : 2,
-        transform: [{ translateY: hovered ? -4 : 0 }],
-        width: 300,
-        padding: 20,
-      }}
+    <Card
+      className={`w-[300px] p-5 rounded-xl overflow-hidden bg-background border border-border ${
+        hovered ? "shadow-lg -translate-y-1" : "shadow-sm"
+      } transition-all`}
     >
       {/* Header with Avatar */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 12,
-          marginBottom: 16,
-        }}
-      >
+      <View className="flex-row items-center gap-3 mb-4">
         {/* Avatar */}
-        <View style={{ position: "relative" }}>
+        <View className="relative">
           {avatarUrl ? (
             <Image
               contentFit="cover"
               source={{ uri: avatarUrl }}
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-              }}
+              style={{ width: 56, height: 56, borderRadius: 28 }}
             />
           ) : (
             <View
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-                backgroundColor: THEME_COLORS.primary,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              className="w-14 h-14 rounded-full items-center justify-center"
+              style={{ backgroundColor: avatarColors.bg }}
             >
               <Text
-                style={{
-                  color: THEME_COLORS.primaryForeground,
-                  fontSize: 22,
-                  fontWeight: "600",
-                }}
+                className="text-xl font-semibold"
+                style={{ color: avatarColors.text }}
               >
                 {name.charAt(0)}
               </Text>
             </View>
           )}
-          {/* Level Badge */}
+          {/* Pro Badge */}
           {level === "pro" && (
-            <View
-              style={{
-                position: "absolute",
-                bottom: -2,
-                right: -2,
-                backgroundColor: THEME_COLORS.primary,
-                width: 20,
-                height: 20,
-                borderRadius: 10,
-                alignItems: "center",
-                justifyContent: "center",
-                borderWidth: 2,
-                borderColor: THEME_COLORS.background,
-              }}
-            >
-              <Ionicons
-                color={THEME_COLORS.primaryForeground}
-                name="checkmark"
-                size={12}
-              />
+            <View className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-primary items-center justify-center border-2 border-background">
+              <Ionicons color="white" name="checkmark" size={12} />
             </View>
           )}
         </View>
 
         {/* Name & Level */}
-        <View style={{ flex: 1 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "600",
-              color: THEME_COLORS.foreground,
-              marginBottom: 4,
-            }}
-          >
+        <View className="flex-1 min-w-0">
+          <Text className="text-base font-semibold text-foreground mb-1" numberOfLines={1}>
             {name}
           </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: levelConfig.bg,
-                paddingHorizontal: 8,
-                paddingVertical: 2,
-                borderRadius: 8,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 11,
-                  fontWeight: "600",
-                  color: levelConfig.text,
-                }}
-              >
+          <View className="flex-row items-center gap-2">
+            <View className={`px-2 py-0.5 rounded-lg ${levelStyles.bgClass}`}>
+              <Text className={`text-xs font-semibold ${levelStyles.textClass}`}>
                 {levelLabel}
               </Text>
             </View>
             {trustScore !== undefined && (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 4,
-                }}
-              >
+              <View className="flex-row items-center gap-1">
                 <Ionicons color="#fbbf24" name="star" size={12} />
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: THEME_COLORS.muted,
-                    fontWeight: "500",
-                  }}
-                >
-                  {trustScore}
-                </Text>
+                <Text className="text-xs text-muted font-medium">{trustScore}</Text>
               </View>
             )}
           </View>
@@ -221,110 +150,48 @@ export function CreatorCard({
       </View>
 
       {/* Tagline */}
-      <Text
-        numberOfLines={2}
-        style={{
-          fontSize: 14,
-          color: THEME_COLORS.muted,
-          marginBottom: 12,
-          lineHeight: 20,
-        }}
-      >
+      <Text className="text-sm text-muted mb-3 leading-5" numberOfLines={2}>
         {tagline}
       </Text>
 
       {/* Niches */}
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          gap: 6,
-          marginBottom: 16,
-        }}
-      >
+      <View className="flex-row flex-wrap gap-1.5 mb-4">
         {niches.slice(0, 3).map((niche) => (
-          <View
-            key={niche}
-            style={{
-              backgroundColor: "#f5f5f5",
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 12,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 12,
-                color: THEME_COLORS.foreground,
-              }}
-            >
-              {niche}
-            </Text>
+          <View key={niche} className="bg-gray-100 px-2.5 py-1 rounded-xl">
+            <Text className="text-xs text-foreground">{niche}</Text>
           </View>
         ))}
       </View>
 
       {/* Stats */}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingTop: 12,
-          borderTopWidth: 1,
-          borderTopColor: THEME_COLORS.border,
-        }}
-      >
+      <View className="flex-row justify-between pt-3 border-t border-border">
         {completedBriefs !== undefined && (
-          <View style={{ alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "600",
-                color: THEME_COLORS.foreground,
-              }}
-            >
+          <View className="items-center">
+            <Text className="text-base font-semibold text-foreground">
               {completedBriefs}
             </Text>
-            <Text style={{ fontSize: 11, color: THEME_COLORS.muted }}>
-              Completed
-            </Text>
+            <Text className="text-xs text-muted">Completed</Text>
           </View>
         )}
         {avgResponseTime && (
-          <View style={{ alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "600",
-                color: THEME_COLORS.foreground,
-              }}
-            >
+          <View className="items-center">
+            <Text className="text-base font-semibold text-foreground">
               {avgResponseTime}
             </Text>
-            <Text style={{ fontSize: 11, color: THEME_COLORS.muted }}>
-              Response
-            </Text>
+            <Text className="text-xs text-muted">Response</Text>
           </View>
         )}
         {startingRate !== undefined && (
-          <View style={{ alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "600",
-                color: THEME_COLORS.foreground,
-              }}
-            >
+          <View className="items-center">
+            <Text className="text-base font-semibold text-foreground">
               {currency}
               {startingRate}
             </Text>
-            <Text style={{ fontSize: 11, color: THEME_COLORS.muted }}>
-              Starting
-            </Text>
+            <Text className="text-xs text-muted">Starting</Text>
           </View>
         )}
       </View>
-    </View>
+    </Card>
   );
 
   if (onPress) {

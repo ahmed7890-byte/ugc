@@ -10,6 +10,7 @@
     "ios": "expo run:ios",
     "prebuild": "expo prebuild",
     "web": "expo start --web",
+    "generate-sitemap": "npx tsx scripts/generate-sitemap.ts",
     "storybook": "STORYBOOK=true expo start",
     "storybook:ios": "STORYBOOK=true expo run:ios",
     "storybook:android": "STORYBOOK=true expo run:android",

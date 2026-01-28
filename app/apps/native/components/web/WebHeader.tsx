@@ -1,8 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useConvexAuth } from "convex/react";
 import { Link } from "expo-router";
-import { useState } from "react";
-import { Modal, Pressable, ScrollView, Text, View } from "react-native";
+import { useCallback, useState } from "react";
+import { Pressable, ScrollView, Text, View } from "react-native";
+import Animated, {
+	Easing,
+	interpolate,
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming,
+} from "react-native-reanimated";
 import { UGCLogo } from "@/components/UGCLogo";
 import { useAuthModal } from "@/contexts/auth-modal-context";
 import { useResponsive } from "@/hooks/useResponsive";
@@ -32,7 +39,41 @@ export function WebHeader() {
 	const { isMobile, isTablet } = useResponsive();
 	const { isAuthenticated } = useConvexAuth();
 	const { open: openAuthModal } = useAuthModal();
-	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+	// Menu state and animation
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const menuProgress = useSharedValue(0);
+
+	const openMenu = useCallback(() => {
+		setIsMenuOpen(true);
+		menuProgress.value = withTiming(1, {
+			duration: 300,
+			easing: Easing.bezier(0.4, 0, 0.2, 1),
+		});
+	}, [menuProgress]);
+
+	const closeMenu = useCallback(() => {
+		menuProgress.value = withTiming(0, {
+			duration: 250,
+			easing: Easing.bezier(0.4, 0, 0.2, 1),
+		});
+		// Delay unmounting until animation completes
+		setTimeout(() => setIsMenuOpen(false), 260);
+	}, [menuProgress]);
+
+	// Animated styles for menu panel - slides from right
+	const menuPanelStyle = useAnimatedStyle(() => ({
+		transform: [
+			{
+				translateX: interpolate(menuProgress.value, [0, 1], [320, 0]),
+			},
+		],
+	}));
+
+	// Animated styles for backdrop
+	const backdropStyle = useAnimatedStyle(() => ({
+		opacity: menuProgress.value,
+	}));
 
 	const showMobileNav = isMobile || isTablet;
 
@@ -177,40 +218,63 @@ export function WebHeader() {
 
 				{/* Mobile Menu Button */}
 				{showMobileNav && (
-					<Pressable onPress={() => setIsMobileMenuOpen(true)}>
-						<Ionicons color={THEME_COLORS.foreground} name="menu" size={28} />
+					<Pressable onPress={isMenuOpen ? closeMenu : openMenu}>
+						<Ionicons
+							color={THEME_COLORS.foreground}
+							name={isMenuOpen ? "close" : "menu"}
+							size={28}
+						/>
 					</Pressable>
 				)}
 			</View>
 
-			{/* Mobile Menu Modal */}
-			<Modal
-				animationType="slide"
-				onRequestClose={() => setIsMobileMenuOpen(false)}
-				transparent
-				visible={isMobileMenuOpen}
-			>
-				<Pressable
-					onPress={() => setIsMobileMenuOpen(false)}
+			{/* Mobile Menu Overlay - Slides from RIGHT (not bottom) */}
+			{showMobileNav && isMenuOpen && (
+				<View
 					style={{
-						flex: 1,
-						backgroundColor: "rgba(0,0,0,0.5)",
+						position: "fixed" as any,
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						zIndex: 1001,
 					}}
 				>
-					<View
-						style={{
-							position: "absolute",
-							top: 0,
-							right: 0,
-							bottom: 0,
-							width: "80%",
-							maxWidth: 320,
-							backgroundColor: THEME_COLORS.background,
-							shadowColor: "#000",
-							shadowOffset: { width: -2, height: 0 },
-							shadowOpacity: 0.1,
-							shadowRadius: 8,
-						}}
+					{/* Backdrop */}
+					<Animated.View
+						style={[
+							{
+								position: "absolute",
+								top: 0,
+								left: 0,
+								right: 0,
+								bottom: 0,
+								backgroundColor: "rgba(0,0,0,0.5)",
+							},
+							backdropStyle,
+						]}
+					>
+						<Pressable style={{ flex: 1 }} onPress={closeMenu} />
+					</Animated.View>
+
+					{/* Menu Panel - Slides from right */}
+					<Animated.View
+						style={[
+							{
+								position: "absolute",
+								top: 0,
+								right: 0,
+								bottom: 0,
+								width: "80%",
+								maxWidth: 320,
+								backgroundColor: THEME_COLORS.background,
+								shadowColor: "#000",
+								shadowOffset: { width: -2, height: 0 },
+								shadowOpacity: 0.1,
+								shadowRadius: 8,
+							},
+							menuPanelStyle,
+						]}
 					>
 						{/* Close Button */}
 						<View
@@ -222,7 +286,7 @@ export function WebHeader() {
 								borderBottomColor: THEME_COLORS.border,
 							}}
 						>
-							<Pressable onPress={() => setIsMobileMenuOpen(false)}>
+							<Pressable onPress={closeMenu}>
 								<Ionicons
 									color={THEME_COLORS.foreground}
 									name="close"
@@ -236,7 +300,7 @@ export function WebHeader() {
 							{NAV_ITEMS.map((item) => (
 								<Link asChild href={item.href as any} key={item.href}>
 									<Pressable
-										onPress={() => setIsMobileMenuOpen(false)}
+										onPress={closeMenu}
 										style={{
 											paddingHorizontal: 24,
 											paddingVertical: 16,
@@ -262,7 +326,7 @@ export function WebHeader() {
 								{isAuthenticated ? (
 									<Link asChild href="/(tabs)/more">
 										<Pressable
-											onPress={() => setIsMobileMenuOpen(false)}
+											onPress={closeMenu}
 											style={{
 												backgroundColor: THEME_COLORS.primary,
 												paddingVertical: 14,
@@ -285,7 +349,7 @@ export function WebHeader() {
 									<>
 										<Pressable
 											onPress={() => {
-												setIsMobileMenuOpen(false);
+												closeMenu();
 												openAuthModal("signin");
 											}}
 											style={{
@@ -308,7 +372,7 @@ export function WebHeader() {
 										</Pressable>
 										<Pressable
 											onPress={() => {
-												setIsMobileMenuOpen(false);
+												closeMenu();
 												openAuthModal("signup");
 											}}
 											style={{
@@ -332,9 +396,9 @@ export function WebHeader() {
 								)}
 							</View>
 						</ScrollView>
-					</View>
-				</Pressable>
-			</Modal>
+					</Animated.View>
+				</View>
+			)}
 		</View>
 	);
 }

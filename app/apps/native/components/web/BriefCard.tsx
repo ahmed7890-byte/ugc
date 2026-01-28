@@ -1,17 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
+import { Card } from "heroui-native";
 import { Pressable, Text, View } from "react-native";
 
-// Fiverr-style theme colors
-const THEME_COLORS = {
-  primary: "#1DBF73",
-  primaryForeground: "#FFFFFF",
-  foreground: "#222325",
-  muted: "#62646a",
-  border: "#e4e5e7",
-  background: "#FFFFFF",
-};
+// Theme colors are now defined in global.css and accessed via Tailwind classes
 
 export interface BriefCardProps {
   /** Brief ID for navigation */
@@ -54,21 +47,10 @@ export function BriefCard({
   onPress,
 }: BriefCardProps) {
   const CardContent = ({ hovered = false }: { hovered?: boolean }) => (
-    <View
-      style={{
-        backgroundColor: THEME_COLORS.background,
-        borderRadius: 12,
-        overflow: "hidden",
-        borderWidth: 1,
-        borderColor: THEME_COLORS.border,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: hovered ? 8 : 2 },
-        shadowOpacity: hovered ? 0.12 : 0.06,
-        shadowRadius: hovered ? 16 : 8,
-        elevation: hovered ? 8 : 2,
-        transform: [{ translateY: hovered ? -4 : 0 }],
-        width: 300,
-      }}
+    <Card
+      className={`w-[300px] rounded-xl overflow-hidden bg-background border border-border ${
+        hovered ? "shadow-lg -translate-y-1" : "shadow-sm"
+      } transition-all`}
     >
       {/* Thumbnail */}
       {thumbnailUrl ? (
@@ -78,64 +60,22 @@ export function BriefCard({
           style={{ width: "100%", height: 160 }}
         />
       ) : (
-        <View
-          style={{
-            width: "100%",
-            height: 160,
-            backgroundColor: "#f5f5f5",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Ionicons color={THEME_COLORS.muted} name="image-outline" size={40} />
+        <View className="w-full h-40 bg-gray-100 items-center justify-center">
+          <Ionicons color="#62646a" name="image-outline" size={40} />
         </View>
       )}
 
       {/* Content */}
-      <View style={{ padding: 16 }}>
+      <View className="p-4">
         {/* Category & Payment Badge */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 12,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "#f0fdf4",
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 12,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 12,
-                color: THEME_COLORS.primary,
-                fontWeight: "600",
-              }}
-            >
-              {category}
-            </Text>
+        <View className="flex-row justify-between items-center mb-3">
+          <View className="bg-green-50 px-2.5 py-1 rounded-xl">
+            <Text className="text-xs text-primary font-semibold">{category}</Text>
           </View>
           {paymentSecured && (
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
-            >
-              <Ionicons
-                color={THEME_COLORS.primary}
-                name="checkmark-circle"
-                size={14}
-              />
-              <Text
-                style={{
-                  fontSize: 11,
-                  color: THEME_COLORS.primary,
-                  fontWeight: "500",
-                }}
-              >
+            <View className="flex-row items-center gap-1">
+              <Ionicons color="#1DBF73" name="checkmark-circle" size={14} />
+              <Text className="text-xs text-primary font-medium">
                 Payment Secured
               </Text>
             </View>
@@ -144,82 +84,37 @@ export function BriefCard({
 
         {/* Title */}
         <Text
+          className="text-base font-semibold text-foreground mb-1 leading-6"
           numberOfLines={2}
-          style={{
-            fontSize: 16,
-            fontWeight: "600",
-            color: THEME_COLORS.foreground,
-            marginBottom: 4,
-            lineHeight: 22,
-          }}
         >
           {title}
         </Text>
 
         {/* Brand */}
-        <Text
-          style={{
-            fontSize: 13,
-            color: THEME_COLORS.muted,
-            marginBottom: 8,
-          }}
-        >
-          by {brandName}
-        </Text>
+        <Text className="text-sm text-muted mb-2">by {brandName}</Text>
 
         {/* Description */}
         {description && (
-          <Text
-            numberOfLines={2}
-            style={{
-              fontSize: 14,
-              color: THEME_COLORS.muted,
-              marginBottom: 12,
-              lineHeight: 20,
-            }}
-          >
+          <Text className="text-sm text-muted mb-3 leading-5" numberOfLines={2}>
             {description}
           </Text>
         )}
 
         {/* Footer */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingTop: 12,
-            borderTopWidth: 1,
-            borderTopColor: THEME_COLORS.border,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "700",
-              color: THEME_COLORS.foreground,
-            }}
-          >
+        <View className="flex-row justify-between items-center pt-3 border-t border-border">
+          <Text className="text-lg font-bold text-foreground">
             {currency}
             {budget.toLocaleString()}
           </Text>
           {daysRemaining !== undefined && (
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
-            >
-              <Ionicons
-                color={THEME_COLORS.muted}
-                name="time-outline"
-                size={14}
-              />
-              <Text style={{ fontSize: 13, color: THEME_COLORS.muted }}>
-                {daysRemaining} days left
-              </Text>
+            <View className="flex-row items-center gap-1">
+              <Ionicons color="#62646a" name="time-outline" size={14} />
+              <Text className="text-sm text-muted">{daysRemaining} days left</Text>
             </View>
           )}
         </View>
       </View>
-    </View>
+    </Card>
   );
 
   if (onPress) {

@@ -182,6 +182,62 @@ export default function AboutPage() {
 | `createWebPageJsonLd(name, description, path)` | Creates WebPage schema                      |
 | `createFAQPageJsonLd(faqs)`                    | Creates FAQPage schema from Q&A array       |
 | `createBreadcrumbJsonLd(items)`                | Creates BreadcrumbList schema               |
+| `createArticleJsonLd(options)`                 | Creates Article schema for blog posts       |
+| `createEventJsonLd(options)`                   | Creates Event schema for community events   |
+| `createReviewJsonLd(options)`                  | Creates Review schema for testimonials      |
+| `createAggregateRatingJsonLd(options)`         | Creates AggregateRating for overall ratings |
+| `createProductJsonLd(options)`                 | Creates Product schema for listings         |
+
+#### New Schema Helper Examples
+
+**Article Schema (for blog posts):**
+
+```tsx
+const articleJsonLd = createArticleJsonLd({
+  headline: "How to Create Great UGC",
+  description: "A guide to creating user-generated content...",
+  path: "/blog/how-to-create-ugc",
+  datePublished: "2026-01-28T00:00:00Z",
+  authorName: "John Smith",
+});
+```
+
+**Event Schema (for community events):**
+
+```tsx
+const eventJsonLd = createEventJsonLd({
+  name: "Creator Summit 2026",
+  description: "Annual gathering of UGC creators",
+  startDate: "2026-03-15T09:00:00Z",
+  endDate: "2026-03-15T17:00:00Z",
+  isOnline: true,
+});
+```
+
+**Review Schema (for testimonials):**
+
+```tsx
+const reviewJsonLd = createReviewJsonLd({
+  reviewBody: "The quality of creators on this platform is incredible.",
+  ratingValue: 5,
+  authorName: "Jennifer Thompson",
+  authorJobTitle: "Marketing Director",
+});
+```
+
+**Product Schema (for marketplace listings):**
+
+```tsx
+const productJsonLd = createProductJsonLd({
+  name: "UGC Video Package",
+  description: "Professional UGC video content",
+  price: 250,
+  path: "/creators/sarah/packages/video",
+  sellerName: "Sarah Johnson",
+  ratingValue: 4.9,
+  reviewCount: 47,
+});
+```
 
 ---
 
@@ -198,7 +254,7 @@ Present on all pages via `+html.tsx`:
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "UGC Marketplace",
-  "alternateName": "UGP",
+  "alternateName": "UGC",
   "url": "https://ugp.gruckion.com",
   "logo": "https://ugp.gruckion.com/og.png",
   "description": "Connect brands with talented creators for authentic user-generated content.",
@@ -656,7 +712,52 @@ curl -s https://ugp.gruckion.com | grep -o '<meta[^>]*>'
 
 # Check JSON-LD
 curl -s https://ugp.gruckion.com | grep -o '<script type="application/ld+json">[^<]*</script>'
+
+# Generate updated sitemap
+cd app/apps/native && bun run generate-sitemap
 ```
+
+### JSON-LD Validation Checklist
+
+After adding or modifying structured data:
+
+1. **Build the site locally:**
+
+   ```bash
+   cd app/apps/native && bun run build:web
+   ```
+
+2. **Extract JSON-LD from built HTML:**
+
+   ```bash
+   grep -o '<script type="application/ld+json">[^<]*</script>' dist/index.html | \
+     sed 's/<[^>]*>//g' | jq .
+   ```
+
+3. **Validate with Google's Rich Results Test:**
+   - URL: https://search.google.com/test/rich-results
+   - Paste the production URL or upload HTML
+   - Check for errors and warnings
+
+4. **Common Schema Validation Errors:**
+
+   | Error                   | Fix                                 |
+   | ----------------------- | ----------------------------------- |
+   | "Missing field 'image'" | Ensure image URLs are absolute      |
+   | "Invalid date format"   | Use ISO 8601 (YYYY-MM-DDTHH:mm:ssZ) |
+   | "URL not accessible"    | Verify production URLs are live     |
+   | "Invalid URL"           | Use full URLs with https://         |
+
+5. **Test all schema types:**
+   - [ ] Organization (homepage)
+   - [ ] WebSite with SearchAction (homepage)
+   - [ ] WebPage (all pages)
+   - [ ] FAQPage (FAQ pages, pricing page)
+   - [ ] BreadcrumbList (browse pages)
+   - [ ] Article (blog posts)
+   - [ ] Event (community events)
+   - [ ] Review (testimonials)
+   - [ ] Product (marketplace listings)
 
 ### Browser DevTools Check
 

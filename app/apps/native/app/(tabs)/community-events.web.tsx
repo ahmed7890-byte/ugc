@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
-import { SEO, createWebPageJsonLd } from "@/components/web/SEO";
+import { SEO, createWebPageJsonLd, createEventJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -160,11 +160,35 @@ export default function CommunityEventsPage() {
 			? UPCOMING_EVENTS
 			: UPCOMING_EVENTS.filter((e) => e.type === selectedFilter);
 
-	const eventsJsonLd = createWebPageJsonLd(
+	const pageJsonLd = createWebPageJsonLd(
 		"Community Events - UGC Marketplace",
 		"Join webinars, workshops, and conferences for UGC creators and brands.",
 		"/community-events"
 	);
+
+	// Create Event schema for featured event
+	const featuredEventJsonLd = createEventJsonLd({
+		name: FEATURED_EVENT.title,
+		description: FEATURED_EVENT.description,
+		startDate: "2026-03-15T09:00:00-08:00",
+		endDate: "2026-03-16T18:00:00-08:00",
+		location: FEATURED_EVENT.location,
+		isOnline: FEATURED_EVENT.isVirtual,
+	});
+
+	// Create Event schemas for upcoming events
+	const upcomingEventsJsonLd = UPCOMING_EVENTS.slice(0, 3).map((event) =>
+		createEventJsonLd({
+			name: event.title,
+			description: event.description,
+			startDate: `2026-02-05T${event.time.includes("AM") ? "11:00" : "14:00"}:00-08:00`,
+			location: event.location,
+			isOnline: event.isVirtual,
+		})
+	);
+
+	// Combined JSON-LD array
+	const eventsJsonLd = [pageJsonLd, featuredEventJsonLd, ...upcomingEventsJsonLd];
 
 	return (
 		<ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>

@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { XIcon } from "@/components/icons/XIcon";
+import { createWebPageJsonLd, SEO } from "@/components/web/SEO";
 import { useResponsive } from "@/hooks/useResponsive";
-import { SEO, createWebPageJsonLd } from "@/components/web/SEO";
 
 // Fiverr-style theme colors
 const THEME_COLORS = {
@@ -96,16 +97,16 @@ export default function ContactPage() {
   return (
     <ScrollView style={{ flex: 1, backgroundColor: THEME_COLORS.background }}>
       <SEO
-        title="Contact Us"
         description="Get in touch with UGC Marketplace. Contact our support team for help, brand partnerships, creator support, or press inquiries. We're here to help."
-        path="/contact"
+        jsonLd={contactPageJsonLd}
         keywords={[
           "contact UGC marketplace",
           "customer support",
           "brand partnerships",
           "creator support",
         ]}
-        jsonLd={contactPageJsonLd}
+        path="/contact"
+        title="Contact Us"
       />
 
       {/* Hero Section */}
@@ -717,13 +718,31 @@ export default function ContactPage() {
                 </Text>
                 <View style={{ flexDirection: "row", gap: 12 }}>
                   {[
-                    "logo-twitter",
-                    "logo-instagram",
-                    "logo-linkedin",
-                    "logo-youtube",
-                  ].map((icon) => (
+                    { icon: "x", href: "https://x.com/idoads" },
+                    {
+                      icon: "logo-instagram",
+                      href: "https://instagram.com/idoads",
+                    },
+                    {
+                      icon: "logo-linkedin",
+                      href: "https://linkedin.com/company/idoads",
+                    },
+                    {
+                      icon: "logo-youtube",
+                      href: "https://youtube.com/@idoads",
+                    },
+                  ].map((social) => (
                     <Pressable
-                      key={icon}
+                      key={social.icon}
+                      onPress={() => {
+                        if (typeof window !== "undefined") {
+                          window.open(
+                            social.href,
+                            "_blank",
+                            "noopener,noreferrer"
+                          );
+                        }
+                      }}
                       style={({ hovered }) => ({
                         width: 44,
                         height: 44,
@@ -737,17 +756,28 @@ export default function ContactPage() {
                         justifyContent: "center",
                       })}
                     >
-                      {({ hovered }) => (
-                        <Ionicons
-                          color={
-                            hovered
-                              ? THEME_COLORS.primaryForeground
-                              : THEME_COLORS.muted
-                          }
-                          name={icon as any}
-                          size={20}
-                        />
-                      )}
+                      {({ hovered }) =>
+                        social.icon === "x" ? (
+                          <XIcon
+                            color={
+                              hovered
+                                ? THEME_COLORS.primaryForeground
+                                : THEME_COLORS.muted
+                            }
+                            size={20}
+                          />
+                        ) : (
+                          <Ionicons
+                            color={
+                              hovered
+                                ? THEME_COLORS.primaryForeground
+                                : THEME_COLORS.muted
+                            }
+                            name={social.icon as any}
+                            size={20}
+                          />
+                        )
+                      }
                     </Pressable>
                   ))}
                 </View>
